@@ -8,3 +8,5 @@ design
 docs
 package-lock.json
 *.md
+tests/fixtures/slips/expected.json
+tests/fixtures/slips/benchmark-results.json
