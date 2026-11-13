@@ -185,6 +185,7 @@ export function TransactionsPage() {
             </div>
             <Button
               variant="secondary"
+              className={s.filterBtn}
               icon={<SlidersHorizontal size={20} aria-hidden="true" />}
               aria-haspopup="dialog"
               onClick={() => setSheetOpen(true)}

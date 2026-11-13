@@ -133,6 +133,7 @@
 .field {
   display: grid;
   gap: var(--omx-space-1);
+  min-width: 0; /* BUG-003: let grid/flex parents shrink below the inputs' intrinsic width */
 }
 .label {
   font-weight: var(--omx-font-weight-medium);
@@ -143,6 +144,7 @@
   font-size: var(--omx-text-sm);
 }
 .control {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: var(--omx-space-2);
@@ -214,6 +216,7 @@
 }
 .dateBadge {
   flex: none;
+  white-space: nowrap;
   padding: 2px var(--omx-space-2);
   border-radius: var(--omx-radius-sm);
   background: var(--omx-color-primary-subtle);
@@ -233,6 +236,7 @@
   background: var(--omx-color-surface-2);
 }
 .segment {
+  min-width: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;

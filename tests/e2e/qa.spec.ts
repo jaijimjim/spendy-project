@@ -379,13 +379,9 @@ test.describe('QA — defect regressions (test.fail = still open)', () => {
   test.describe('320px', () => {
     test.use({ viewport: { width: 320, height: 640 } });
     for (const route of ['#/transactions', '#/transactions/new']) {
-      test(`TC-120 / BUG-003: no horizontal scroll at 320px on ${route} (OMX-025 AC1)`, async ({
+      test(`TC-120 / BUG-003 (fixed): no horizontal scroll at 320px on ${route} (OMX-025 AC1)`, async ({
         page,
       }) => {
-        test.fail(
-          true,
-          'BUG-003: transactions header/search row and form type control overflow at 320px',
-        );
         await setup(page);
         await seed(page, SAMPLE);
         await page.goto('./' + route);

@@ -5,6 +5,12 @@
 }
 .search {
   flex: 1;
+  min-width: 0; /* BUG-003 */
+}
+.filterBtn {
+  flex: none;
+  min-width: var(--omx-control-h);
+  padding: 0 var(--omx-space-3);
 }
 .chips {
   display: flex;
@@ -84,6 +90,10 @@
 }
 
 /* Form */
+.form > *,
+.twoCol > * {
+  min-width: 0; /* BUG-003: grid items default to min-width: auto */
+}
 .form {
   display: grid;
   gap: var(--omx-space-4);
