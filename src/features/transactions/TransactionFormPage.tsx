@@ -75,6 +75,8 @@ export function TransactionFormPage() {
   const [errors, setErrors] = useState<DraftErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
+  // Synchronous guard: `saving` state is stale inside the same event loop tick (BUG-002)
+  const savingRef = useRef(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const allowLeave = useRef(false);
   const amountRef = useRef<HTMLInputElement>(null);
@@ -130,7 +132,7 @@ export function TransactionFormPage() {
   const futureWarning = draft.date && draft.date > today() ? t('form.warnFutureDate') : null;
 
   const submit = (another: boolean) => {
-    if (saving) return; // double-tap safe (OMX-013 AC2)
+    if (savingRef.current) return; // double-tap safe (OMX-013 AC2, BUG-002)
     setSubmitted(true);
     const e = validateDraft(draft);
     setErrors(e);
@@ -141,6 +143,7 @@ export function TransactionFormPage() {
       if (first) document.getElementById(`tx-${first}`)?.focus();
       return;
     }
+    savingRef.current = true;
     setSaving(true);
     const money = parseMoneyInput(draft.amount);
     const now = nowIso();
@@ -160,12 +163,16 @@ export function TransactionFormPage() {
     if (draft.note.trim()) tx.note = draft.note.trim();
     const ok = existing ? update(tx) : add([tx]);
     setSaving(false);
-    if (!ok) return; // storage banner shown; form stays open with data
+    if (!ok) {
+      savingRef.current = false;
+      return; // storage banner shown; form stays open with data
+    }
     showToast({
       message: t(existing ? 'form.updatedToast' : 'form.savedToast'),
       variant: 'success',
     });
     if (another) {
+      savingRef.current = false;
       const next: Draft = { ...draft, amount: '', payee: '', note: '' };
       setDraft(next);
       setSubmitted(false);

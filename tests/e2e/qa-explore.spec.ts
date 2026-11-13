@@ -33,7 +33,7 @@ for (const lang of ['th', 'en'] as const)
       await seed(
         page,
         lang === 'en'
-          ? SAMPLE.map((t, i) => ({ ...t, payee: t.payee ? `Payee ${i}` : undefined }))
+          ? SAMPLE.map((t, i) => ({ ...t, payee: `Payee ${i}` }))
           : SAMPLE,
         lang,
       );

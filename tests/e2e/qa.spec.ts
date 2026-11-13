@@ -340,13 +340,9 @@ test.describe('QA — more coverage', () => {
 });
 
 test.describe('QA — open defects (expected to fail until fixed)', () => {
-  test('TC-088 / BUG-002: double-clicking Save creates only one transaction (OMX-013 AC2)', async ({
+  test('TC-088 / BUG-002 (fixed): double-clicking Save creates only one transaction (OMX-013 AC2)', async ({
     page,
   }) => {
-    test.fail(
-      true,
-      'BUG-002: the `saving` guard is React state read from a stale closure, so a 2nd click adds a 2nd row',
-    );
     await setup(page, {}, 'en');
     await page.goto('./#/transactions/new');
     await page.getByLabel('Amount (THB)').fill('55');
