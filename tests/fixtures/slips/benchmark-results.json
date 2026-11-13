@@ -1,0 +1,489 @@
+{
+  "summary": {
+    "runAt": "2026-11-13T10:14:36.474Z",
+    "images": 15,
+    "ocrTotalSeconds": 15.8,
+    "ocrSecondsPerImage": 1.1,
+    "accuracy": {
+      "type": 100,
+      "amount": 100,
+      "category": 86.7,
+      "date": 60,
+      "time": 100
+    },
+    "targets": {
+      "type": 90,
+      "amount": 80,
+      "category": 60,
+      "date": null
+    },
+    "appMatchesReparse": true
+  },
+  "rows": [
+    {
+      "file": "b01-transfer-th-person.png",
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": "2026-11-12",
+        "time": "09:12"
+      },
+      "app": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": "2026-11-13",
+        "time": "09:12"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": false,
+        "time": true
+      },
+      "rawText": "BB  ธนาคารออมนิทดสอบ\n—    ๐    เซ\nโอแนเงินสําเร็จ\n12 พุย. 69 09:12 น.\nจาก\nแนายข ทดสอบ ระบบ\nธนาคารออมนแทดสอบ\n2๐๐-%-%1234-%\nไปยัง\nน.ส. สมใจ ใจดี\nXXX-X-X9876-X\nจํานวนเงิน               1,500.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nเลขที่รายการ           016312091233ABC1001\nสลิปทดสอบสังเคราะห์ (synthetic test slip) - ไม่ใช่เอกสารจริง"
+    },
+    {
+      "file": "b02-transfer-th-grabfood-balance.png",
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": "2026-11-13",
+        "time": "14:35"
+      },
+      "app": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": "2026-11-13",
+        "time": "14:35"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "| )  ธนาคารฟ้าใสทดสอบ\n—    ๐   เซ\nโอแนเงินสําเร็จ\n13 พุย. 2569 14:35 u.\nจาก\nนแนายข ทดสอบ ระบบ\nธนาคารฟ้าใสทดสอบ\n2๐๐-%-%1234-%\nไปยัง\nGrabFood\nบริษัท แกร็บ ทดสอบ\nจํานวนเงิน                   245.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nยอดเงินคงเหลือ                     12,345.67 บาท\nเลขที่รายการ           016317143512ABC0778\nสลิปทดสอบสังเคราะห์ (synthetic test slip) - ไม่ใช่เอกสารจริง"
+    },
+    {
+      "file": "b03-transfer-en-grab-ride.png",
+      "expected": {
+        "type": "expense",
+        "category": "transport",
+        "amountSatang": 125050,
+        "date": "2026-11-10",
+        "time": "08:15"
+      },
+      "app": {
+        "type": "expense",
+        "category": "transport",
+        "amountSatang": 125050,
+        "date": "2026-11-10",
+        "time": "08:15"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "transport",
+        "amountSatang": 125050,
+        "date": "2026-11-10"
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "รศสัพพฆ้ัโ้ัั้น้ัััโโ้ั็โโ๊์-์--------\n๑ Omni Test Bank\nTransfer successful\n10 Nov 2026 08:15\nFrom\nMR. TEST SYSTEM\nXXX-X-X1234-x\nTo\nGRAB\nRide payment\nAmount                      1,250.50 THB\nFee                                          0.00 THB\nRef no.                       2026111008150001\nSynthetic test slip — not a real document"
+    },
+    {
+      "file": "b04-qr-cafe-amazon.png",
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 6500,
+        "date": "2026-11-11",
+        "time": "07:45"
+      },
+      "app": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 6500,
+        "date": "2026-11-11",
+        "time": "07:45"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 6500,
+        "date": "2026-11-11"
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "| |  ธนาคารออมนิทดสอบ\n๐       —    ๐    เซ่\nชาระเงแสาเรจ\n11/11/2569 07:45\nไปยัง\nCafé Amazon สาขา PTT วิภาวดี\nร้านค้า 08\nยอดชําระ                      65.00 บาท\nเลขที่รายการ                  QR20261111074500\nสลิปทดสอบสังเคราะห์ (synthetic test slip)"
+    },
+    {
+      "file": "b05-bill-electricity.png",
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 138500,
+        "date": "2026-11-12",
+        "time": "19:40"
+      },
+      "app": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 138500,
+        "date": "2026-11-13",
+        "time": "19:40"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 138500,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": false,
+        "time": true
+      },
+      "rawText": "BB  ธนาคารฟ้าใสทดสอบ\n\nจ่ายบิลสําเร็จ\n\n12 พุย. 69 19:40 u.\n\nผู้ให้บริการ\n\nการไฟฟ้าแครหลวง\n\nค่าไฟฟ้า\n\nรหัสลูกคํา                                 0123456789\nจํานวนเงิน               1,385.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nเลขที่รายการ              BP2026111219400012\nสลิปทดสอบสังเคราะห์ (synthetic test slip)"
+    },
+    {
+      "file": "b06-bill-internet-ddmm.png",
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 59900,
+        "date": "2026-11-01",
+        "time": "10:05"
+      },
+      "app": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 59900,
+        "date": "2026-11-01",
+        "time": "10:05"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 59900,
+        "date": "2026-11-01"
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "| )  ธนาคารออมนิทดสอบ\n\nชําระเงินสําเร็จ\n\n01/11/2569 10:05\n\nผู้ให้บริการ\n\nAIS Fibre\n\nค่าอินเทอร์เน็ตรายเดือน\n\nรหัสลูกคํา                               8800123456\nจํานวนเงิน                   599.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nเลขที่รายการ             BP2026110110050044\nสลิปทดสอบสังเคราะห์ (synthetic test slip)"
+    },
+    {
+      "file": "b07-received-th.png",
+      "expected": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 300000,
+        "date": "2026-11-08",
+        "time": "18:20"
+      },
+      "app": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 300000,
+        "date": "2026-11-13",
+        "time": "18:20"
+      },
+      "reparsed": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 300000,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": false,
+        "time": true
+      },
+      "rawText": "BB  ธนาคารออมนิทดสอบ\nเซ   —\nได้รับเงินโอน\n8 พุย. 69 18:20 u.\nจาก\nนาย ประหยัด มีสุข\nธนาคารฟ้าใสทดสอบ\nXXX-X-X4455-x\nไปยัง\nแนายข ทดสอบ ระบบ\n2๐๐-%-%1234-%\nจํานวนเงิน               3,000.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nเลขที่รายการ           016308182033ABC2002\nสลิปทดสอบสังเคราะห์ (synthetic test slip) - ไม่ใช่เอกสารจริง"
+    },
+    {
+      "file": "b08-received-looks-like-sender.png",
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 200000,
+        "date": "2026-11-07",
+        "time": "12:00"
+      },
+      "app": {
+        "type": "expense",
+        "category": "other",
+        "amountSatang": 200000,
+        "date": "2026-11-13",
+        "time": "12:00"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "other",
+        "amountSatang": 200000,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": false,
+        "date": false,
+        "time": true
+      },
+      "rawText": "| )  ธนาคารฟ้าใสทดสอบ\n—    ๐    เซ\nโอแนเงินสําเร็จ\n7 พ.ุย. 69 12:00 u.\nจาก\nนาง มานีรักเรียน\nธนาคารฟ้าใสทดสอบ\n2๐๐๐>%-%7777-%\nไปยัง\nนแนายข ทดสอบ ระบบ\n2๐๐-%-%1234-%\nจํานวนเงิน               2,000.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nเลขที่รายการ           016307120011ABC3003\nสลิปทดสอบสังเคราะห์ (synthetic test slip) - ไม่ใช่เอกสารจริง"
+    },
+    {
+      "file": "b09-transfer-company-rent-month-end.png",
+      "expected": {
+        "type": "expense",
+        "category": "housing",
+        "amountSatang": 850000,
+        "date": "2026-10-31",
+        "time": "23:59"
+      },
+      "app": {
+        "type": "expense",
+        "category": "housing",
+        "amountSatang": 850000,
+        "date": "2026-10-31",
+        "time": "23:59"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "housing",
+        "amountSatang": 850000,
+        "date": "2026-10-31"
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "| )  ธนาคารออมนิทดสอบ\n—    ๐    [~]\nโอแนเงินสําเร็จ\n31/10/2569 23:59\nจาก\nแนายข ทดสอบ ระบบ\nธนาคารออมนแทดสอบ\nXXX-X-x1234-X\nไปยัง\nบริษัท สุขสบาย แมนชั้น จํากัด\nXXX-X-x2020-x\nจํานวนเงิน               8,500.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nบันทึกช่วยจํา                          ค่าเช่าห้อง พ.ย.\nเลขที่รายการ           016231235911ABC4004\nสลิปทดสอบสังเคราะห์ (synthetic test slip) - ไม่ใช่เอกสารจริง"
+    },
+    {
+      "file": "b10-salary-th-table.png",
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "app": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "reparsed": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25"
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "สลิปเงินเดือน\n\nบริษัท ทดสอบซอฟต์แวร์ จํากัด\n\nชื่อพนักงาน: นาย ทดสอบ ระบบ - รหัส E-0042\n\nงวดเดือน ตุลาคม 2569\n\nรายได้                                     จําแนวน (บาท)\nเงินเดือน                                        45,000.00\nค่าล่วงเวลา                                       3,500.00\nรายได้รวม                                      48,500.00\nรายการหัก\n\nประกันสังคม                                        750.00\nภาษีหัก ณ ที่จ่าย                                1,550.00\nรวมรายการหัก                                  2,300.00\nเงินได้สุทธิ                             46,200.00\nวันที่จ่าย                                   25/10/2569\nโอนเข้าบัญชี                           XXX-X-X1234-x"
+    },
+    {
+      "file": "b11-salary-en-two-column.png",
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4935075,
+        "date": "2026-10-31",
+        "time": null
+      },
+      "app": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4935075,
+        "date": "2026-10-31",
+        "time": null
+      },
+      "reparsed": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4935075,
+        "date": "2026-10-31"
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "PAYSLIP\n\nOmni Test Co., Ltd.\n\nEmployee: Test System (E-0042)\n\nPay period: October 2026\n\nEarnings            THe Deductions         THB\nSocial\n\nBasic Salary 50,000.00    Security          750.00\n\nOvertime       2,000.00 Withholding . ๑2๐ 25\nTax               ’\n\nGross Pay 52,000.00 าเลแ           2 649.25\n\nNet Pay                           49,350.75"
+    },
+    {
+      "file": "b12-transfer-th-xss-memo.png",
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 1000,
+        "date": "2026-11-09",
+        "time": "21:10"
+      },
+      "app": {
+        "type": "expense",
+        "category": "other",
+        "amountSatang": 1000,
+        "date": "2026-11-13",
+        "time": "21:10"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "other",
+        "amountSatang": 1000,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": false,
+        "date": false,
+        "time": true
+      },
+      "rawText": "BB  ธนาคารออมนิทดสอบ\n—    ๐    เซ\nโอแนเงินสําเร็จ\n9 พุย. 69 21:10 u.\nจาก\nแนายข ทดสอบ ระบบ\nธนาคารออมนแทดสอบ\n2๐๐-%-%1234-%\nไปยัง\nแนาขกถก ทดสอบ\n2๐«๐>%- 1111-%\nจํานวนเงิน                     10.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nบันทึกช่วยจํา      <img รห๐=% onerror=alert(1)>\nเลขที่รายการ           016309211044ABC5005\nสลิปทดสอบสังเคราะห์ (synthetic test slip) - ไม่ใช่เอกสารจริง"
+    },
+    {
+      "file": "d13-b02-jpeg-lowres.jpg",
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": "2026-11-13",
+        "time": "14:35"
+      },
+      "app": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": "2026-11-13",
+        "time": "14:35"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "[ ) ธนาคารฟ้าใสทดสอบ\nล    ๐   [=\nโอนเงินสําเร็จ\n13 w.g. 2569 14:35 u.\nจาก\nนายข ทดสอบ ระบบ\nธนาคารฟ้าใสทดสอบ\nXXX-X-Xx1234-x\nไปยัง\nGrabFood\nบริษัท แกร็บ ทดสอบ\nจํานวนเงิน                  245.00 บาท\nค่าธรรมเนียม                             0.00 บาท\nยอดเงินคงเหลือ                    12,345.67 บาท\nเลขที่รายการ          016317143512ABC0778\nฯลิปทดสอบสังเคราะห์ (synthetic test slip) - ไม่ใช่เอกสารจริง"
+    },
+    {
+      "file": "d14-b10-rotated-blur.png",
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "app": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "reparsed": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25"
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": true,
+        "time": true
+      },
+      "rawText": "สลิปเงินเดือน\nบริษัท ทดสอบซอฟต์แวร์ จํากัด\nชื่อพนักงาน: นาย ทดสอบ ระบบ-รหัส E-0042\nงวดเดือน ตุลาคม 2569\nรายได้                                                      จํานวน (บาท)\nเงินเดือน                                           45,000.00\nค่าล่วงเวลา                                         3,500.00\nรายได้รวม                                        48,500.00\nรายการหัก\nประกันสังคม                                           750.00\nภาษีหัก ณ ที่จ่าย                                    1,550.00\nรวมรายการหัก                                    2,300.00\nเงินได้สุทธิ                               46,200.00\nวันที่จ่าย                                      25/10/2569\nโอนเข้าบัญชี                             XXX-X-X1234-x"
+    },
+    {
+      "file": "d15-b01-dark.png",
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": "2026-11-12",
+        "time": "09:12"
+      },
+      "app": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": "2026-11-13",
+        "time": "09:12"
+      },
+      "reparsed": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": null
+      },
+      "ok": {
+        "type": true,
+        "amount": true,
+        "category": true,
+        "date": false,
+        "time": true
+      },
+      "rawText": "12 พ.ุย. 69 09:12 น.\n\nจาก\n\nนแนาย ทดสอบ ระบบ\n\nธนาคารออมนทดสอบ\n\n2๐๐%-1234-%\n\nไปยัง\n\nน.ส. สมใจ ใจดี\n\nXXX-X-X987 6-Xx\n\nจํานวนเงิน                1,500.00 บาท\nค่าธรรมเนียม                                0.00 บาท\nเลขที่รายการ           016312091233ABC1001\nสลิปทดสอบสังเคราะห์ (synthetic test slip) — ไม่ใช่เอกสารจริง"
+    }
+  ]
+}

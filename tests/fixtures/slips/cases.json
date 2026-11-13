@@ -1,0 +1,367 @@
+{
+  "$comment": "Layer B synthetic slip cases (QA-owned, R7). Fictional banks/people only; merchant names appear as text because the category rules match them. today = 2026-11-13 (Asia/Bangkok). expected.amountSatang uses integer satang (R1).",
+  "today": "2026-11-13",
+  "cases": [
+    {
+      "id": "b01-transfer-th-person",
+      "template": "transfer-th",
+      "data": {
+        "accent": "#2d6a4f",
+        "bankName": "ธนาคารออมนิทดสอบ",
+        "title": "โอนเงินสำเร็จ",
+        "when": "12 พ.ย. 69 09:12 น.",
+        "fromName": "นาย ทดสอบ ระบบ",
+        "fromBank": "ธนาคารออมนิทดสอบ",
+        "fromAcct": "xxx-x-x1234-x",
+        "toName": "น.ส. สมใจ ใจดี",
+        "toSub": "xxx-x-x9876-x",
+        "amount": "1,500.00",
+        "fee": "0.00",
+        "ref": "016312091233ABC1001"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": "2026-11-12",
+        "time": "09:12"
+      },
+      "covers": ["OMX-006 AC3", "OMX-007 AC1", "OMX-008 AC1", "OMX-010 AC5"]
+    },
+    {
+      "id": "b02-transfer-th-grabfood-balance",
+      "template": "transfer-th",
+      "data": {
+        "accent": "#1d4e89",
+        "bankName": "ธนาคารฟ้าใสทดสอบ",
+        "title": "โอนเงินสำเร็จ",
+        "when": "13 พ.ย. 2569 14:35 น.",
+        "fromName": "นาย ทดสอบ ระบบ",
+        "fromBank": "ธนาคารฟ้าใสทดสอบ",
+        "fromAcct": "xxx-x-x1234-x",
+        "toName": "GrabFood",
+        "toSub": "บริษัท แกร็บ ทดสอบ",
+        "amount": "245.00",
+        "fee": "0.00",
+        "ref": "016317143512ABC0778",
+        "extraRows": [["ยอดเงินคงเหลือ", "12,345.67 บาท"]]
+      },
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": "2026-11-13",
+        "time": "14:35"
+      },
+      "covers": ["OMX-007 AC3 (balance excluded)", "OMX-010 AC2 (GrabFood > Grab)"]
+    },
+    {
+      "id": "b03-transfer-en-grab-ride",
+      "template": "transfer-en",
+      "data": {
+        "accent": "#5b3f8c",
+        "bankName": "Omni Test Bank",
+        "title": "Transfer successful",
+        "when": "10 Nov 2026 08:15",
+        "fromName": "MR. TEST SYSTEM",
+        "fromAcct": "xxx-x-x1234-x",
+        "toName": "GRAB",
+        "toSub": "Ride payment",
+        "amount": "1,250.50",
+        "fee": "0.00",
+        "ref": "2026111008150001"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "transport",
+        "amountSatang": 125050,
+        "date": "2026-11-10",
+        "time": "08:15"
+      },
+      "covers": [
+        "OMX-006 AC3 (EN)",
+        "OMX-007 AC4 (THB suffix)",
+        "OMX-008 AC2 (EN date)",
+        "OMX-010 AC2 (Grab = transport)"
+      ]
+    },
+    {
+      "id": "b04-qr-cafe-amazon",
+      "template": "qr-payment",
+      "data": {
+        "accent": "#0b6e75",
+        "bankName": "ธนาคารออมนิทดสอบ",
+        "scheme": "พร้อมเพย์ / PromptPay QR",
+        "title": "ชำระเงินสำเร็จ",
+        "when": "11/11/2569 07:45",
+        "toName": "Café Amazon สาขา PTT วิภาวดี",
+        "toSub": "ร้านค้า QR",
+        "amount": "65.00",
+        "ref": "QR20261111074500"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 6500,
+        "date": "2026-11-11",
+        "time": "07:45"
+      },
+      "covers": [
+        "OMX-007 AC1 (ยอดชำระ)",
+        "OMX-008 AC2 (dd/mm/BE)",
+        "OMX-010 AC2 (Café Amazon > PTT)"
+      ]
+    },
+    {
+      "id": "b05-bill-electricity",
+      "template": "bill",
+      "data": {
+        "accent": "#8a5a00",
+        "bankName": "ธนาคารฟ้าใสทดสอบ",
+        "title": "จ่ายบิลสำเร็จ",
+        "when": "12 พ.ย. 69 19:40 น.",
+        "toName": "การไฟฟ้านครหลวง",
+        "toSub": "ค่าไฟฟ้า",
+        "customerRef": "0123456789",
+        "amount": "1,385.00",
+        "fee": "0.00",
+        "ref": "BP2026111219400012"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 138500,
+        "date": "2026-11-12",
+        "time": "19:40"
+      },
+      "covers": [
+        "OMX-006 AC3 (จ่ายบิลสำเร็จ)",
+        "OMX-007 AC3 (10-digit customer ref excluded)",
+        "OMX-010 AC1"
+      ]
+    },
+    {
+      "id": "b06-bill-internet-ddmm",
+      "template": "bill",
+      "data": {
+        "accent": "#3a5a40",
+        "bankName": "ธนาคารออมนิทดสอบ",
+        "title": "ชำระเงินสำเร็จ",
+        "when": "01/11/2569 10:05",
+        "toName": "AIS Fibre",
+        "toSub": "ค่าอินเทอร์เน็ตรายเดือน",
+        "customerRef": "8800123456",
+        "amount": "599.00",
+        "fee": "0.00",
+        "ref": "BP2026110110050044"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 59900,
+        "date": "2026-11-01",
+        "time": "10:05"
+      },
+      "covers": ["OMX-008 AC2 (01/11 = 1 Nov, never 11 Jan)", "OMX-010 AC4 (AIS word boundary)"]
+    },
+    {
+      "id": "b07-received-th",
+      "template": "transfer-th",
+      "data": {
+        "accent": "#2d6a4f",
+        "bankName": "ธนาคารออมนิทดสอบ",
+        "title": "ได้รับเงินโอน",
+        "when": "8 พ.ย. 69 18:20 น.",
+        "fromName": "นาย ประหยัด มีสุข",
+        "fromBank": "ธนาคารฟ้าใสทดสอบ",
+        "fromAcct": "xxx-x-x4455-x",
+        "toName": "นาย ทดสอบ ระบบ",
+        "toSub": "xxx-x-x1234-x",
+        "amount": "3,000.00",
+        "fee": "0.00",
+        "ref": "016308182033ABC2002"
+      },
+      "expected": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 300000,
+        "date": "2026-11-08",
+        "time": "18:20"
+      },
+      "covers": ["OMX-006 AC2 (received)", "OMX-010 AC6"]
+    },
+    {
+      "id": "b08-received-looks-like-sender",
+      "template": "transfer-th",
+      "data": {
+        "accent": "#1d4e89",
+        "bankName": "ธนาคารฟ้าใสทดสอบ",
+        "title": "โอนเงินสำเร็จ",
+        "when": "7 พ.ย. 69 12:00 น.",
+        "fromName": "นาง มานี รักเรียน",
+        "fromBank": "ธนาคารฟ้าใสทดสอบ",
+        "fromAcct": "xxx-x-x7777-x",
+        "toName": "นาย ทดสอบ ระบบ",
+        "toSub": "xxx-x-x1234-x",
+        "amount": "2,000.00",
+        "fee": "0.00",
+        "ref": "016307120011ABC3003"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 200000,
+        "date": "2026-11-07",
+        "time": "12:00"
+      },
+      "note": "Documented limitation OMX-006 AC8 / K6: the user is the recipient, but without received keywords the slip stays Expense (owner-name detection = OMX-039).",
+      "covers": ["OMX-006 AC8"]
+    },
+    {
+      "id": "b09-transfer-company-rent-month-end",
+      "template": "transfer-th",
+      "data": {
+        "accent": "#7a3e48",
+        "bankName": "ธนาคารออมนิทดสอบ",
+        "title": "โอนเงินสำเร็จ",
+        "when": "31/10/2569 23:59",
+        "fromName": "นาย ทดสอบ ระบบ",
+        "fromBank": "ธนาคารออมนิทดสอบ",
+        "fromAcct": "xxx-x-x1234-x",
+        "toName": "บริษัท สุขสบาย แมนชั่น จำกัด",
+        "toSub": "xxx-x-x2020-x",
+        "amount": "8,500.00",
+        "fee": "0.00",
+        "ref": "016231235911ABC4004",
+        "extraRows": [["บันทึกช่วยจำ", "ค่าเช่าห้อง พ.ย."]]
+      },
+      "expected": {
+        "type": "expense",
+        "category": "housing",
+        "amountSatang": 850000,
+        "date": "2026-10-31",
+        "time": "23:59"
+      },
+      "covers": [
+        "OMX-008 AC7 (month boundary)",
+        "OMX-010 AC5 (company never transfer)",
+        "OMX-009 AC2 (memo)"
+      ]
+    },
+    {
+      "id": "b10-salary-th-table",
+      "template": "salary-th",
+      "data": {
+        "accent": "#2d6a4f",
+        "employer": "บริษัท ทดสอบซอฟต์แวร์ จำกัด",
+        "employee": "นาย ทดสอบ ระบบ",
+        "employeeId": "E-0042",
+        "period": "ตุลาคม 2569",
+        "earningRows": [
+          ["เงินเดือน", "45,000.00"],
+          ["ค่าล่วงเวลา", "3,500.00"]
+        ],
+        "gross": "48,500.00",
+        "deductionRows": [
+          ["ประกันสังคม", "750.00"],
+          ["ภาษีหัก ณ ที่จ่าย", "1,550.00"]
+        ],
+        "totalDeduction": "2,300.00",
+        "net": "46,200.00",
+        "payDate": "25/10/2569",
+        "account": "xxx-x-x1234-x"
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "covers": [
+        "OMX-006 AC1/AC6 (salary vs 'โอนเข้าบัญชี')",
+        "OMX-007 AC2 (net, never gross)",
+        "OMX-008 AC5 (pay date)"
+      ]
+    },
+    {
+      "id": "b11-salary-en-two-column",
+      "template": "salary-en",
+      "data": {
+        "accent": "#1d4e89",
+        "employer": "Omni Test Co., Ltd.",
+        "employee": "Test System",
+        "employeeId": "E-0042",
+        "period": "October 2026",
+        "earningRows": [
+          ["Basic Salary", "50,000.00"],
+          ["Overtime", "2,000.00"]
+        ],
+        "gross": "52,000.00",
+        "deductionRows": [
+          ["Social Security", "750.00"],
+          ["Withholding Tax", "1,899.25"]
+        ],
+        "totalDeduction": "2,649.25",
+        "net": "49,350.75"
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4935075,
+        "date": "2026-10-31",
+        "time": null
+      },
+      "covers": ["OMX-007 AC2 (Net Pay)", "OMX-008 AC5 (no pay date → last day of period)"]
+    },
+    {
+      "id": "b12-transfer-th-xss-memo",
+      "template": "transfer-th",
+      "data": {
+        "accent": "#2d6a4f",
+        "bankName": "ธนาคารออมนิทดสอบ",
+        "title": "โอนเงินสำเร็จ",
+        "when": "9 พ.ย. 69 21:10 น.",
+        "fromName": "นาย ทดสอบ ระบบ",
+        "fromBank": "ธนาคารออมนิทดสอบ",
+        "fromAcct": "xxx-x-x1234-x",
+        "toName": "นาย ก ทดสอบ",
+        "toSub": "xxx-x-x1111-x",
+        "amount": "10.00",
+        "fee": "0.00",
+        "ref": "016309211044ABC5005",
+        "extraRows": [["บันทึกช่วยจำ", "<img src=x onerror=alert(1)>"]]
+      },
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 1000,
+        "date": "2026-11-09",
+        "time": "21:10"
+      },
+      "covers": ["OMX-031 AC2"]
+    }
+  ],
+  "variants": [
+    {
+      "id": "d13-b02-jpeg-lowres",
+      "base": "b02-transfer-th-grabfood-balance",
+      "scale": 0.75,
+      "format": "jpeg",
+      "quality": 55,
+      "covers": ["robustness: JPEG q55, 540 px wide"]
+    },
+    {
+      "id": "d14-b10-rotated-blur",
+      "base": "b10-salary-th-table",
+      "bodyClass": "rotate blur",
+      "covers": ["robustness: 2° rotation + blur"]
+    },
+    {
+      "id": "d15-b01-dark",
+      "base": "b01-transfer-th-person",
+      "bodyClass": "dark",
+      "covers": ["robustness: dark theme"]
+    }
+  ]
+}

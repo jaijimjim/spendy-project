@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="base.css" />
+    <style>
+      :root { --accent: {{accent}}; } .badge { display:inline-block; font-size:24px; padding:4px 14px; border:2px solid var(--accent); border-radius:999px; color:var(--accent); }
+    </style>
+  </head>
+  <body class="{{bodyClass}}">
+    <div class="slip">
+      <div class="brand">
+        <div class="mark" style="border-radius: 8px"></div>
+        <div class="brand-name">{{bankName}}</div>
+      </div>
+      <span class="badge">{{scheme}}</span>
+      <h1>{{title}}</h1>
+      <p class="when">{{when}}</p>
+      <div class="party">
+        <div class="lbl">ไปยัง</div>
+        <div class="name">{{toName}}</div>
+        <div class="sub">{{toSub}}</div>
+      </div>
+      <div class="row big"><span class="k">ยอดชำระ</span><span class="v">{{amount}} บาท</span></div>
+      {{{extraRows}}}
+      <div class="row"><span class="k">เลขที่รายการ</span><span class="v">{{ref}}</span></div>
+      <div class="footer">สลิปทดสอบสังเคราะห์ (synthetic test slip)</div>
+    </div>
+  </body>
+</html>

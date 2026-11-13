@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="base.css" />
+    <style>
+      :root { --accent: {{accent}}; }
+    </style>
+  </head>
+  <body class="{{bodyClass}}">
+    <div class="slip">
+      <div class="brand">
+        <div class="mark"></div>
+        <div class="brand-name">{{bankName}}</div>
+      </div>
+      <h1>{{title}}</h1>
+      <p class="when">{{when}}</p>
+      <div class="party">
+        <div class="lbl">ผู้ให้บริการ</div>
+        <div class="name">{{toName}}</div>
+        <div class="sub">{{toSub}}</div>
+      </div>
+      <div class="row"><span class="k">รหัสลูกค้า</span><span class="v">{{customerRef}}</span></div>
+      <div class="row big">
+        <span class="k">จำนวนเงิน</span><span class="v">{{amount}} บาท</span>
+      </div>
+      <div class="row"><span class="k">ค่าธรรมเนียม</span><span class="v">{{fee}} บาท</span></div>
+      <div class="row"><span class="k">เลขที่รายการ</span><span class="v">{{ref}}</span></div>
+      <div class="footer">สลิปทดสอบสังเคราะห์ (synthetic test slip)</div>
+    </div>
+  </body>
+</html>

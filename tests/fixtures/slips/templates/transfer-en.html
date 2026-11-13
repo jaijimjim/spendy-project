@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="base.css" />
+    <style>
+      :root { --accent: {{accent}}; } .slip { border-top: 16px solid var(--accent); }
+    </style>
+  </head>
+  <body class="{{bodyClass}}">
+    <div class="slip">
+      <div class="brand">
+        <div class="mark" style="border-radius: 50%"></div>
+        <div class="brand-name">{{bankName}}</div>
+      </div>
+      <h1>{{title}}</h1>
+      <p class="when">{{when}}</p>
+      <div class="party">
+        <div class="lbl">From</div>
+        <div class="name">{{fromName}}</div>
+        <div class="sub">{{fromAcct}}</div>
+      </div>
+      <div class="party">
+        <div class="lbl">To</div>
+        <div class="name">{{toName}}</div>
+        <div class="sub">{{toSub}}</div>
+      </div>
+      <div class="row big"><span class="k">Amount</span><span class="v">{{amount}} THB</span></div>
+      <div class="row"><span class="k">Fee</span><span class="v">{{fee}} THB</span></div>
+      {{{extraRows}}}
+      <div class="row"><span class="k">Ref no.</span><span class="v">{{ref}}</span></div>
+      <div class="footer">Synthetic test slip — not a real document</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,257 @@
+{
+  "generatedBy": "tests/fixtures/slips/generate.mjs",
+  "today": "2026-11-13",
+  "images": {
+    "b01-transfer-th-person.png": {
+      "case": "b01-transfer-th-person",
+      "template": "transfer-th",
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": "2026-11-12",
+        "time": "09:12"
+      },
+      "covers": [
+        "OMX-006 AC3",
+        "OMX-007 AC1",
+        "OMX-008 AC1",
+        "OMX-010 AC5"
+      ]
+    },
+    "b02-transfer-th-grabfood-balance.png": {
+      "case": "b02-transfer-th-grabfood-balance",
+      "template": "transfer-th",
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": "2026-11-13",
+        "time": "14:35"
+      },
+      "covers": [
+        "OMX-007 AC3 (balance excluded)",
+        "OMX-010 AC2 (GrabFood > Grab)"
+      ]
+    },
+    "b03-transfer-en-grab-ride.png": {
+      "case": "b03-transfer-en-grab-ride",
+      "template": "transfer-en",
+      "expected": {
+        "type": "expense",
+        "category": "transport",
+        "amountSatang": 125050,
+        "date": "2026-11-10",
+        "time": "08:15"
+      },
+      "covers": [
+        "OMX-006 AC3 (EN)",
+        "OMX-007 AC4 (THB suffix)",
+        "OMX-008 AC2 (EN date)",
+        "OMX-010 AC2 (Grab = transport)"
+      ]
+    },
+    "b04-qr-cafe-amazon.png": {
+      "case": "b04-qr-cafe-amazon",
+      "template": "qr-payment",
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 6500,
+        "date": "2026-11-11",
+        "time": "07:45"
+      },
+      "covers": [
+        "OMX-007 AC1 (ยอดชำระ)",
+        "OMX-008 AC2 (dd/mm/BE)",
+        "OMX-010 AC2 (Café Amazon > PTT)"
+      ]
+    },
+    "b05-bill-electricity.png": {
+      "case": "b05-bill-electricity",
+      "template": "bill",
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 138500,
+        "date": "2026-11-12",
+        "time": "19:40"
+      },
+      "covers": [
+        "OMX-006 AC3 (จ่ายบิลสำเร็จ)",
+        "OMX-007 AC3 (10-digit customer ref excluded)",
+        "OMX-010 AC1"
+      ]
+    },
+    "b06-bill-internet-ddmm.png": {
+      "case": "b06-bill-internet-ddmm",
+      "template": "bill",
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 59900,
+        "date": "2026-11-01",
+        "time": "10:05"
+      },
+      "covers": [
+        "OMX-008 AC2 (01/11 = 1 Nov, never 11 Jan)",
+        "OMX-010 AC4 (AIS word boundary)"
+      ]
+    },
+    "b07-received-th.png": {
+      "case": "b07-received-th",
+      "template": "transfer-th",
+      "expected": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 300000,
+        "date": "2026-11-08",
+        "time": "18:20"
+      },
+      "covers": [
+        "OMX-006 AC2 (received)",
+        "OMX-010 AC6"
+      ]
+    },
+    "b08-received-looks-like-sender.png": {
+      "case": "b08-received-looks-like-sender",
+      "template": "transfer-th",
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 200000,
+        "date": "2026-11-07",
+        "time": "12:00"
+      },
+      "covers": [
+        "OMX-006 AC8"
+      ],
+      "note": "Documented limitation OMX-006 AC8 / K6: the user is the recipient, but without received keywords the slip stays Expense (owner-name detection = OMX-039)."
+    },
+    "b09-transfer-company-rent-month-end.png": {
+      "case": "b09-transfer-company-rent-month-end",
+      "template": "transfer-th",
+      "expected": {
+        "type": "expense",
+        "category": "housing",
+        "amountSatang": 850000,
+        "date": "2026-10-31",
+        "time": "23:59"
+      },
+      "covers": [
+        "OMX-008 AC7 (month boundary)",
+        "OMX-010 AC5 (company never transfer)",
+        "OMX-009 AC2 (memo)"
+      ]
+    },
+    "b10-salary-th-table.png": {
+      "case": "b10-salary-th-table",
+      "template": "salary-th",
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "covers": [
+        "OMX-006 AC1/AC6 (salary vs 'โอนเข้าบัญชี')",
+        "OMX-007 AC2 (net, never gross)",
+        "OMX-008 AC5 (pay date)"
+      ]
+    },
+    "b11-salary-en-two-column.png": {
+      "case": "b11-salary-en-two-column",
+      "template": "salary-en",
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4935075,
+        "date": "2026-10-31",
+        "time": null
+      },
+      "covers": [
+        "OMX-007 AC2 (Net Pay)",
+        "OMX-008 AC5 (no pay date → last day of period)"
+      ]
+    },
+    "b12-transfer-th-xss-memo.png": {
+      "case": "b12-transfer-th-xss-memo",
+      "template": "transfer-th",
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 1000,
+        "date": "2026-11-09",
+        "time": "21:10"
+      },
+      "covers": [
+        "OMX-031 AC2"
+      ]
+    },
+    "d13-b02-jpeg-lowres.jpg": {
+      "case": "b02-transfer-th-grabfood-balance",
+      "template": "transfer-th",
+      "variant": {
+        "scale": 0.75,
+        "format": "jpeg",
+        "quality": 55
+      },
+      "expected": {
+        "type": "expense",
+        "category": "food",
+        "amountSatang": 24500,
+        "date": "2026-11-13",
+        "time": "14:35"
+      },
+      "covers": [
+        "OMX-007 AC3 (balance excluded)",
+        "OMX-010 AC2 (GrabFood > Grab)",
+        "robustness: JPEG q55, 540 px wide"
+      ]
+    },
+    "d14-b10-rotated-blur.png": {
+      "case": "b10-salary-th-table",
+      "template": "salary-th",
+      "variant": {
+        "bodyClass": "rotate blur",
+        "format": "png"
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "covers": [
+        "OMX-006 AC1/AC6 (salary vs 'โอนเข้าบัญชี')",
+        "OMX-007 AC2 (net, never gross)",
+        "OMX-008 AC5 (pay date)",
+        "robustness: 2° rotation + blur"
+      ]
+    },
+    "d15-b01-dark.png": {
+      "case": "b01-transfer-th-person",
+      "template": "transfer-th",
+      "variant": {
+        "bodyClass": "dark",
+        "format": "png"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "transfer",
+        "amountSatang": 150000,
+        "date": "2026-11-12",
+        "time": "09:12"
+      },
+      "covers": [
+        "OMX-006 AC3",
+        "OMX-007 AC1",
+        "OMX-008 AC1",
+        "OMX-010 AC5",
+        "robustness: dark theme"
+      ]
+    }
+  }
+}

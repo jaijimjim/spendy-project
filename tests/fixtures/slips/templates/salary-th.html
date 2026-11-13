@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="base.css" />
+    <style>
+      :root { --accent: {{accent}}; } h1 { font-size: 36px; } .meta { font-size: 26px; margin: 4px 0; }
+    </style>
+  </head>
+  <body class="{{bodyClass}}">
+    <div class="slip">
+      <h1>สลิปเงินเดือน</h1>
+      <p class="meta"><b>{{employer}}</b></p>
+      <p class="meta">ชื่อพนักงาน: {{employee}} · รหัส {{employeeId}}</p>
+      <p class="meta">งวดเดือน {{period}}</p>
+      <table>
+        <tr>
+          <th>รายได้</th>
+          <th class="num">จำนวน (บาท)</th>
+        </tr>
+        {{{earningRows}}}
+        <tr>
+          <td><b>รายได้รวม</b></td>
+          <td class="num"><b>{{gross}}</b></td>
+        </tr>
+        <tr>
+          <th>รายการหัก</th>
+          <th class="num"></th>
+        </tr>
+        {{{deductionRows}}}
+        <tr>
+          <td><b>รวมรายการหัก</b></td>
+          <td class="num"><b>{{totalDeduction}}</b></td>
+        </tr>
+      </table>
+      <div class="row big"><span class="k">เงินได้สุทธิ</span><span class="v">{{net}}</span></div>
+      <div class="row"><span class="k">วันที่จ่าย</span><span class="v">{{payDate}}</span></div>
+      <div class="row"><span class="k">โอนเข้าบัญชี</span><span class="v">{{account}}</span></div>
+      <div class="footer">เอกสารทดสอบสังเคราะห์ — ไม่ใช่สลิปเงินเดือนจริง</div>
+    </div>
+  </body>
+</html>

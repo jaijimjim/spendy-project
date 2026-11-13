@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="base.css" />
+    <style>
+      :root { --accent: {{accent}}; } .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; } h1 { font-size: 40px; letter-spacing: 2px; } .meta { font-size: 26px; margin: 4px 0; }
+    </style>
+  </head>
+  <body class="{{bodyClass}}">
+    <div class="slip">
+      <h1>PAYSLIP</h1>
+      <p class="meta"><b>{{employer}}</b></p>
+      <p class="meta">Employee: {{employee}} ({{employeeId}})</p>
+      <p class="meta">Pay period: {{period}}</p>
+      <div class="cols">
+        <table>
+          <tr>
+            <th>Earnings</th>
+            <th class="num">THB</th>
+          </tr>
+          {{{earningRows}}}
+          <tr>
+            <td><b>Gross Pay</b></td>
+            <td class="num"><b>{{gross}}</b></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th>Deductions</th>
+            <th class="num">THB</th>
+          </tr>
+          {{{deductionRows}}}
+          <tr>
+            <td><b>Total</b></td>
+            <td class="num"><b>{{totalDeduction}}</b></td>
+          </tr>
+        </table>
+      </div>
+      <div class="row big"><span class="k">Net Pay</span><span class="v">{{net}}</span></div>
+      <div class="footer">Synthetic test document — not a real payslip</div>
+    </div>
+  </body>
+</html>
