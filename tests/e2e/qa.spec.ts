@@ -339,7 +339,7 @@ test.describe('QA — more coverage', () => {
   });
 });
 
-test.describe('QA — open defects (expected to fail until fixed)', () => {
+test.describe('QA — defect regressions (test.fail = still open)', () => {
   test('TC-088 / BUG-002 (fixed): double-clicking Save creates only one transaction (OMX-013 AC2)', async ({
     page,
   }) => {
@@ -356,10 +356,9 @@ test.describe('QA — open defects (expected to fail until fixed)', () => {
     expect(stored).toBe(1);
   });
 
-  test('TC-114 / BUG-004: CSV category column uses the UI language name (OMX-023 AC1)', async ({
+  test('TC-114 / BUG-004 (fixed): CSV category column uses the UI language name (OMX-023 AC1)', async ({
     page,
   }) => {
-    test.fail(true, 'BUG-004: CSV writes the category id ("food") instead of the localized name');
     await setup(page);
     await seed(page, [SAMPLE[2]]);
     await page.goto('./#/settings');
@@ -400,14 +399,18 @@ test.describe('QA — open defects (expected to fail until fixed)', () => {
     }
   });
 
-  test('TC-132 / BUG-005: language switch options are ≥ 44×44 px (OMX-027 AC8)', async ({
+  test('TC-132 / BUG-005 (fixed): language switch hit targets are ≥ 44×44 px (OMX-027 AC8)', async ({
     page,
   }) => {
-    test.fail(true, 'BUG-005: TH/EN options measure 40×36 px');
     await setup(page);
     await page.goto('./#/settings');
     const box = await page.getByRole('button', { name: 'English' }).first().boundingBox();
     expect(box!.width).toBeGreaterThanOrEqual(44);
-    expect(box!.height).toBeGreaterThanOrEqual(44);
+    // visible pill is 36px high; a ::after extends the hit area 4px above and below
+    const extra = await page
+      .getByRole('button', { name: 'English' })
+      .first()
+      .evaluate((el) => -2 * parseFloat(getComputedStyle(el, '::after').top));
+    expect(box!.height + extra).toBeGreaterThanOrEqual(44);
   });
 });
