@@ -1,8 +1,9 @@
 # 01 — Product Backlog: Omnitrix Money (MVP_0001)
 
-> Owner: PO/PM · Last updated: 2026-11-13 (หลัง Sprint 1 Grooming + Planning) · Version: v2
-> Story points: Fibonacci 1, 2, 3, 5, 8 (ตกลงร่วมกันใน grooming ตาม estimate ของ Dev) · ดู `sprints/sprint-1/01-grooming-minutes.md`
-> Status values: `New` · `Ready` · `In Progress` · `In Review` · `In QA` · `Done` · `Blocked` · `Deferred`
+> Owner: PO/PM · Last updated: 2026-11-13 (หลัง Sprint 1 Review + Retrospective) · Version: v3
+> Story points: Fibonacci 1, 2, 3, 5, 8 (ตกลงร่วมกันใน grooming ตาม estimate ของ Dev) · ดู `sprints/sprint-1/01-grooming-minutes.md`, `04-sprint-review.md`, `05-retrospective.md`
+> Status values: `New` · `Ready` · `In Progress` · `In Review` · `In QA` · `Accepted (pending deploy)` · `Done` · `Blocked` · `Deferred`
+> `Accepted (pending deploy)` = PO accepted at Sprint Review, all AC verified on the local production build. The only open DoD items are merge on GitHub, QA on the Pages build and final PO acceptance there. The item moves to `Done` after the post-deploy smoke passes (charter §6)
 > Priority: **M**ust / **S**hould / **C**ould / **W**on't (this release)
 > Sprint: `S1` = committed in Sprint 1 · `S1-stretch` = stretch (ลำดับตาม Sprint Planning) · `—` = ยังไม่วางแผน
 
@@ -40,7 +41,7 @@
 | R3 | **Thai date parsing**: วันที่ตัวเลขเป็น **dd/mm/yyyy เสมอ**; ปี 4 หลัก ≥ 2400 = พ.ศ. (ลบ 543); ปี 2 หลักในบริบทไทย = 25xx พ.ศ., ในบริบทอังกฤษล้วน = 20xx ค.ศ.; ช่วงที่ยอมรับ = ไม่เกินวันนี้ และไม่ย้อนหลังเกิน 5 ปี |
 | R4 | **Text normalization** ก่อน parse ทุกครั้ง: Unicode NFC, `ํา` → `ำ`, ลบ zero-width chars, ยุบช่องว่างซ้ำ, ตัวเลขไทย `๐–๙` → `0–9`; matching keyword ไม่สนตัวพิมพ์ และใช้ word boundary สำหรับคำภาษาอังกฤษ |
 | R5 | **Confidence model** (นิยามเดียว ใช้ใน 006/007/008/010/012): **High** = strong keyword ของประเภทเดียวและ field ที่เกี่ยวข้องถูกดึงได้ · **Medium** = มีแต่ weak keyword หรือเจอ keyword ของทั้งสองประเภท · **Low** = ไม่ match (ใช้ค่า default). UI แสดง badge เฉพาะ Medium/Low |
-| R6 | **Rules data**: keyword/weight/priority ทั้งหมดอยู่ใน data file เดียว `src/features/classify/rules/categories.rules.ts` (typed) พร้อม table-driven unit tests |
+| R6 | **Rules data**: keyword/weight/priority ทั้งหมดอยู่ใน data file เดียว `src/domain/slip/categories.rules.ts` (typed) พร้อม table-driven unit tests *(path updated v3, K2)* |
 | R7 | **Test data**: QA เป็นเจ้าของ fixtures — Layer A golden OCR-text (CI gate), Layer B synthetic slip PNG (benchmark, commit ใน repo), Layer C real slips ปิดข้อมูล (private, ห้าม commit) |
 | R8 | **Storage**: envelope เดียว `localStorage['omx.v1'] = {version, transactions, settings}` เขียนแบบ atomic; ไม่เก็บรูปเต็ม; `rawText` ตัดที่ 500 ตัวอักษร |
 | R9 | **Image limits**: JPG/PNG/WebP (ตรวจทั้ง MIME และ file signature), ≤ 10 MiB (10,485,760 bytes) ต่อไฟล์, คิวรวมไม่เกิน 20 รายการ; ก่อน OCR ย่อให้ด้านยาว ≤ 2,000 px |
@@ -82,39 +83,39 @@
 
 | ID | Epic | Title | Priority | Pts | Status | Sprint |
 |---|---|---|---|---|---|---|
-| OMX-001 | E1 | Upload slip images (multi-file picker) | Must | 3 | Ready | S1 |
-| OMX-002 | E1 | Drag & drop upload | Should | 2 | Ready | S1-stretch #1 |
-| OMX-003a | E1 | Google Photos: sign-in & open Picker | Must | 5 | Ready ¹ | S1 |
-| OMX-003b | E1 | Google Photos: poll, download & queue | Must | 3 | Ready ¹ | S1 |
-| OMX-004 | E1 | Google Photos "not configured" & auth error states | Must | 2 | Ready | S1 |
-| OMX-005 | E2 | In-browser OCR with progress (queue) | Must | 5 | Ready | S1 |
-| OMX-006 | E2 | Auto-detect transaction type (income / expense) | Must | 3 | Ready | S1 |
-| OMX-007 | E2 | Extract amount | Must | 5 | Ready | S1 |
-| OMX-008 | E2 | Extract date & time (Thai/BE formats) | Must | 5 | Ready | S1 |
-| OMX-009 | E2 | Extract recipient / sender / memo / bank | Should | 5 | Ready | S1-stretch #8 |
-| OMX-010 | E2 | Auto-categorize slip (rule-based) | Must | 5 | Ready | S1 |
-| OMX-011 | E2 | Duplicate slip detection | Should | 3 | Ready | S1-stretch #7 |
-| OMX-012a | E3 | Review: editable list, validation, save/discard | Must | 5 | Ready | S1 |
-| OMX-012b | E3 | Review: image viewer, raw text, leave-guard, flags | Must | 3 | Ready | S1 |
-| OMX-013 | E3 | Manual income/expense entry form | Must | 3 | Ready | S1 |
-| OMX-014 | E4 | Transaction list | Must | 3 | Ready | S1 |
-| OMX-015 | E4 | Filter & search transactions | Should | 3 | Ready | S1-stretch #2 |
-| OMX-016 | E4 | Edit & delete transaction | Must | 3 | Ready | S1 |
-| OMX-017 | E5 | Month selector | Must | 2 | Ready | S1 |
-| OMX-018 | E5 | Monthly summary (income / expense / balance) | Must | 2 | Ready | S1 |
-| OMX-019 | E5 | Category breakdown chart (horizontal bar) | Should | 3 | Ready | S1-stretch #3 |
-| OMX-020 | E5 | Monthly trend chart | Should | 3 | Ready | S1-stretch #4 |
-| OMX-021 | E6 | Persist data in localStorage | Must | 3 | Ready | S1 |
-| OMX-022 | E6 | JSON backup export / import | Should | 3 | Ready | S1-stretch #5 |
-| OMX-023 | E6 | CSV export | Should | 2 | Ready | S1-stretch #6 |
-| OMX-024 | E7 | TH / EN language switch | Must | 3 | Ready | S1 |
-| OMX-025 | E7 | Mobile-first responsive layout & navigation | Must | 3 | Ready | S1 |
-| OMX-026 | E7 | Empty states & error handling | Must | 3 | Ready | S1 |
-| OMX-027 | E7 | Accessibility (WCAG 2.1 AA) | Must | 3 | Ready | S1 |
-| OMX-028 | E7 | Deploy to GitHub Pages via GitHub Actions | Must | 3 | Ready ² | S1 |
-| OMX-029 | E8 | NFR — Performance budget | Should | 3 | Ready | S1-stretch #9 |
-| OMX-030 | E8 | NFR — Privacy: images stay in the browser | Must | 2 | Ready | S1 |
-| OMX-031 | E8 | NFR — Security & configuration hygiene | Should | 2 | Ready | S1-stretch #10 |
+| OMX-001 | E1 | Upload slip images (multi-file picker) | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-002 | E1 | Drag & drop upload | Should | 2 | Accepted (pending deploy) | S1-stretch #1 |
+| OMX-003a | E1 | Google Photos: sign-in & open Picker | Must | 5 | Blocked (B2) — carry-over | S1 → S2 |
+| OMX-003b | E1 | Google Photos: poll, download & queue | Must | 3 | Blocked (B2) — carry-over | S1 → S2 |
+| OMX-004 | E1 | Google Photos "not configured" & auth error states | Must | 2 | Accepted (pending deploy) | S1 |
+| OMX-005 | E2 | In-browser OCR with progress (queue) | Must | 5 | Accepted (pending deploy) | S1 |
+| OMX-006 | E2 | Auto-detect transaction type (income / expense) | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-007 | E2 | Extract amount | Must | 5 | Accepted (pending deploy) | S1 |
+| OMX-008 | E2 | Extract date & time (Thai/BE formats) | Must | 5 | Accepted (pending deploy) | S1 |
+| OMX-009 | E2 | Extract recipient / sender / memo / bank | Should | 5 | Accepted (pending deploy) | S1-stretch #8 |
+| OMX-010 | E2 | Auto-categorize slip (rule-based) | Must | 5 | Accepted (pending deploy) | S1 |
+| OMX-011 | E2 | Duplicate slip detection | Should | 3 | Accepted (pending deploy) | S1-stretch #7 |
+| OMX-012a | E3 | Review: editable list, validation, save/discard | Must | 5 | Accepted (pending deploy) | S1 |
+| OMX-012b | E3 | Review: image viewer, raw text, leave-guard, flags | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-013 | E3 | Manual income/expense entry form | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-014 | E4 | Transaction list | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-015 | E4 | Filter & search transactions | Should | 3 | Accepted (pending deploy) | S1-stretch #2 |
+| OMX-016 | E4 | Edit & delete transaction | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-017 | E5 | Month selector | Must | 2 | Accepted (pending deploy) | S1 |
+| OMX-018 | E5 | Monthly summary (income / expense / balance) | Must | 2 | Accepted (pending deploy) | S1 |
+| OMX-019 | E5 | Category breakdown chart (horizontal bar) | Should | 3 | Accepted (pending deploy) | S1-stretch #3 |
+| OMX-020 | E5 | Monthly trend chart | Should | 3 | Accepted (pending deploy) | S1-stretch #4 |
+| OMX-021 | E6 | Persist data in localStorage | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-022 | E6 | JSON backup export / import | Should | 3 | Accepted (pending deploy) | S1-stretch #5 |
+| OMX-023 | E6 | CSV export | Should | 2 | Accepted (pending deploy) | S1-stretch #6 |
+| OMX-024 | E7 | TH / EN language switch | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-025 | E7 | Mobile-first responsive layout & navigation | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-026 | E7 | Empty states & error handling | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-027 | E7 | Accessibility (WCAG 2.1 AA) | Must | 3 | Accepted (pending deploy) | S1 |
+| OMX-028 | E7 | Deploy to GitHub Pages via GitHub Actions | Must | 3 | Blocked (B1) — carry-over | S1 → S2 |
+| OMX-029 | E8 | NFR — Performance budget | Should | 3 | In Progress (partial) — carry-over | S1 → S2 |
+| OMX-030 | E8 | NFR — Privacy: images stay in the browser | Must | 2 | Accepted (pending deploy) | S1 |
+| OMX-031 | E8 | NFR — Security & configuration hygiene | Should | 2 | Accepted (pending deploy) | S1-stretch #10 |
 | OMX-032 | E9 | Cloud sync & login | Won't | — | Deferred | — |
 | OMX-033 | E9 | Budgets & overspend alerts | Won't | — | Deferred | — |
 | OMX-034 | E9 | PDF payslip import | Won't | — | Deferred | — |
@@ -122,12 +123,23 @@
 | OMX-036 | E9 | Recurring transactions | Won't | — | Deferred | — |
 | OMX-037 | E9 | Installable PWA / offline mode | Won't | — | Deferred | — |
 | OMX-038 | E9 | HEIC/HEIF image support | Won't | — | Deferred | — |
-| OMX-039 | E2 | Detect received transfers via owner name/account (Settings) | Could | 3 | New | — |
+| OMX-039 | E2 | Detect received transfers via owner name/account (Settings) | Could | 3 | New | S2 candidate |
+| OMX-040 | E2 | Robust Thai-digit amount extraction (BUG-007) | Could | 2 | New | S2 candidate |
+| OMX-041 | E1 | Google Photos per-item Failed row + Retry (K1) | Must | 2 | New | S2 candidate |
+| OMX-042 | E2 | Real-slip accuracy measurement (Layer C + UAT) | Must | 3 | New | S2 candidate |
+| OMX-043 | E8 | Real-device & assistive-tech verification (Tier 1) | Must | 3 | New | S2 candidate |
+| OMX-044 | E4 | Transaction list virtualization (large months) | Should | 3 | New | S2 candidate |
+| OMX-045 | E2 | Salary slip date rule when pay-period end is in the future (O2) | Could | 1 | New — needs PO decision | S2 candidate |
+| OMX-046 | E7 | Search placeholder fits at 320px (O5) | Could | 1 | New | S2 candidate |
+| OMX-047 | E7 | Manual light/dark theme switch | Could | 2 | New | S2 candidate |
+| OMX-048 | E7 | Post-deploy verification on GitHub Pages (DoD closure) | Must | 2 | New | S2 candidate |
 
 ¹ ต้องมี Google OAuth Client ID + consent screen test users (action A3, owner PO) ก่อนทดสอบกับ Google จริง; dev ทำงานกับ wrapper ที่ mock ได้ระหว่างรอ
 ² ต้องได้ push access + เปิด Pages source = GitHub Actions จาก repo owner (action A4)
 
-**Totals:** Must = **77 pts** (23 items, committed S1) · Should = **29 pts** (10 items, stretch) · Could = 3 pts · Won't = not estimated
+**Totals (Sprint 1 scope):** Must = **77 pts** (23 items, committed S1) · Should = **29 pts** (10 items, stretch) · Could = 3 pts · Won't = not estimated
+**Sprint 1 outcome:** dev-complete Must 77/77 · stretch 26/29 · Accepted (pending deploy) = 66 Must + 26 Should = 92 pts · formally Done = 0 (B1) · carry-over: 028, 003a, 003b, 029
+**New in v3 (from Sprint 1 Review/Retro):** OMX-040 – OMX-048 = 19 pts
 
 ---
 
@@ -138,7 +150,7 @@
 ### E1 — Slip Import
 
 #### OMX-001 — Upload slip images (multi-file picker)
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to select one or more slip images from my device so that the app can read them and record transactions for me.
 
 **Acceptance Criteria**
@@ -152,7 +164,7 @@
 - **AC8** — Given I open the picker and cancel, When the picker closes, Then nothing changes and no error is shown. *(v2)*
 
 #### OMX-002 — Drag & drop upload
-**Priority:** Should · **Pts:** 2 · **Status:** Ready · **Sprint:** S1-stretch #1
+**Priority:** Should · **Pts:** 2 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #1
 **Story:** As a desktop user, I want to drag slip images onto the page so that I can import many slips quickly.
 
 **Acceptance Criteria**
@@ -163,7 +175,7 @@
 - **AC5** — Given viewport < 768px, When the screen renders, Then the "drag files" hint is hidden. *(v2)*
 
 #### OMX-003a — Google Photos: sign-in & open Picker *(split from OMX-003 in v2)*
-**Priority:** Must · **Pts:** 5 · **Status:** Ready ¹ · **Sprint:** S1
+**Priority:** Must · **Pts:** 5 · **Status:** Blocked (B2) — carry-over · **Sprint:** S1 → S2
 **Story:** As a user who keeps slips in Google Photos, I want to sign in with Google and open the Google Photos Picker so that I can choose slip photos without downloading them first.
 
 **Acceptance Criteria**
@@ -175,7 +187,7 @@
 - **AC6** — Given Google APIs, When called, Then they are accessed through a single wrapper module that can be stubbed in e2e tests.
 
 #### OMX-003b — Google Photos: poll, download & queue *(split from OMX-003 in v2)*
-**Priority:** Must · **Pts:** 3 · **Status:** Ready ¹ · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Blocked (B2) — carry-over · **Sprint:** S1 → S2
 **Story:** As a user, I want the photos I picked in Google Photos to be added to the processing queue automatically so that they are read like uploaded slips.
 
 **Acceptance Criteria**
@@ -187,7 +199,7 @@
 - **AC6** — Given the import flow, When network traffic is checked, Then image data only flows between the browser and Google domains on the OMX-030 allowlist.
 
 #### OMX-004 — Google Photos "not configured" & auth error states
-**Priority:** Must · **Pts:** 2 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 2 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want a clear message when Google Photos is unavailable so that I know to use file upload instead.
 
 **Acceptance Criteria**
@@ -200,7 +212,7 @@
 ### E2 — OCR & Smart Extraction
 
 #### OMX-005 — In-browser OCR with progress (queue)
-**Priority:** Must · **Pts:** 5 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 5 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to see the progress while my slips are being read so that I know the app is working and how long to wait.
 
 **Acceptance Criteria**
@@ -215,7 +227,7 @@
 - **AC9** — Given screen-reader users, When item status changes, Then the change is announced via `aria-live="polite"` (status changes only, not every percent). *(v2)*
 
 #### OMX-006 — Auto-detect transaction type (income / expense) *(rewritten v2)*
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want the app to decide whether a slip is income or expense so that I don't have to classify every slip myself.
 
 **Acceptance Criteria**
@@ -229,7 +241,7 @@
 - **AC8 (received default)** — Given a synthetic "received transfer" slip that looks like a sender slip ("โอนเงินสำเร็จ" without received keywords), When classified, Then type = Expense (documented limitation; user flips it on Review — OMX-012a AC3; owner-name detection = OMX-039).
 
 #### OMX-007 — Extract amount *(rewritten v2)*
-**Priority:** Must · **Pts:** 5 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 5 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want the amount on the slip to be read automatically so that my records are accurate without typing.
 
 **Acceptance Criteria**
@@ -243,7 +255,7 @@
 - **AC8 (accuracy)** — Given Layer A golden fixtures, Then ≥ 95% correct amount (CI gate); Given Layer B synthetic images, Then ≥ 80% correct amount (benchmark report).
 
 #### OMX-008 — Extract date & time (Thai/BE formats) *(rewritten v2)*
-**Priority:** Must · **Pts:** 5 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 5 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want the transaction date read from the slip so that it lands in the correct month.
 
 **Acceptance Criteria**
@@ -257,7 +269,7 @@
 - **AC8 (accuracy)** — Given Layer A golden fixtures, Then ≥ 95% correct date (CI gate); Layer B synthetic accuracy is reported by the benchmark.
 
 #### OMX-009 — Extract recipient / sender / memo / bank
-**Priority:** Should · **Pts:** 5 · **Status:** Ready · **Sprint:** S1-stretch #8
+**Priority:** Should · **Pts:** 5 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #8
 **Story:** As a user, I want to see who I paid and the memo so that I can recognise each transaction later.
 
 **Acceptance Criteria**
@@ -269,7 +281,7 @@
 - **AC6** — Given payee accuracy, When the benchmark runs, Then payee is reported as exact-match % after normalization **and** character error rate (CER) — report only, no gate. *(v2)*
 
 #### OMX-010 — Auto-categorize slip (rule-based) *(rewritten v2)*
-**Priority:** Must · **Pts:** 5 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 5 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want the app to choose the spending category automatically so that my dashboard is meaningful without manual sorting.
 
 **Acceptance Criteria**
@@ -284,7 +296,7 @@
 - **AC9 (accuracy)** — Given Layer A golden fixtures, Then ≥ 95% correct category (CI gate); Given Layer B synthetic images, Then ≥ 60% correct category (benchmark report).
 
 #### OMX-011 — Duplicate slip detection *(rewritten v2)*
-**Priority:** Should · **Pts:** 3 · **Status:** Ready · **Sprint:** S1-stretch #7
+**Priority:** Should · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #7
 **Story:** As a user, I want to be warned when I import the same slip twice so that my totals are not inflated.
 
 **Acceptance Criteria**
@@ -299,7 +311,7 @@
 ### E3 — Review & Manual Entry
 
 #### OMX-012a — Review: editable list, validation, save/discard *(split from OMX-012 in v2)*
-**Priority:** Must · **Pts:** 5 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 5 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to review and correct what the app read before saving so that I can trust my records.
 
 **Acceptance Criteria**
@@ -314,7 +326,7 @@
 - **AC9** — Given every item Failed, When Review opens, Then an empty state offers "กรอกเอง / Enter manually".
 
 #### OMX-012b — Review: image viewer, raw text, leave-guard, flags *(split from OMX-012 in v2)*
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to see the original slip and OCR text while reviewing, and not lose my work by accident, so that I can correct results confidently.
 
 **Acceptance Criteria**
@@ -324,11 +336,11 @@
 - **AC4** — Given OMX-011 is done, When an item is flagged, Then the duplicate badges and "View existing" from OMX-011 render on the card (placeholder slot otherwise).
 
 #### OMX-013 — Manual income/expense entry form
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to add income or expenses manually so that cash and non-slip transactions are also tracked.
 
 **Acceptance Criteria**
-- **AC1** — Given I choose "กรอกเอง / Add manually", When the form opens (mobile full-screen sheet with its own route so Back closes it; desktop dialog), Then fields appear in order: Type segmented control (`role="radiogroup"`, default Expense) → **Amount (autofocus, `inputmode="decimal"`, ฿ prefix)** → Category (icon grid picker filtered by type) → Date (default today Asia/Bangkok, with formatted label e.g. "13 พ.ย. 2569") → Payee (optional, max 100) → Note (optional, max 500). *(v2)*
+- **AC1** — Given I choose "กรอกเอง / Add manually", When the form opens (mobile full-screen sheet with its own route so Back closes it; desktop: centred page column or dialog, with Back/Esc closing it — *v3: K3 deviation accepted at Sprint 1 Review*), Then fields appear in order: Type segmented control (`role="radiogroup"`, default Expense) → **Amount (autofocus, `inputmode="decimal"`, ฿ prefix)** → Category (icon grid picker filtered by type) → Date (default today Asia/Bangkok, with formatted label e.g. "13 พ.ย. 2569") → Payee (optional, max 100) → Note (optional, max 500). *(v2)*
 - **AC2** — Given valid input, When I press Save, Then the transaction is stored with `source = "manual"` and appears in list and dashboard immediately; double-tapping Save creates only one transaction. *(v2)*
 - **AC3** — Given amount empty, ≤ 0, non-numeric, > 2 decimals or > 99,999,999.99, When I press Save, Then an inline error is shown and nothing is saved; `1,000` (with comma) is accepted as 1000.00. *(v2)*
 - **AC4** — Given a future date, When I save, Then it is allowed with a non-blocking warning "วันที่อยู่ในอนาคต / Date is in the future". *(v2)*
@@ -338,7 +350,7 @@
 ### E4 — Transaction Management
 
 #### OMX-014 — Transaction list *(rewritten v2)*
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to see all my transactions for the selected month so that I can check what was recorded.
 
 **Acceptance Criteria**
@@ -351,7 +363,7 @@
 - **AC7 (empty)** — Given no transactions this month but some in other months, When opened, Then the message "เดือนนี้ยังไม่มีรายการ / No transactions this month" is shown (distinct from the first-use empty state in OMX-026).
 
 #### OMX-015 — Filter & search transactions
-**Priority:** Should · **Pts:** 3 · **Status:** Ready · **Sprint:** S1-stretch #2
+**Priority:** Should · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #2
 **Story:** As a user, I want to filter and search transactions so that I can quickly find a specific payment.
 
 **Acceptance Criteria**
@@ -362,7 +374,7 @@
 - **AC5** — Given active filters, When I change month, Then filters are kept. *(v2 — PO decision)*
 
 #### OMX-016 — Edit & delete transaction
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to edit or delete a saved transaction so that I can fix mistakes.
 
 **Acceptance Criteria**
@@ -375,7 +387,7 @@
 ### E5 — Dashboard & Insights
 
 #### OMX-017 — Month selector
-**Priority:** Must · **Pts:** 2 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 2 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to switch between months so that I can review past spending.
 
 **Acceptance Criteria**
@@ -386,7 +398,7 @@
 - **AC5** — Given the arrow buttons, When read by a screen reader, Then they have labels "เดือนก่อนหน้า/Previous month", "เดือนถัดไป/Next month". *(v2)*
 
 #### OMX-018 — Monthly summary (income / expense / balance)
-**Priority:** Must · **Pts:** 2 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 2 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want to see my total income, expenses and balance for the month so that I know where I stand.
 
 **Acceptance Criteria**
@@ -397,7 +409,7 @@
 - **AC5** — Given totals up to 99,999,999.99, When rendered at 360px, Then numbers do not overflow (font scales or wraps). *(v2)*
 
 #### OMX-019 — Category breakdown chart (horizontal bar)
-**Priority:** Should · **Pts:** 3 · **Status:** Ready · **Sprint:** S1-stretch #3
+**Priority:** Should · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #3
 **Story:** As a user, I want to see expenses by category so that I know what I spend the most on.
 
 **Acceptance Criteria**
@@ -408,7 +420,7 @@
 - **AC5** — Given `prefers-reduced-motion`, When rendered, Then no animation runs. *(v2)*
 
 #### OMX-020 — Monthly trend chart
-**Priority:** Should · **Pts:** 3 · **Status:** Ready · **Sprint:** S1-stretch #4
+**Priority:** Should · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #4
 **Story:** As a user, I want to see income vs expense over recent months so that I can see whether my finances are improving.
 
 **Acceptance Criteria**
@@ -419,7 +431,7 @@
 ### E6 — Data & Persistence
 
 #### OMX-021 — Persist data in localStorage
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want my transactions saved in my browser so that they are still there next time I open the app.
 
 **Acceptance Criteria**
@@ -432,7 +444,7 @@
 - **AC7** — Given Settings → About, When viewed, Then it states data is stored only in this browser, may be cleared by the browser (e.g. Safari after inactivity), and recommends regular backup.
 
 #### OMX-022 — JSON backup export / import
-**Priority:** Should · **Pts:** 3 · **Status:** Ready · **Sprint:** S1-stretch #5
+**Priority:** Should · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #5
 **Story:** As a user, I want to export and import my data as a JSON file so that I can back up or move to another device.
 
 **Acceptance Criteria**
@@ -442,7 +454,7 @@
 - **AC4** — Given I cancel at any confirmation, When closed, Then nothing changes. *(v2)*
 
 #### OMX-023 — CSV export
-**Priority:** Should · **Pts:** 2 · **Status:** Ready · **Sprint:** S1-stretch #6
+**Priority:** Should · **Pts:** 2 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #6
 **Story:** As a user, I want to export transactions to CSV so that I can analyse them in Excel/Google Sheets.
 
 **Acceptance Criteria**
@@ -455,7 +467,7 @@
 ### E7 — Platform, i18n & UX Quality
 
 #### OMX-024 — TH / EN language switch
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a Thai or English-speaking user, I want to switch the UI language so that I can use the app comfortably.
 
 **Acceptance Criteria**
@@ -467,7 +479,7 @@
 - **AC6** — Given the Designer's copy deck v1, When implemented, Then all strings come from it (key-based). *(v2)*
 
 #### OMX-025 — Mobile-first responsive layout & navigation
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a mobile user, I want an app that fits my phone screen so that I can record slips on the go.
 
 **Acceptance Criteria**
@@ -478,7 +490,7 @@
 - **AC5** — Given design tokens (colors, spacing, radius, type scale as CSS custom properties), When the app renders, Then body text is ≥ 16px, Thai line-height ≥ 1.6, amounts use `tabular-nums`, and the Thai/English font is self-hosted (no Google Fonts request). *(v2)*
 
 #### OMX-026 — Empty states & error handling
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user, I want helpful messages when there is no data or something goes wrong so that I always know what to do next.
 
 **Acceptance Criteria**
@@ -490,7 +502,7 @@
 - **AC6** — Given data screens, When loading, Then skeletons are shown instead of bare spinners. *(v2)*
 
 #### OMX-027 — Accessibility (WCAG 2.1 AA)
-**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a user with visual or motor impairments, I want the app to work with keyboard and screen readers so that I can manage my money independently.
 
 **Acceptance Criteria**
@@ -504,7 +516,7 @@
 - **AC8** — Given interactive elements, When measured, Then touch targets are ≥ 44×44 px (moved here from OMX-025). *(v2)*
 
 #### OMX-028 — Deploy to GitHub Pages via GitHub Actions
-**Priority:** Must · **Pts:** 3 · **Status:** Ready ² · **Sprint:** S1
+**Priority:** Must · **Pts:** 3 · **Status:** Blocked (B1) — carry-over · **Sprint:** S1 → S2
 **Story:** As the customer, I want the app hosted on a public URL so that anyone can access it from outside without installing anything.
 
 **Acceptance Criteria**
@@ -517,7 +529,7 @@
 ### E8 — Non-functional Requirements
 
 #### OMX-029 — NFR — Performance budget *(rewritten v2)*
-**Priority:** Should · **Pts:** 3 · **Status:** Ready · **Sprint:** S1-stretch #9
+**Priority:** Should · **Pts:** 3 · **Status:** In Progress (partial) — carry-over · **Sprint:** S1-stretch #9 → S2
 **Story:** As a user on a mid-range phone, I want the app to load and respond quickly so that recording slips doesn't feel slow.
 
 **Reference devices:** 1 mid-range Android (2023–2024, e.g. Samsung Galaxy A-series) + 1 iPhone 2–3 generations old; exact models owned by the team are recorded in the QA test plan.
@@ -530,7 +542,7 @@
 - **AC5 (data scale)** — Given 1,000 seeded transactions (JSON fixture), When opening Dashboard or Transactions, Then render completes ≤ 1 s measured by in-app performance marks on the reference devices.
 
 #### OMX-030 — NFR — Privacy: images stay in the browser
-**Priority:** Must · **Pts:** 2 · **Status:** Ready · **Sprint:** S1
+**Priority:** Must · **Pts:** 2 · **Status:** Accepted (pending deploy) · **Sprint:** S1
 **Story:** As a privacy-conscious user, I want my slip images and financial data to stay on my device so that my personal information is not exposed.
 
 **Acceptance Criteria**
@@ -541,7 +553,7 @@
 - **AC5** — Given the Add screen, When shown, Then a trust message with lock icon reads "รูปของคุณไม่ถูกส่งออกจากเครื่อง / Your images never leave this device" linking to the Privacy section (TH/EN) that explains what is processed and where. *(v2)*
 
 #### OMX-031 — NFR — Security & configuration hygiene
-**Priority:** Should · **Pts:** 2 · **Status:** Ready · **Sprint:** S1-stretch #10
+**Priority:** Should · **Pts:** 2 · **Status:** Accepted (pending deploy) · **Sprint:** S1-stretch #10
 **Story:** As the team, we want safe defaults so that the public app does not expose secrets or allow injection.
 
 **Acceptance Criteria**
@@ -561,6 +573,86 @@
 - **AC2** — Given a transfer slip whose recipient (after removing prefixes นาย/นาง/นางสาว/Mr./Ms., spaces, and allowing ≤ 2 character OCR differences) matches one of my names, When classified, Then type = Income, category = `other_income`, confidence = High if account digits also match, otherwise Medium.
 - **AC3** — Given the sender matches my name, When classified, Then type = Expense with High confidence.
 - **AC4** — Given no names are configured, When classifying, Then behaviour is unchanged from OMX-006.
+
+### New items from Sprint 1 Review / Retrospective (v3)
+
+#### OMX-040 — Robust Thai-digit amount extraction (BUG-007)
+**Priority:** Could · **Pts:** 2 · **Status:** New · **Source:** BUG-007 (Low), Sprint 1 Review
+**Story:** As a user whose slip shows Thai digits, I want the amount to be read correctly so that I don't need to type it.
+
+**Acceptance Criteria**
+- **AC1** — Given OCR text with mixed Thai/Arabic digits next to an amount label (e.g. `๓๕๒.๕6๐ บาท`), When extracted, Then digits are normalized and the candidate with exactly 2 decimals that fits the surrounding pattern is chosen (`35250` satang for the BUG-007 fixture), otherwise the field stays empty (no wrong guess).
+- **AC2** — Given Layer B image `b16-bill-water-thai-digits.png`, When the benchmark runs, Then amount is correct and the Layer B amount accuracy is ≥ 96.3% (no regression on other images).
+- **AC3** — Given existing Layer A fixtures, When unit tests run, Then all still pass.
+
+#### OMX-041 — Google Photos per-item Failed row + Retry (K1)
+**Priority:** Must · **Pts:** 2 · **Status:** New · **Source:** Dev K1, closes OMX-003b AC5
+**Story:** As a user importing from Google Photos, I want each photo that fails to download to show its own Retry so that I don't lose photos when the network flickers.
+
+**Acceptance Criteria**
+- **AC1** — Given a Google Photos download fails (network, 401/403, timeout), When the import continues, Then that photo appears in the queue as a Failed row with its thumbnail/name and "ลองใหม่ / Retry"; other items continue.
+- **AC2** — Given I press Retry and the token has expired, When retrying, Then a new token is requested (silent or consent) and the download is retried once more.
+- **AC3** — Given all failed items are retried successfully, When done, Then they are OCR-processed like other items and the summary count updates; screen readers hear the status change (`aria-live`).
+- **AC4** — Given the stub Google wrapper, When e2e tests run, Then failure → Retry → success is covered.
+
+#### OMX-042 — Real-slip accuracy measurement (Layer C + UAT)
+**Priority:** Must · **Pts:** 3 · **Status:** New · **Source:** QA risk R1, UAT exit #3
+**Story:** As the PO, I want accuracy measured on real, redacted slips so that we know whether the app meets the MVP metrics outside synthetic data.
+
+**Acceptance Criteria**
+- **AC1** — Given ≥ 11 redacted real slips (≥ 2 each of K PLUS, SCB EASY, Krungthai NEXT, PromptPay + 3 salary formats) stored privately (never committed), When QA runs the benchmark locally, Then a report lists type/amount/date/category accuracy per bank/format without any personal data.
+- **AC2** — Given the report, When compared with the MVP metrics (amount ≥ 80%, type ≥ 90%, category ≥ 60%), Then gaps are logged as FB items with proposed rule/fixture changes.
+- **AC3** — Given each failure, When analysed, Then its OCR text, with personal data replaced by fake values, is added as a Layer A fixture.
+- **AC4** — Given UAT participants process their own slips on their own devices, When UAT ends, Then their correction rate (fields edited on Review) is collected anonymously by the participant reporting counts (no data leaves the device).
+
+#### OMX-043 — Real-device & assistive-tech verification (Tier 1)
+**Priority:** Must · **Pts:** 3 · **Status:** New · **Source:** QA condition C5, 12 Blocked TCs
+**Story:** As a mobile user, I want the app verified on real phones and screen readers so that it works where I actually use it.
+
+**Acceptance Criteria**
+- **AC1** — Given the Pages build, When QA runs journeys 1–7 on a mid-range Android (Chrome) and an iPhone (Safari, latest and latest-1), Then all Must TCs pass, including native picker/camera (OMX-001 AC7), safe-area and Google Photos popup/tab behaviour.
+- **AC2** — Given NVDA + Chrome, VoiceOver + iOS Safari, and a TalkBack smoke, When the main flows are run, Then there is no a11y blocker (OMX-027 AC3).
+- **AC3** — Given a CSV export, When opened in Excel (Win/Mac) and Google Sheets, Then Thai text displays correctly (OMX-023 AC5).
+- **AC4** — Given the results, When recorded in `docs/qa/test-cases.md`, Then the 12 previously Blocked TCs are Pass/Fail (none Blocked unless B2 is still open).
+
+#### OMX-044 — Transaction list virtualization (large months)
+**Priority:** Should · **Pts:** 3 · **Status:** New · **Source:** Dev K4, OMX-014 AC6 / OMX-029 AC5
+**Story:** As a heavy user, I want long transaction lists to stay smooth so that the app doesn't lag with many entries.
+
+**Acceptance Criteria**
+- **AC1** — Given a month with > 200 transactions, When the list renders, Then only visible rows (+ overscan) are mounted and sticky date headers still work.
+- **AC2** — Given 1,000 seeded transactions, When opening Transactions on the reference devices, Then first render ≤ 1 s and no long task > 200 ms while scrolling.
+- **AC3** — Given keyboard and screen-reader use, When navigating the virtualized list, Then focus order, row count announcements and find-in-page behaviour stay acceptable (documented trade-offs).
+- **AC4** — Given virtualization, When measured, Then the initial JS budget (≤ 300 KB gz) still holds.
+
+#### OMX-045 — Salary slip date rule when the pay-period end is in the future (O2)
+**Priority:** Could · **Pts:** 1 · **Status:** New: needs PO decision in grooming · **Source:** QA O2
+**Story:** As a salaried user, I want a salary slip without a pay date to be dated sensibly so that it lands in the right month.
+
+**Acceptance Criteria (draft, depends on the decision)**
+- **AC1** — Given a salary slip with no pay date whose period is the current month (period end in the future), When extracted, Then the date = today if today is within the pay period *(option A)* or the period end *(option B, allows a future date for salary only)*. The PO picks one at grooming.
+- **AC2** — Given the chosen rule, When Review opens, Then a hint explains how the date was chosen.
+
+#### OMX-046 — Search placeholder fits at 320px (O5)
+**Priority:** Could · **Pts:** 1 · **Status:** New · **Source:** QA O5
+**Story:** As a user on a very small screen, I want the search hint to be fully readable so that I know what I can search.
+- **AC1** — Given 320px width, TH and EN, When Transactions renders, Then the search placeholder is not truncated (shorter copy or responsive placeholder approved by the Designer); the 375px behaviour is unchanged.
+
+#### OMX-047 — Manual light/dark theme switch
+**Priority:** Could · **Pts:** 2 · **Status:** New · **Source:** Designer retro (dark mode ships automatic only)
+**Story:** As a user, I want to choose light, dark or system theme so that the app suits my preference regardless of device setting.
+- **AC1** — Given Settings → Theme (ระบบ/System · สว่าง/Light · มืด/Dark), When I choose an option, Then `<html data-theme>` updates immediately and the choice persists in `settings`.
+- **AC2** — Given either theme, When checked, Then contrast stays at WCAG AA (existing token tables) and axe reports 0 critical/serious.
+
+#### OMX-048 — Post-deploy verification on GitHub Pages (DoD closure)
+**Priority:** Must · **Pts:** 2 · **Status:** New · **Source:** Sprint 1 Review (QA condition C1). Depends on OMX-028
+**Story:** As the PO, I want every accepted story verified on the deployed Pages build so that Sprint 1 work becomes formally Done.
+
+**Acceptance Criteria**
+- **AC1** — Given the first successful deploy, When QA runs the e2e suite with `E2E_BASE_URL=https://jaijimjim.github.io/omnitrix-project/`, Then all non-Google journeys pass.
+- **AC2** — Given the Pages URL, When Lighthouse mobile runs (median of 3), Then a11y ≥ 90 and LCP is recorded (OMX-029 AC1).
+- **AC3** — Given a HAR capture of upload → OCR → save on Pages, When reviewed, Then no request leaves the allowlist (OMX-030), and Tesseract assets load from our origin and are cached on the second visit.
+- **AC4** — Given AC1–AC3 pass, When the PO reviews, Then all stories in status "Accepted (pending deploy)" move to **Done** and the build is tagged `v0.1.0-uat`.
 
 #### Won't (this release)
 
@@ -587,3 +679,30 @@
 | OQ3 | สลิป "ได้รับเงินโอน" | **Keyword rules (OMX-006 AC2) + ผู้ใช้สลับ type บน Review (OMX-012a AC3)**; การ match ชื่อ/บัญชีเจ้าของ = OMX-039 (Could) |
 | OQ4 | Chart library | **Hand-rolled SVG**; category = **horizontal bar**, trend = grouped bar |
 | — | Money / date representation | Integer satang; `YYYY-MM-DD` ใน Asia/Bangkok (R1, R2) |
+
+---
+
+## 9. Sprint 2 Candidate List (proposed, to be confirmed at Sprint 2 Grooming/Planning)
+
+**Proposed Sprint 2 Goal:** get MVP_0001 live on GitHub Pages, verify it on real devices and real slips, connect Google Photos for real, and complete UAT with the customer, so that `v0.1.0` can be released.
+
+Planning basis (retro AI-3): commit at **measured velocity (~40 pts) minus a UAT/hotfix buffer (~10 pts)**. AI-assisted throughput is tracked separately and not used as the baseline.
+
+| Rank | ID | Title | Priority | Pts (remaining) | Depends on | Note |
+|---|---|---|---|---|---|---|
+| 1 | OMX-028 | Deploy via GitHub Actions *(carry-over)* | Must | 3 (≈1 remaining) | **B1** | First run + fixes |
+| 2 | OMX-048 | Post-deploy verification on Pages (DoD closure) | Must | 2 | 028 | Moves 29 "Accepted (pending deploy)" items to Done |
+| 3 | OMX-043 | Real-device & assistive-tech verification | Must | 3 | 028 | QA condition C5 |
+| 4 | OMX-003a / 003b | Google Photos sign-in, Picker, download *(carry-over)* | Must | 8 (≈2 remaining) | **B2** | Real OAuth verification |
+| 5 | OMX-041 | Google Photos per-item Retry (K1) | Must | 2 | 003b | Closes 003b AC5 |
+| 6 | OMX-042 | Real-slip accuracy measurement | Must | 3 | A5/A10 slips | UAT exit #3 |
+| 7 | OMX-029 | Performance budget *(carry-over: AC1, AC3, AC5)* | Should | 3 (≈2 remaining) | 028 | LCP + device OCR timing |
+| 8 | OMX-044 | List virtualization | Should | 3 | — | Only if OMX-029 AC5 fails, otherwise defer |
+| 9 | OMX-040 | Thai-digit amounts (BUG-007) | Could | 2 | — | |
+| 10 | OMX-045 | Salary slip date rule (O2) | Could | 1 | PO decision | |
+| 11 | OMX-039 | Received transfers via owner name | Could | 3 | 009 ✔ | |
+| 12 | OMX-046 | Search placeholder at 320px | Could | 1 | — | |
+| 13 | OMX-047 | Manual theme switch | Could | 2 | — | |
+| — | *UAT execution, feedback triage, hotfixes* | — | Buffer | ~10 | R5 freeze | Not a story. Capacity is reserved |
+
+Candidate total ≈ 27 pts remaining effort + ~10 pts buffer. **Must core ≈ 13 pts remaining** (ranks 1–6).

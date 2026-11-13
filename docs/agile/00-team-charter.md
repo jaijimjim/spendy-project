@@ -38,7 +38,8 @@ Story จะถูกดึงเข้า Sprint Planning ได้เมื่
 3. ระบุ priority (MoSCoW) และ dependency แล้ว
 4. Designer มี UI spec/wireframe (ถ้ามี UI) และ copy TH/EN
 5. ผ่าน Grooming และ estimate แล้ว ขนาด ≤ 8 points (ทำเสร็จได้ใน 1 sprint)
-6. ไม่มีคำถามค้าง (open question) ที่ block การเริ่มงาน; test data (เช่น ตัวอย่างสลิป) พร้อมหรือมีแผนแล้ว
+6. ไม่มีคำถามค้าง (open question) ที่ block การเริ่มงาน; test data (เช่น ตัวอย่างสลิป) พร้อมหรือมีแผนแล้ว — สำหรับ story ด้าน parser/extraction ต้องมี golden fixtures ก่อนเริ่ม (fixture-first)
+7. **Environment access verified** — repo push access, deploy target (GitHub Pages) และ external credentials ที่ story ต้องใช้ (เช่น Google OAuth Client ID) พร้อมแล้ว หรือมี owner + วันที่ชัดเจน และมี stub ให้พัฒนาต่อได้ *(added after Sprint 1 Retro)*
 
 ## 4. Definition of Done (DoD)
 Story ถือว่า Done เมื่อ:
@@ -69,7 +70,8 @@ Story ถือว่า Done เมื่อ:
 - **Single source of truth:** Product Backlog = `docs/agile/01-product-backlog.md`; feedback = `docs/agile/feedback-log.md`
 - **Git flow:** branch ชื่อ `feat/OMX-xxx-short-name`, `fix/OMX-xxx-…`; commit message อ้างอิง story ID; ห้าม push ตรงเข้า `main`
 - **WIP limit:** คนละไม่เกิน 2 story ที่ In Progress พร้อมกัน
-- **Status flow:** `New → Ready → In Progress → In Review → In QA → Done` (หรือ `Blocked`)
+- **Status flow:** `New → Ready → In Progress → In Review → In QA → Accepted (pending deploy) → Done` (หรือ `Blocked`). `Accepted (pending deploy)` = PO accepted with every AC verified on a local production build, while DoD #1/#3/#9 still wait on deploy. It does **not** count as Done or as velocity
+- **Checkpoint:** commit at least every half-day; long-running test runs write results incrementally *(Sprint 1 Retro)*
 - **Communication:** ติดขัดเกิน 2 ชั่วโมง แจ้งทันที ไม่ต้องรอ Daily; การตัดสินใจสำคัญบันทึกเป็นลายลักษณ์อักษร (ใน PR/issue หรือ doc)
 - **Quality first:** ไม่ข้าม test เพื่อให้ทัน; ถ้าไม่ทัน → ลด scope ร่วมกับ PO
 - **Privacy by default:** รูปสลิปประมวลผลใน browser เท่านั้น; ห้าม log ข้อมูลการเงินผู้ใช้ออกนอกเครื่อง; ห้าม commit secret (Client ID ใช้ผ่าน env/GitHub Actions variables)
@@ -114,6 +116,8 @@ Feedback เข้ามา
 | 2026-11-13 | Baseline charter & architecture constraints | Sprint 0 kickoff | — | PO + Team |
 | 2026-11-13 | Grooming decisions: Tesseract assets self-hosted from pinned npm at build; hand-rolled SVG charts; money = integer satang; dates = `YYYY-MM-DD` Asia/Bangkok; QA owns synthetic slip fixtures | Sprint 1 Grooming (OQ1–OQ4) | Backlog v2 AC; ADRs 0001–0003 | PO + Team |
 | 2026-11-13 | Sprint 1 commits all Must stories (77 pts, incl. Google Photos 003a/003b/004) with extended capacity vs ~40 pts velocity; Should = stretch | Customer explicitly requires Google Photos, auto-categorisation and external hosting in MVP_0001 | Schedule risk accepted; Day-3 checkpoint; Must cut-last order in sprint plan | PO + Team |
+| 2026-11-13 | New status `Accepted (pending deploy)`; DoR #7 "Environment access verified"; DoR #6 fixture-first for parser stories; half-day checkpoint rule | Sprint 1 Review/Retro: deploy blocked all sprint (B1), late fixtures, container restart | Sprint 1 stories recorded as Accepted (pending deploy), 0 pts Done until Pages verification (OMX-048) | PO + Team |
+| 2026-11-13 | Sprint 2 planned at measured velocity (~40) minus UAT/hotfix buffer; AI-assisted throughput tracked separately | Retro AI-3: the 77 pts overcommit worked only thanks to AI agents | Sprint 2 candidate list in backlog §9 | PO + Team |
 
 ## 9. Risks & Assumptions (initial)
 | Risk | Mitigation |
