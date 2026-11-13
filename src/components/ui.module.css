@@ -263,7 +263,7 @@
   background: var(--omx-color-surface-2);
 }
 .langOption {
-  min-width: 40px;
+  min-width: 44px; /* BUG-005: target width ≥ 44px (OMX-027 AC8) */
   min-height: 36px;
   padding: 0 var(--omx-space-2);
   border: 0;
