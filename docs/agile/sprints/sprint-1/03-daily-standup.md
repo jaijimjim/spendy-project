@@ -86,3 +86,11 @@
 **Dev please review** QA `fix(...)` commits (OMX-008 slipDate regex, OMX-013 ref guard, OMX-023 `toCsv(categoryName)`, OMX-027 `.langOption` min-width) in the Sprint PR.
 
 **QA recommendation:** **GO for UAT (conditional)** — no Critical/High open; start UAT once B1 is closed and the Pages smoke passes, B2 is closed or PO approves "Not configured" mode, PO triages BUG-003/006, and a Tier 1 mobile smoke is done. See `docs/qa/test-summary-report.md`.
+
+## Day 4 — Dev entry
+
+| Role | Yesterday | Today | Blockers |
+|---|---|---|---|
+| **Dev** | Dev-complete on all Must stories + stretch; CI/deploy workflows, README/ADRs | **Reviewed QA's fix commits** BUG-001 (`849a999`), BUG-002 (`4391555`), BUG-004 (`f023918`), BUG-005 (`202e6ab`) → all **OK** (notes in `docs/qa/bug-report.md`). **Fixed BUG-003** (320px overflow: `min-width: 0` on fields/controls/segments/grid items, compact filter button; 320px `scrollWidth` = 320 on all main screens TH/EN; 4 `test.fail` markers in TC-120 removed). **Fixed BUG-006** (OCR-tolerant person prefix: 1–2 stray Thai glyphs before นาย/นาง/นางสาว/น.ส., "นาข/นาซ" variant only after junk; 3 QA fixtures flipped from `knownBug` + 3 new Dev golden fixtures incl. 2 false-positive guards). **Fixed BUG-008** (EN placeholder → "Search name, note, amount", Designer approved). Verified: lint, typecheck, i18n, 209 unit tests (domain coverage 99% lines), build (170 KB gz), e2e 91 passed / 5 skipped (QA's intentional skips) incl. real OCR | B1 (push) / B2 (Client ID) unchanged. BUG-007 stays in backlog |
+
+**Board change:** BUG-003/006/008 → **QA re-test**. Open defects: BUG-007 (Low, backlog) only.

@@ -8,16 +8,16 @@
 
 | ID | Severity | Story | Title | Status | Owner |
 |---|---|---|---|---|---|
-| BUG-001 | Medium | OMX-008 | เดือนไทยที่ OCR อ่านเป็น "พุย." / "พ.ุย." ไม่ถูก parse → วันที่ตกเป็นวันนี้ | **Fixed** (QA, `849a999`) — Verified | QA |
-| BUG-002 | High | OMX-013 | Double-click "บันทึก/Save" สร้างรายการซ้ำ 2 รายการ | **Fixed** (QA, see `fix(OMX-013)`) — Verified | QA |
-| BUG-003 | Medium | OMX-025 | Horizontal scroll ที่ 320px บน Transactions และ Add/Edit form | **Open → Dev** | Dev |
-| BUG-004 | Medium | OMX-023 | CSV คอลัมน์ `category` เป็น id (`food`) แทนชื่อตามภาษา UI | **Fixed** (QA, `f023918`) — Verified | QA |
-| BUG-005 | Medium | OMX-027 | ปุ่ม TH/EN กว้าง 40px (< 44px touch target) | **Fixed** (QA, `202e6ab`) — Verified | QA |
-| BUG-006 | Medium | OMX-010 | OCR noise หน้าคำนำหน้าชื่อ ("แนายข", "นแนายข") → โอนให้บุคคลกลายเป็น "อื่น ๆ" | **Open → Dev** | Dev |
+| BUG-001 | Medium | OMX-008 | เดือนไทยที่ OCR อ่านเป็น "พุย." / "พ.ุย." ไม่ถูก parse → วันที่ตกเป็นวันนี้ | **Fixed** (QA, `849a999`) — Verified · Dev review OK | QA |
+| BUG-002 | High | OMX-013 | Double-click "บันทึก/Save" สร้างรายการซ้ำ 2 รายการ | **Fixed** (QA, `4391555`) — Verified · Dev review OK | QA |
+| BUG-003 | Medium | OMX-025 | Horizontal scroll ที่ 320px บน Transactions และ Add/Edit form | **Fixed** (Dev) — ready for QA re-test | Dev |
+| BUG-004 | Medium | OMX-023 | CSV คอลัมน์ `category` เป็น id (`food`) แทนชื่อตามภาษา UI | **Fixed** (QA, `f023918`) — Verified · Dev review OK | QA |
+| BUG-005 | Medium | OMX-027 | ปุ่ม TH/EN กว้าง 40px (< 44px touch target) | **Fixed** (QA, `202e6ab`) — Verified · Dev review OK | QA |
+| BUG-006 | Medium | OMX-010 | OCR noise หน้าคำนำหน้าชื่อ ("แนายข", "นแนายข") → โอนให้บุคคลกลายเป็น "อื่น ๆ" | **Fixed** (Dev) — ready for QA re-test | Dev |
 | BUG-007 | Low | OMX-007 | ยอดเงินเลขไทย (๓๕๒.๕๐) ถูก Tesseract อ่านเพี้ยน → amount ว่าง | **Open → Dev (backlog)** | Dev |
-| BUG-008 | Low | OMX-015 / 025 | Placeholder ช่องค้นหา EN ถูกตัดที่ 375px ("…or amour") | **Open → Designer/Dev** | Designer |
+| BUG-008 | Low | OMX-015 / 025 | Placeholder ช่องค้นหา EN ถูกตัดที่ 375px ("…or amour") | **Fixed** (Dev, copy approved by Designer) — ready for QA re-test | Dev |
 
-**Totals:** 8 bugs · Critical 0 · High 1 (fixed) · Medium 5 (3 fixed, 2 open) · Low 2 (open) · **Open: 4 (0 Critical/High)**
+**Totals:** 8 bugs · Critical 0 · High 1 (fixed) · Medium 5 (all fixed) · Low 2 (1 fixed, 1 backlog) · **Open: 1 (BUG-007, backlog) · Fixed by Dev Day 4: BUG-003, BUG-006, BUG-008 (awaiting QA re-test)**
 
 ---
 
@@ -40,7 +40,8 @@
 - **Expected:** `scrollWidth ≤ clientWidth` (320)
 - **Actual:** `#/transactions` scrollWidth = 343 — filter button (`_btn_ _secondary_`) right edge = 343px, search row ไม่ shrink · `#/transactions/new` scrollWidth = 363 — type segmented control / date row กว้างเกิน (ทั้ง TH และ EN)
 - **Suggestion:** search input `min-width: 0; flex: 1`, filter button fixed 44px; segmented control `min-width: 0` + label wrap
-- **Regression:** `tests/e2e/qa.spec.ts` TC-120 (`test.fail`, 2 routes × 2 projects)
+- **Regression:** `tests/e2e/qa.spec.ts` TC-120 (2 routes × 2 projects)
+- **Fix (Dev, Day 4):** grid/flex children get `min-width: 0` (`.field`, `.control`, `.segment`, form/two-column grid items) so inputs can shrink below their intrinsic width; search box `min-width: 0` and a compact fixed filter button. `scrollWidth = 320` on Dashboard, Transactions, Add/Edit form, Add slip and Settings in TH and EN. TC-120 `test.fail` markers removed → normal passing tests
 
 ## BUG-004 — CSV category column is the id instead of the localized name
 - **Severity:** Medium · **Story:** OMX-023 AC1 · **Status:** Fixed & verified
@@ -58,7 +59,8 @@
 - **Expected:** category = `transfer` (recipient "นาย ทดสอบ ระบบ")
 - **Actual:** Tesseract reads the recipient line as `แนายข ทดสอบ ระบบ` / `นแนายข ทดสอบ ระบบ` → `PERSON_PREFIX` (anchored `^`) ไม่ match → category `other`. 2/27 Layer B images (category accuracy 92.6%)
 - **Suggestion (Dev):** ใน `parties.ts` ยอม junk ≤ 2 ตัวอักษรไทยก่อนคำนำหน้า (`^[฀-๿]{0,2}(?:นาย|…)`) หรือ cleanup ตัวอักษรเดี่ยวหน้า/หลังคำนำหน้า; ระวัง false positive กับชื่อร้าน — เพิ่ม fixture ทั้งสองทาง
-- **Regression:** Layer A `qa-ocr-prefix-noise-nai`, `rec-b08…`, `rec-b12…` (`it.fails`)
+- **Regression:** Layer A `qa-ocr-prefix-noise-nai`, `rec-b08…`, `rec-b12…` (now normal passing cases, `knownBug: []`)
+- **Fix (Dev, Day 4):** `looksLikePerson()` in `parties.ts` also accepts a noisy prefix: 1–2 stray Thai glyphs before นาย/นาง/นางสาว/น.ส., and the OCR variant "นาข/นาซ" (ย misread) only after such junk and not before a vowel/tone mark. The strict `PERSON_PREFIX` (used by `normalizePayee`) is unchanged. New golden fixtures both ways: `dev-bug006-junk-before-nangsao` (→ transfer), `dev-bug006-no-false-positive-shop-name` ("นาขวัญ ฟาร์มสุข" → other), `dev-bug006-no-false-positive-nai-inside-word` ("สวนนายเฒ่า" → other), plus unit tests in `typeAndCategory.test.ts`
 
 ## BUG-007 — Thai-digit amount misread by OCR → amount empty
 - **Severity:** Low (สลิปธนาคารจริงแทบไม่ใช้เลขไทย; Review แสดง "ไม่พบยอดเงิน" ให้กรอกเอง) · **Story:** OMX-007 AC5 · **Status:** Open → Dev (backlog)
@@ -70,6 +72,15 @@
 - **Severity:** Low (cosmetic) · **Story:** OMX-015 / OMX-025 · **Status:** Open → Designer (copy) / Dev
 - **Steps:** EN, 375px, `#/transactions` · **Expected:** placeholder อ่านได้ครบ · **Actual:** "Search payee, note or amour" (ตัด) · **Suggestion:** copy สั้นลง เช่น "Search payee, note, amount" หรือ "Search"
 - Evidence: `test-results/qa-explore/en-*-375-_transactions.png` (generated by `tests/e2e/qa-explore.spec.ts`)
+- **Fix (Dev, Day 4):** EN copy shortened in `design/copy-deck.json` → `transactions.searchPlaceholder` = "Search name, note, amount" (Designer approved); TH unchanged
+
+## Dev code review of QA fixes (Day 4)
+| Bug | Commit | Review |
+|---|---|---|
+| BUG-001 | `849a999` | **OK** — `ABBR_DOT = [.\u0E38]{0,2}` is scoped to Thai month abbreviations only (anchored between a day number and a year), so no new false matches; fixtures updated |
+| BUG-002 | `4391555` | **OK** — synchronous `useRef` guard set before validation passes to save and reset on storage failure / "save and add another"; `saving` state still drives the spinner |
+| BUG-004 | `f023918` | **OK** — `toCsv(txs, categoryName)` keeps the domain pure (name lookup injected, default = id for tests/back-compat); Settings passes `t('categories.<id>')` |
+| BUG-005 | `202e6ab` | **OK** — `min-width: 44px` on `.langOption`; combined with the `::after` hit-area gives 44×44 |
 
 ---
 
