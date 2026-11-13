@@ -45,15 +45,18 @@ const EN_MONTHS = [
 const EN_MONTH_RE =
   '(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)';
 
-/** "พ.ย." → "พ\.?\s?ย\.?" so all of "พ.ย.", "พ.ย", "พย", "พ. ย." match. */
+/**
+ * "พ.ย." → "พ[.ุ]{0,2}\s?ย[.ุ]{0,2}" so all of "พ.ย.", "พ.ย", "พย", "พ. ย." match. Tesseract often
+ * reads the abbreviation dot as the below-vowel "ุ" ("พุย.", "พ.ุย.") — accepted too (BUG-001).
+ */
+const ABBR_DOT = '[.\\u0E38]{0,2}';
 function thaiAbbrToRegex(p: string): string {
   if (!p.includes('.')) return p;
   return (
     p
       .split('.')
       .filter(Boolean)
-      .map((part) => part)
-      .join('\\.?\\s?') + '\\.?'
+      .join(ABBR_DOT + '\\s?') + ABBR_DOT
   );
 }
 

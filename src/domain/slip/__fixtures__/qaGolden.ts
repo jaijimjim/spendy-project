@@ -211,7 +211,7 @@ export const QA_FIXTURES: QaFixture[] = [
       amountSatang: 150000,
       date: '2026-11-12',
     },
-    knownBug: ['BUG-001'],
+    knownBug: [],
   },
   {
     id: 'qa-ocr-month-pui-4digit',
@@ -222,7 +222,7 @@ export const QA_FIXTURES: QaFixture[] = [
       amountSatang: 24500,
       date: '2026-11-13',
     },
-    knownBug: ['BUG-001'],
+    knownBug: [],
   },
   {
     id: 'qa-ocr-month-pdotui',
@@ -233,7 +233,7 @@ export const QA_FIXTURES: QaFixture[] = [
       amountSatang: 200000,
       date: '2026-11-07',
     },
-    knownBug: ['BUG-001'],
+    knownBug: [],
   },
   {
     id: 'qa-ocr-prefix-noise-nai',
@@ -256,7 +256,7 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-12',
       time: '09:12',
     },
-    knownBug: ['BUG-001'],
+    knownBug: [],
   },
   {
     id: 'rec-b02-transfer-th-grabfood-balance',
@@ -268,7 +268,7 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-13',
       time: '14:35',
     },
-    knownBug: ['BUG-001'],
+    knownBug: [],
   },
   {
     id: 'rec-b03-transfer-en-grab-ride',
@@ -304,7 +304,7 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-12',
       time: '19:40',
     },
-    knownBug: ['BUG-001'],
+    knownBug: [],
   },
   {
     id: 'rec-b06-bill-internet-ddmm',
@@ -328,7 +328,7 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-08',
       time: '18:20',
     },
-    knownBug: ['BUG-001'],
+    knownBug: [],
   },
   {
     id: 'rec-b08-received-looks-like-sender',
@@ -340,7 +340,7 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-07',
       time: '12:00',
     },
-    knownBug: ['BUG-001', 'BUG-006'],
+    knownBug: ['BUG-006'],
   },
   {
     id: 'rec-b09-transfer-company-rent-month-end',
@@ -388,6 +388,6 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-09',
       time: '21:10',
     },
-    knownBug: ['BUG-001', 'BUG-006'],
+    knownBug: ['BUG-006'],
   },
 ];
