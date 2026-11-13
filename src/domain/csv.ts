@@ -23,7 +23,11 @@ export function escapeCsvCell(v: string): string {
   return /[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
 }
 
-export function toCsv(txs: readonly Transaction[]): string {
+/** `categoryName` maps a category id to its name in the current UI language (OMX-023 AC1). */
+export function toCsv(
+  txs: readonly Transaction[],
+  categoryName: (id: Transaction['categoryId']) => string = (id) => id,
+): string {
   const rows = [...txs]
     .sort(compareTransactions)
     .reverse()
@@ -32,7 +36,7 @@ export function toCsv(txs: readonly Transaction[]): string {
         t.date,
         t.time ?? '',
         t.type,
-        t.categoryId,
+        categoryName(t.categoryId),
         (t.amountSatang / 100).toFixed(2),
         neutralizeFormula(t.payee ?? ''),
         neutralizeFormula(t.note ?? ''),

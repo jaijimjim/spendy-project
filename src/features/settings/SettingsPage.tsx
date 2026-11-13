@@ -55,7 +55,11 @@ function ExportDialog({ open, onClose }: { open: boolean; onClose: () => void })
       );
     } else {
       filename = `omnitrix-money-${scope === 'month' ? ym : 'all'}-${stamp}.csv`;
-      downloadText(filename, toCsv(csvRows), 'text/csv;charset=utf-8');
+      downloadText(
+        filename,
+        toCsv(csvRows, (id) => t(`categories.${id}`)),
+        'text/csv;charset=utf-8',
+      );
     }
     showToast({ message: t('exportDialog.done', { filename }), variant: 'success' });
     onClose();
