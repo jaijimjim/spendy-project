@@ -1,0 +1,137 @@
+/* Month selector (§6.10) */
+.month {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--omx-space-1);
+  position: relative;
+}
+.monthLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--omx-space-1);
+  min-height: var(--omx-touch-min);
+  min-width: 11rem;
+  justify-content: center;
+  padding: 0 var(--omx-space-2);
+  border: 0;
+  border-radius: var(--omx-radius-md);
+  background: transparent;
+  font-size: var(--omx-text-lg);
+  font-weight: var(--omx-font-weight-semibold);
+}
+.monthLabel:hover {
+  background: var(--omx-color-surface-2);
+}
+.thisMonth {
+  position: absolute;
+  right: 0;
+  padding: 2px var(--omx-space-2);
+  min-height: 32px;
+  border: 0;
+  border-radius: var(--omx-radius-sm);
+  background: var(--omx-color-primary-subtle);
+  color: var(--omx-color-primary-text);
+  font-size: var(--omx-text-xs);
+  font-weight: var(--omx-font-weight-semibold);
+  white-space: nowrap;
+}
+.thisMonth::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+@media (max-width: 400px) {
+  .thisMonth {
+    position: static;
+  }
+  .monthLabel {
+    min-width: 0;
+  }
+}
+.yearRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--omx-space-3);
+  font-size: var(--omx-text-lg);
+  font-weight: var(--omx-font-weight-semibold);
+}
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--omx-space-2);
+}
+.monthTile {
+  min-height: 48px;
+  border: 1px solid var(--omx-color-border);
+  border-radius: var(--omx-radius-md);
+  background: var(--omx-color-surface);
+  font-weight: var(--omx-font-weight-medium);
+}
+.monthTile[aria-current='true'] {
+  border: 2px solid var(--omx-color-primary);
+  background: var(--omx-color-primary-subtle);
+  color: var(--omx-color-primary-text);
+}
+.monthTile[aria-disabled='true'] {
+  color: var(--omx-color-text-subtle);
+  background: var(--omx-color-surface-2);
+  cursor: not-allowed;
+}
+
+/* Transaction row (§6.19) */
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--omx-space-3);
+  width: 100%;
+  min-height: 64px;
+  padding: var(--omx-space-2) var(--omx-space-1);
+  border: 0;
+  border-radius: var(--omx-radius-md);
+  background: transparent;
+  text-align: left;
+}
+.row:hover {
+  background: var(--omx-color-surface-2);
+}
+.rowMain {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.rowTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--omx-font-weight-medium);
+}
+.rowMeta {
+  color: var(--omx-color-text-muted);
+  font-size: var(--omx-text-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rowSide {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  flex: none;
+}
+.rowAmount {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--omx-text-lg);
+  font-weight: var(--omx-font-weight-semibold);
+}
+.highlight {
+  animation: flash 1.2s var(--omx-ease-standard);
+}
+@keyframes flash {
+  from {
+    background: var(--omx-color-primary-subtle);
+  }
+}
