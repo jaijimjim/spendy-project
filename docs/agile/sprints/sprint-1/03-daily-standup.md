@@ -64,3 +64,25 @@
 | — | OMX-003a, OMX-003b (code done, real-Google verification blocked by B2) · OMX-029 (partial: AC2/AC4 only) | **Must:** 028, 025, 024, 021, 017, 018, 013, 014, 016, 001, 005, 006, 007, 008, 010, 012a, 012b, 026, 030, 027, 004 · **Stretch:** 002, 015, 019, 020, 022, 023, 011, 009, 031 | — | — (DoD needs PR review + QA on deployed Pages build; blocked by B1) |
 
 **Burndown (Dev-complete):** Must 69/77 pts in review, 8 pts (003a/003b) code-complete pending verification · Stretch 26/29 pts in review (029 partial).
+
+## Day 4 — QA entry
+
+| Role | Yesterday | Today | Blockers |
+|---|---|---|---|
+| **QA** | Q1 test approach + Q3 Layer A golden fixtures (32 QA cases incl. recorded real-Tesseract output) · Layer B generator (fictional-bank HTML templates → Playwright PNG/JPEG) · first real-OCR benchmark (date only 60% → found BUG-001) | Layer B extended to **27 images** (18 base incl. 4 salary slips + 9 degraded) and benchmark batched (queue cap 20) · `docs/qa/test-plan.md`, `test-cases.md` (**132 TCs**), `bug-report.md`, `test-summary-report.md` · full execution: lint/typecheck/format/i18n ✅, Vitest **197/197**, Playwright **93 passed / 5 skipped / 0 failed**, explore matrix 375/1280 × TH/EN × light/dark ✅ · fixed 4 trivial bugs with regression tests (BUG-001 OCR month "พุย.", BUG-002 double-click Save duplicates [High], BUG-004 CSV category name, BUG-005 TH/EN touch target) | B1 → Pages/CI/Lighthouse/post-deploy smoke **Blocked** · B2 → real Google OAuth TCs **Blocked** · no real devices / Layer C slips yet |
+
+**OCR benchmark (Layer B, real Tesseract, built app):** type **100%** · amount **96.3%** · category **92.6%** · date **100%** (UAT gates 90 / 80 / 60 ✅) · ~1.4 s/image in sandbox
+
+**Results:** 132 TCs → Pass 115 · Fail 4 · Blocked 12 · Not run 1
+
+### Open bugs → Dev / Designer (QA → PO for triage)
+| Bug | Sev | Story | Owner | Note |
+|---|---|---|---|---|
+| BUG-003 | Medium | OMX-025 | **Dev** | Horizontal scroll at 320px on Transactions (filter button) and Add/Edit form; regression `qa.spec.ts` TC-120 (`test.fail`) |
+| BUG-006 | Medium | OMX-010 | **Dev** | OCR noise before person prefix ("แนายข ทดสอบ") → category Other instead of Transfer; Layer A `it.fails` fixtures ready |
+| BUG-007 | Low | OMX-007 | Dev (backlog) | Thai-digit amount misread by Tesseract → amount empty; propose known limitation |
+| BUG-008 | Low | OMX-015 | Designer | EN search placeholder truncated at 375px — shorter copy |
+
+**Dev please review** QA `fix(...)` commits (OMX-008 slipDate regex, OMX-013 ref guard, OMX-023 `toCsv(categoryName)`, OMX-027 `.langOption` min-width) in the Sprint PR.
+
+**QA recommendation:** **GO for UAT (conditional)** — no Critical/High open; start UAT once B1 is closed and the Pages smoke passes, B2 is closed or PO approves "Not configured" mode, PO triages BUG-003/006, and a Tier 1 mobile smoke is done. See `docs/qa/test-summary-report.md`.
