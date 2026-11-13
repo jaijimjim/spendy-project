@@ -304,3 +304,54 @@ test.describe('accessibility (OMX-027 AC6)', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'ตั้งค่า' })).toBeFocused();
   });
 });
+
+test('Google Photos import via stubbed wrapper: consent → picker → download → queue (OMX-003a/b)', async ({
+  page,
+}) => {
+  await setup(page);
+  await page.addInitScript(() => {
+    const pngBlob = async () => {
+      const c = document.createElement('canvas');
+      c.width = c.height = 8;
+      return await new Promise<Blob>((r) => c.toBlob((b) => r(b!), 'image/png'));
+    };
+    const w = window as unknown as { __OMX_TEST__: Record<string, unknown> };
+    w.__OMX_TEST__.googlePhotos = {
+      isConfigured: () => true,
+      authorize: async () => undefined,
+      createSession: async () => ({
+        id: 's1',
+        pickerUri: 'about:blank',
+        pollIntervalMs: 50,
+        expiresAt: Date.now() + 60_000,
+        mediaItemsSet: false,
+      }),
+      getSession: async () => ({
+        id: 's1',
+        pickerUri: 'about:blank',
+        pollIntervalMs: 50,
+        expiresAt: Date.now() + 60_000,
+        mediaItemsSet: true,
+      }),
+      listItems: async () => [
+        {
+          id: '1',
+          type: 'PHOTO',
+          baseUrl: 'x',
+          mimeType: 'image/png',
+          filename: 'slip-transfer.png',
+        },
+        { id: '2', type: 'VIDEO', baseUrl: 'y', mimeType: 'video/mp4', filename: 'clip.mp4' },
+      ],
+      download: pngBlob,
+      deleteSession: async () => undefined,
+      signOut: () => undefined,
+    };
+  });
+  await page.goto('./#/add');
+  await page.getByRole('button', { name: 'นำเข้าจาก Google Photos' }).click();
+  await expect(page.getByText('เราอ่านเฉพาะรูปที่คุณเลือก')).toBeVisible();
+  await page.getByRole('button', { name: 'ไปที่ Google' }).click();
+  await expect(page.getByText('slip-transfer.png')).toBeVisible();
+  await expect(page.getByRole('button', { name: /ตรวจรายการ \(1/ })).toBeVisible();
+});
