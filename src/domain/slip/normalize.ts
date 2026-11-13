@@ -1,6 +1,6 @@
 /**
  * Text normalization applied before every parse (R4):
- * NFC, "ํา" → "ำ", remove zero-width chars, Thai digits → ASCII, collapse repeated spaces,
+      .replace(/\u0E4D\u0E32/g, '\u0E33')
  * trim each line and drop empty lines.
  */
 const THAI_DIGITS = '๐๑๒๓๔๕๖๗๘๙';
@@ -13,11 +13,11 @@ export function normalizeText(input: string): string {
   return thaiDigitsToAscii(
     input
       .normalize('NFC')
-      .replace(/[​-‍⁠﻿]/g, '')
+      .replace(/[\u200B-\u200D\u2060\uFEFF]/g, '')
       // SARA AM written as NIKHAHIT + SARA AA (common OCR/IME output)
-      .replace(/ํา/g, 'ำ')
+      .replace(/\u0E4D\u0E32/g, '\u0E33')
       .replace(/\r\n?/g, '\n')
-      .replace(/[\t 　]/g, ' '),
+      .replace(/[\t\u00A0\u3000]/g, ' '),
   )
     .split('\n')
     .map((l) => l.replace(/ {2,}/g, ' ').trim())

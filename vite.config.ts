@@ -39,10 +39,10 @@ function cspPlugin(): Plugin {
   };
 }
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command, mode, isPreview }) => {
   const env = loadEnv(mode, process.cwd(), '');
   // GitHub Pages project site lives under /omnitrix-project/ (OMX-028 AC2).
-  const base = env.VITE_BASE ?? (command === 'build' ? '/omnitrix-project/' : '/');
+  const base = env.VITE_BASE ?? (command === 'build' || isPreview ? '/omnitrix-project/' : '/');
   return {
     base,
     plugins: [react(), cspPlugin()],

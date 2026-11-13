@@ -322,3 +322,32 @@ describe('file checks (OMX-001, 029)', () => {
     });
   });
 });
+
+import { validateDraft, hasErrors } from './validation';
+describe('validateDraft', () => {
+  const base = {
+    type: 'expense' as const,
+    categoryId: 'food' as const,
+    amount: '120',
+    date: '2026-11-13',
+    time: '',
+    payee: '',
+    note: '',
+  };
+  it('accepts a valid draft', () => expect(hasErrors(validateDraft(base))).toBe(false));
+  it('reports each problem', () => {
+    expect(validateDraft({ ...base, amount: '', date: '', categoryId: null })).toEqual({
+      amount: 'amountRequired',
+      date: 'dateRequired',
+      categoryId: 'categoryRequired',
+    });
+    expect(validateDraft({ ...base, type: 'income' }).categoryId).toBe('categoryRequired');
+    expect(validateDraft({ ...base, date: '2026-02-30', time: '25:00' })).toMatchObject({
+      date: 'dateInvalid',
+      time: 'dateInvalid',
+    });
+    expect(validateDraft({ ...base, payee: 'x'.repeat(101), note: 'y'.repeat(501) })).toMatchObject(
+      { payee: 'payeeMax', note: 'noteMax' },
+    );
+  });
+});
