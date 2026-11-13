@@ -32,9 +32,7 @@ for (const lang of ['th', 'en'] as const)
       // EN run uses English payees so data does not look like untranslated UI
       await seed(
         page,
-        lang === 'en'
-          ? SAMPLE.map((t, i) => ({ ...t, payee: `Payee ${i}` }))
-          : SAMPLE,
+        lang === 'en' ? SAMPLE.map((t, i) => ({ ...t, payee: `Payee ${i}` })) : SAMPLE,
         lang,
       );
       const findings: string[] = [];
