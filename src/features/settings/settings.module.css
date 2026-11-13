@@ -1,0 +1,128 @@
+.grid {
+  display: grid;
+  gap: var(--omx-space-4);
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+.col {
+  display: grid;
+  gap: var(--omx-space-4);
+}
+.sectionTitle {
+  margin: 0 0 var(--omx-space-2);
+  color: var(--omx-color-text-muted);
+  font-size: var(--omx-text-md);
+  font-weight: var(--omx-font-weight-semibold);
+}
+.langRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--omx-space-2);
+}
+.rowBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--omx-space-3);
+  width: 100%;
+  min-height: 64px;
+  padding: var(--omx-space-2) 0;
+  border: 0;
+  border-bottom: 1px solid var(--omx-color-border);
+  background: transparent;
+  text-align: left;
+}
+.rowBtn[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.rowIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--omx-radius-md);
+  background: var(--omx-color-primary-subtle);
+  color: var(--omx-color-primary-text);
+}
+.rowText {
+  flex: 1;
+  display: grid;
+}
+.rowTitle {
+  font-weight: var(--omx-font-weight-semibold);
+}
+.rowHint {
+  color: var(--omx-color-text-muted);
+  font-size: var(--omx-text-sm);
+}
+.info {
+  margin-top: var(--omx-space-3);
+  color: var(--omx-color-text-muted);
+  font-size: var(--omx-text-sm);
+}
+.bullets {
+  display: grid;
+  gap: var(--omx-space-2);
+  margin: var(--omx-space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.bullets li {
+  display: flex;
+  gap: var(--omx-space-2);
+  color: var(--omx-color-text-muted);
+  font-size: var(--omx-text-sm);
+}
+.bullets svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--omx-color-income);
+}
+.privacyTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--omx-space-2);
+  font-weight: var(--omx-font-weight-semibold);
+}
+.danger {
+  border: 1px solid var(--omx-color-danger-subtle);
+}
+.dangerTitle {
+  color: var(--omx-color-danger);
+}
+.radioCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--omx-space-3);
+  padding: var(--omx-space-3);
+  border: 1px solid var(--omx-color-border-strong);
+  border-radius: var(--omx-radius-md);
+  cursor: pointer;
+}
+.radioCard:has(input:checked) {
+  border: 2px solid var(--omx-color-primary);
+  background: var(--omx-color-primary-subtle);
+}
+.radioCard input {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  accent-color: var(--omx-color-primary);
+}
+.radioGroup {
+  display: grid;
+  gap: var(--omx-space-2);
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.radioGroup legend {
+  margin-bottom: var(--omx-space-2);
+  font-weight: var(--omx-font-weight-semibold);
+}
