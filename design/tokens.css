@@ -1,0 +1,275 @@
+/* ==========================================================================
+   Omnitrix Money — Design Tokens v1 (Sprint 1)
+   Owner: Designer · Source of truth: design/design-system.md
+   Usage: import once at app root:  import '../design/tokens.css'
+   Theme: light by default; dark via prefers-color-scheme unless the user
+          forces one with <html data-theme="light|dark">.
+   Font:  npm i @fontsource/ibm-plex-sans-thai  then import weights
+          400/500/600/700 (thai + latin subsets) — self-hosted, no CDN.
+   All color pairs are verified WCAG 2.1 AA — see design-system.md §2.4.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- Color: neutrals ---------- */
+  --omx-color-bg: #F5F6FA;             /* app background */
+  --omx-color-surface: #FFFFFF;        /* cards, sheets, nav */
+  --omx-color-surface-2: #EDEFF5;      /* inset areas, skeleton base, segmented track */
+  --omx-color-surface-raised: #FFFFFF; /* dialogs / sheets (uses shadow) */
+  --omx-color-border: #DADDE7;         /* decorative dividers only */
+  --omx-color-border-strong: #7C8297;  /* input/control borders (>= 3:1) */
+  --omx-color-text: #151A28;
+  --omx-color-text-muted: #4F566B;     /* secondary text (7.3:1) */
+  --omx-color-text-subtle: #6B7186;    /* placeholder/meta, min 4.5:1 on surface */
+  --omx-color-overlay: rgb(14 17 32 / 0.48); /* scrim behind sheets/dialogs */
+
+  /* ---------- Color: brand (Omni Indigo) ---------- */
+  --omx-color-primary: #4433C4;
+  --omx-color-primary-hover: #3727A8;
+  --omx-color-primary-active: #2D2090;
+  --omx-color-on-primary: #FFFFFF;
+  --omx-color-primary-subtle: #ECEAFD;   /* selected chip / active nav pill bg */
+  --omx-color-primary-text: #3A2BB0;     /* text on primary-subtle */
+  --omx-color-accent: #F5B94A;           /* illustration only — never for text */
+
+  /* ---------- Color: money semantics ---------- */
+  --omx-color-income: #03754F;
+  --omx-color-income-subtle: #E2F5EC;
+  --omx-color-expense: #B8321F;
+  --omx-color-expense-subtle: #FCEAE6;
+
+  /* ---------- Color: feedback ---------- */
+  --omx-color-success: #03754F;
+  --omx-color-success-subtle: #E2F5EC;
+  --omx-color-warning: #9A4A00;
+  --omx-color-warning-subtle: #FFF3D6;
+  --omx-color-danger: #B42318;
+  --omx-color-danger-hover: #93190F;
+  --omx-color-on-danger: #FFFFFF;
+  --omx-color-danger-subtle: #FDE8E6;
+  --omx-color-info: #1F4FC9;
+  --omx-color-info-subtle: #E6EEFE;
+
+  /* ---------- Color: focus & charts ---------- */
+  --omx-color-focus: #4433C4;
+  --omx-color-chart-bar: #4433C4;      /* single accent for category bars */
+  --omx-color-chart-income: #03754F;
+  --omx-color-chart-expense: #B8321F;  /* rendered with hatch pattern */
+  --omx-color-chart-track: #E4E6EE;
+  --omx-color-chart-grid: #DADDE7;
+
+  /* ---------- Typography ---------- */
+  --omx-font-sans: "IBM Plex Sans Thai", "IBM Plex Sans", system-ui, -apple-system,
+    "Segoe UI", "Noto Sans Thai", "Leelawadee UI", "Thonburi", sans-serif;
+  --omx-font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --omx-font-weight-regular: 400;
+  --omx-font-weight-medium: 500;
+  --omx-font-weight-semibold: 600;
+  --omx-font-weight-bold: 700;
+
+  /* type scale (rem; 1rem = 16px). Never go below --omx-text-sm for content. */
+  --omx-text-xs: 0.8125rem;   /* 13px — badges, chart ticks only */
+  --omx-text-sm: 0.875rem;    /* 14px — meta, helper text */
+  --omx-text-md: 1rem;        /* 16px — body (minimum for inputs & body) */
+  --omx-text-lg: 1.125rem;    /* 18px — card titles, list amounts */
+  --omx-text-xl: 1.375rem;    /* 22px — screen titles */
+  --omx-text-2xl: 1.75rem;    /* 28px — stat values */
+  --omx-text-3xl: 2.25rem;    /* 36px — balance hero (fluid, see .omx-amount-hero) */
+
+  --omx-leading-tight: 1.3;   /* numbers / Latin headings only */
+  --omx-leading-thai: 1.6;    /* default for any text that may contain Thai */
+  --omx-leading-relaxed: 1.75;
+
+  /* ---------- Spacing (4px grid) ---------- */
+  --omx-space-0: 0;
+  --omx-space-1: 0.25rem;  /* 4 */
+  --omx-space-2: 0.5rem;   /* 8 */
+  --omx-space-3: 0.75rem;  /* 12 */
+  --omx-space-4: 1rem;     /* 16 — mobile gutter */
+  --omx-space-5: 1.25rem;  /* 20 */
+  --omx-space-6: 1.5rem;   /* 24 */
+  --omx-space-8: 2rem;     /* 32 */
+  --omx-space-10: 2.5rem;  /* 40 */
+  --omx-space-12: 3rem;    /* 48 */
+  --omx-space-16: 4rem;    /* 64 */
+
+  /* ---------- Sizing ---------- */
+  --omx-touch-min: 44px;          /* WCAG target size (OMX-027 AC8) */
+  --omx-control-h: 48px;          /* inputs, primary buttons */
+  --omx-control-h-sm: 40px;       /* visual height; hit area padded to 44 */
+  --omx-bottom-nav-h: 64px;       /* + env(safe-area-inset-bottom) */
+  --omx-header-h: 56px;
+  --omx-side-nav-w: 248px;
+  --omx-content-max: 960px;
+  --omx-form-max: 560px;
+  --omx-safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* ---------- Radius ---------- */
+  --omx-radius-sm: 6px;     /* badges, chips */
+  --omx-radius-md: 10px;    /* inputs, buttons */
+  --omx-radius-lg: 16px;    /* cards */
+  --omx-radius-xl: 24px;    /* sheets (top corners), hero card */
+  --omx-radius-full: 999px; /* pills, FAB, avatars */
+
+  /* ---------- Elevation ---------- */
+  --omx-shadow-1: 0 1px 2px rgb(21 26 40 / 0.06), 0 1px 3px rgb(21 26 40 / 0.08);
+  --omx-shadow-2: 0 4px 12px rgb(21 26 40 / 0.08), 0 2px 4px rgb(21 26 40 / 0.06);
+  --omx-shadow-3: 0 12px 32px rgb(21 26 40 / 0.16), 0 4px 8px rgb(21 26 40 / 0.08);
+  --omx-shadow-fab: 0 6px 16px rgb(68 51 196 / 0.36);
+
+  /* ---------- Focus ring ---------- */
+  --omx-focus-ring: 0 0 0 2px var(--omx-color-surface), 0 0 0 4px var(--omx-color-focus);
+
+  /* ---------- Motion ---------- */
+  --omx-duration-instant: 80ms;
+  --omx-duration-fast: 150ms;   /* hover, press, toggle */
+  --omx-duration-base: 240ms;   /* sheet / dialog / toast enter */
+  --omx-duration-slow: 360ms;   /* chart bars grow, skeleton fade-out */
+  --omx-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --omx-ease-enter: cubic-bezier(0, 0, 0, 1);
+  --omx-ease-exit: cubic-bezier(0.3, 0, 1, 1);
+  --omx-skeleton-duration: 1.4s;
+
+  /* ---------- Z-index ---------- */
+  --omx-z-nav: 100;
+  --omx-z-banner: 200;
+  --omx-z-sheet: 300;
+  --omx-z-dialog: 400;
+  --omx-z-toast: 500;
+
+  /* ---------- Breakpoints (reference only — CSS vars can't be used in @media) ----------
+     sm 360px · md 768px (drop zone, 2-col forms) · lg 1024px (side nav, review split) · xl 1280px */
+  --omx-bp-md: 768px;
+  --omx-bp-lg: 1024px;
+}
+
+/* ---------- Dark theme tokens (shared block, applied two ways) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --omx-color-bg: #0E1120;
+    --omx-color-surface: #161A2C;
+    --omx-color-surface-2: #1F2439;
+    --omx-color-surface-raised: #1C2135;
+    --omx-color-border: #2C3250;
+    --omx-color-border-strong: #767E9E;
+    --omx-color-text: #ECEEF7;
+    --omx-color-text-muted: #AAB0C6;
+    --omx-color-text-subtle: #8D94AD;
+    --omx-color-overlay: rgb(0 0 0 / 0.6);
+    --omx-color-primary: #A9B1FF;
+    --omx-color-primary-hover: #C3C8FF;
+    --omx-color-primary-active: #D6D9FF;
+    --omx-color-on-primary: #14123A;
+    --omx-color-primary-subtle: #25265A;
+    --omx-color-primary-text: #C3C8FF;
+    --omx-color-accent: #F5B94A;
+    --omx-color-income: #4ADE9F;
+    --omx-color-income-subtle: #0F2E25;
+    --omx-color-expense: #FF8F7D;
+    --omx-color-expense-subtle: #3A1C1A;
+    --omx-color-success: #4ADE9F;
+    --omx-color-success-subtle: #0F2E25;
+    --omx-color-warning: #F8C25C;
+    --omx-color-warning-subtle: #33280F;
+    --omx-color-danger: #FF8F7D;
+    --omx-color-danger-hover: #FFB0A3;
+    --omx-color-on-danger: #2A0B07;
+    --omx-color-danger-subtle: #3A1C1A;
+    --omx-color-info: #94B8FF;
+    --omx-color-info-subtle: #18264A;
+    --omx-color-focus: #A9B1FF;
+    --omx-color-chart-bar: #A9B1FF;
+    --omx-color-chart-income: #4ADE9F;
+    --omx-color-chart-expense: #FF8F7D;
+    --omx-color-chart-track: #262B44;
+    --omx-color-chart-grid: #2C3250;
+    --omx-shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+    --omx-shadow-2: 0 4px 12px rgb(0 0 0 / 0.45);
+    --omx-shadow-3: 0 12px 32px rgb(0 0 0 / 0.6);
+    --omx-shadow-fab: 0 6px 16px rgb(0 0 0 / 0.5);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --omx-color-bg: #0E1120;
+  --omx-color-surface: #161A2C;
+  --omx-color-surface-2: #1F2439;
+  --omx-color-surface-raised: #1C2135;
+  --omx-color-border: #2C3250;
+  --omx-color-border-strong: #767E9E;
+  --omx-color-text: #ECEEF7;
+  --omx-color-text-muted: #AAB0C6;
+  --omx-color-text-subtle: #8D94AD;
+  --omx-color-overlay: rgb(0 0 0 / 0.6);
+  --omx-color-primary: #A9B1FF;
+  --omx-color-primary-hover: #C3C8FF;
+  --omx-color-primary-active: #D6D9FF;
+  --omx-color-on-primary: #14123A;
+  --omx-color-primary-subtle: #25265A;
+  --omx-color-primary-text: #C3C8FF;
+  --omx-color-accent: #F5B94A;
+  --omx-color-income: #4ADE9F;
+  --omx-color-income-subtle: #0F2E25;
+  --omx-color-expense: #FF8F7D;
+  --omx-color-expense-subtle: #3A1C1A;
+  --omx-color-success: #4ADE9F;
+  --omx-color-success-subtle: #0F2E25;
+  --omx-color-warning: #F8C25C;
+  --omx-color-warning-subtle: #33280F;
+  --omx-color-danger: #FF8F7D;
+  --omx-color-danger-hover: #FFB0A3;
+  --omx-color-on-danger: #2A0B07;
+  --omx-color-danger-subtle: #3A1C1A;
+  --omx-color-info: #94B8FF;
+  --omx-color-info-subtle: #18264A;
+  --omx-color-focus: #A9B1FF;
+  --omx-color-chart-bar: #A9B1FF;
+  --omx-color-chart-income: #4ADE9F;
+  --omx-color-chart-expense: #FF8F7D;
+  --omx-color-chart-track: #262B44;
+  --omx-color-chart-grid: #2C3250;
+  --omx-shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --omx-shadow-2: 0 4px 12px rgb(0 0 0 / 0.45);
+  --omx-shadow-3: 0 12px 32px rgb(0 0 0 / 0.6);
+  --omx-shadow-fab: 0 6px 16px rgb(0 0 0 / 0.5);
+}
+
+/* ---------- Motion preference (OMX-027 AC7) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --omx-duration-instant: 0ms;
+    --omx-duration-fast: 0ms;
+    --omx-duration-base: 0ms;
+    --omx-duration-slow: 0ms;
+    --omx-skeleton-duration: 0s; /* skeleton shows static, no shimmer */
+  }
+}
+
+/* ---------- Base (minimal, safe to import globally) ---------- */
+html {
+  font-family: var(--omx-font-sans);
+  font-size: 100%;               /* respect user/OS font size — never set px here */
+  line-height: var(--omx-leading-thai);
+  color: var(--omx-color-text);
+  background: var(--omx-color-bg);
+  -webkit-text-size-adjust: 100%;
+}
+body { margin: 0; font-size: var(--omx-text-md); background: var(--omx-color-bg); }
+
+:focus-visible { outline: none; box-shadow: var(--omx-focus-ring); border-radius: var(--omx-radius-sm); }
+
+/* Amounts: always tabular, never wrap mid-number */
+.omx-amount { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; white-space: nowrap; }
+.omx-amount--income { color: var(--omx-color-income); }
+.omx-amount--expense { color: var(--omx-color-expense); }
+/* Hero balance scales between 28px (320w) and 36px so 99,999,999.99 never overflows (OMX-018 AC5) */
+.omx-amount-hero { font-size: clamp(1.5rem, 1rem + 4.2vw, var(--omx-text-3xl)); line-height: var(--omx-leading-tight); }
+
+.omx-visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
