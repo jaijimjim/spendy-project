@@ -1,13 +1,13 @@
 {
   "summary": {
-    "runAt": "2026-11-13T15:05:23.366Z",
+    "runAt": "2026-11-13T15:21:55.586Z",
     "images": 27,
-    "ocrTotalSeconds": 40.2,
-    "ocrSecondsPerImage": 1.5,
+    "ocrTotalSeconds": 44.6,
+    "ocrSecondsPerImage": 1.7,
     "accuracy": {
       "type": 100,
       "amount": 96.3,
-      "category": 92.6,
+      "category": 100,
       "date": 100,
       "time": 100
     },
@@ -248,21 +248,21 @@
       },
       "app": {
         "type": "expense",
-        "category": "other",
+        "category": "transfer",
         "amountSatang": 200000,
         "date": "2026-11-07",
         "time": "12:00"
       },
       "reparsed": {
         "type": "expense",
-        "category": "other",
+        "category": "transfer",
         "amountSatang": 200000,
         "date": "2026-11-07"
       },
       "ok": {
         "type": true,
         "amount": true,
-        "category": false,
+        "category": true,
         "date": true,
         "time": true
       },
@@ -372,21 +372,21 @@
       },
       "app": {
         "type": "expense",
-        "category": "other",
+        "category": "transfer",
         "amountSatang": 1000,
         "date": "2026-11-09",
         "time": "21:10"
       },
       "reparsed": {
         "type": "expense",
-        "category": "other",
+        "category": "transfer",
         "amountSatang": 1000,
         "date": "2026-11-09"
       },
       "ok": {
         "type": true,
         "amount": true,
-        "category": false,
+        "category": true,
         "date": true,
         "time": true
       },

@@ -94,3 +94,9 @@
 | **Dev** | Dev-complete on all Must stories + stretch; CI/deploy workflows, README/ADRs | **Reviewed QA's fix commits** BUG-001 (`849a999`), BUG-002 (`4391555`), BUG-004 (`f023918`), BUG-005 (`202e6ab`) → all **OK** (notes in `docs/qa/bug-report.md`). **Fixed BUG-003** (320px overflow: `min-width: 0` on fields/controls/segments/grid items, compact filter button; 320px `scrollWidth` = 320 on all main screens TH/EN; 4 `test.fail` markers in TC-120 removed). **Fixed BUG-006** (OCR-tolerant person prefix: 1–2 stray Thai glyphs before นาย/นาง/นางสาว/น.ส., "นาข/นาซ" variant only after junk; 3 QA fixtures flipped from `knownBug` + 3 new Dev golden fixtures incl. 2 false-positive guards). **Fixed BUG-008** (EN placeholder → "Search name, note, amount", Designer approved). Verified: lint, typecheck, i18n, 209 unit tests (domain coverage 99% lines), build (170 KB gz), e2e 91 passed / 5 skipped (QA's intentional skips) incl. real OCR | B1 (push) / B2 (Client ID) unchanged. BUG-007 stays in backlog |
 
 **Board change:** BUG-003/006/008 → **QA re-test**. Open defects: BUG-007 (Low, backlog) only.
+
+### Day 4 — QA re-test (after Dev fixes `a1249eb..8c779d0`)
+- **BUG-003, BUG-006, BUG-008 → Closed** (re-test Pass). Open: BUG-007 Low only (known limitation)
+- Regression: Vitest **209/209** · Playwright **93 passed / 5 skipped / 0 failed** · build 170.2 KB gz
+- Layer B (27 images, real OCR): type **100%** · amount **96.3%** · category **100%** · date **100%**
+- TCs: **132 → Pass 118 · Fail 1 · Blocked 12 · Not run 1** · QA recommendation unchanged: **GO for UAT (conditional on B1 / B2 / Tier 1 mobile smoke)**

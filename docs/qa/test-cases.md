@@ -1,6 +1,6 @@
 # Test Cases — Omnitrix Money MVP_0001 (Sprint 1)
 
-> Owner: QA · Version 1.0 · Execution run: **2026-11-13** (Sprint 1 Day 4) บน local `vite preview` + Chromium 1243, TZ Asia/Bangkok
+> Owner: QA · Version 1.1 · Execution run: **2026-11-13** (Sprint 1 Day 4) + re-test หลัง Dev fix BUG-003/006/008 (`a1249eb..8c779d0`) บน local `vite preview` + Chromium 1243, TZ Asia/Bangkok
 > ครอบคลุม: ทุก **Must** story + **Should** ที่ Dev ทำเสร็จ (002, 009, 011, 015, 019, 020, 022, 023, 029 บางส่วน, 031)
 > Test plan: [`test-plan.md`](test-plan.md) · Bugs: [`bug-report.md`](bug-report.md) · Summary: [`test-summary-report.md`](test-summary-report.md)
 
@@ -18,7 +18,7 @@
 | X | [`tests/e2e/qa-explore.spec.ts`](../../tests/e2e/qa-explore.spec.ts) (QA matrix 375/1280 × TH/EN × light/dark) |
 | BM | [`tests/e2e/benchmark.real-ocr.spec.ts`](../../tests/e2e/benchmark.real-ocr.spec.ts) (Layer B real-OCR benchmark, 27 images) |
 | RO | [`tests/e2e/real-ocr.spec.ts`](../../tests/e2e/real-ocr.spec.ts) (Dev real-OCR smoke) |
-| G | [`src/domain/slip/qaGolden.test.ts`](../../src/domain/slip/qaGolden.test.ts) + [`__fixtures__/qaGolden.ts`](../../src/domain/slip/__fixtures__/qaGolden.ts) (QA Layer A, 32 fixtures) |
+| G | [`src/domain/slip/qaGolden.test.ts`](../../src/domain/slip/qaGolden.test.ts) + [`__fixtures__/qaGolden.ts`](../../src/domain/slip/__fixtures__/qaGolden.ts) (QA Layer A, 35 fixtures) |
 | P | `src/domain/slip/{parseSlip,amount,slipDate,typeAndCategory}.test.ts` (Dev parser unit) |
 | D | [`src/domain/domain.test.ts`](../../src/domain/domain.test.ts) (money, date, csv, schema, duplicates, file checks) |
 | S | `src/services/storage.test.ts`, `src/store/{appStore,queueStore}.test.ts` |
@@ -84,8 +84,8 @@
 | TC-066 | OMX-010 | Café Amazon (สาขา PTT) ชนะ PTT | — | `qa-cafe-amazon-beats-ptt`, b04 | food | P1 | unit + e2e | G, BM | Pass | 2026-11-13 |
 | TC-067 | OMX-010 | Bills / Housing / Shopping / Entertainment keyword | — | b05, b06, b09, b16, b17, b18 | bills/bills/housing/bills/shopping/entertainment | P1 | e2e | BM | Pass | 2026-11-13 |
 | TC-068 | OMX-010 | โอนให้บุคคล (คำนำหน้า นาย/น.ส./MR.) → transfer | — | b01, d15 | transfer | P1 | e2e | BM | Pass | 2026-11-13 |
-| TC-069 | OMX-010 | โอนให้บุคคลที่ OCR มี noise หน้าคำนำหน้า ("แนายข") | — | b08, b12, `qa-ocr-prefix-noise-nai` | transfer | P2 | unit + e2e | G (`it.fails`), BM | **Fail → BUG-006 (Medium)** | 2026-11-13 |
-| TC-070 | OMX-010 | Category accuracy gates | — | Layer A / Layer B | A: type/amount ≥ 95%; B: category ≥ 60% | P1 | unit + e2e | G, BM | Pass (A 100/100, B 92.6%) | 2026-11-13 |
+| TC-069 | OMX-010 | โอนให้บุคคลที่ OCR มี noise หน้าคำนำหน้า ("แนายข") | — | b08, b12, `qa-ocr-prefix-noise-nai` + guards "นาขวัญ ฟาร์มสุข", "สวนนายเฒ่า" | transfer (และไม่ false-positive) | P2 | unit + e2e | G, P, BM | Pass (after BUG-006 fix, re-test) | 2026-11-13 |
+| TC-070 | OMX-010 | Category accuracy gates | — | Layer A / Layer B | A: type/amount ≥ 95%; B: category ≥ 60% | P1 | unit + e2e | G, BM | Pass (A 100/100, B category 100%) | 2026-11-13 |
 | TC-073 | OMX-011 | Import slip ที่บันทึกแล้ว → "อาจซ้ำ" + unchecked | saved slip | import รูปเดิม | flagged Duplicate, ไม่ถูกเลือก | P2 | e2e | A "re-importing a saved slip" | Pass | 2026-11-13 |
 | TC-074 | OMX-011 | Possible duplicate โดย ref / amount+date+time±1+payee | — | unit | flagged possible | P2 | unit | D duplicates | Pass | 2026-11-13 |
 
@@ -115,7 +115,7 @@
 |---|---|---|---|---|---|---|---|---|---|---|
 | TC-093 | OMX-014 | ยอด 1,000,000.00 ไม่ล้นที่ 360px | seed | `#/transactions` 360px | ไม่มี overflow | P2 | e2e | Q TC-093/103 | Pass | 2026-11-13 |
 | TC-094 | OMX-014 | Group ตามวันที่ ใหม่สุดก่อน, ไม่มีเวลาอยู่ท้าย | seed | unit + ดูหน้า | ลำดับถูก, ยอดรวมต่อวัน | P1 | unit | D "groups by date newest first" | Pass | 2026-11-13 |
-| TC-095 | OMX-015, 025 | Placeholder ช่องค้นหา EN อ่านได้ที่ 375px | EN, 375px | ดู `#/transactions` | placeholder ไม่ถูกตัด | P3 | manual | X screenshot | **Fail → BUG-008 (Low)** | 2026-11-13 |
+| TC-095 | OMX-015, 025 | Placeholder ช่องค้นหา EN อ่านได้ที่ 375px | EN, 375px | ดู `#/transactions` | placeholder ไม่ถูกตัด | P3 | manual | X screenshot | Pass (after BUG-008 fix, re-test) | 2026-11-13 |
 | TC-096 | OMX-015 | Filter type/category + search (comma, regex chars) | seed | ค้นหา `1,385` / `(` | ผลถูก, ไม่ crash | P2 | unit + e2e | D, A "filters & search" | Pass | 2026-11-13 |
 | TC-097 | OMX-015 | Filter คงอยู่เมื่อเปลี่ยนเดือน | filter active | เปลี่ยนเดือน | filter ยังอยู่ | P2 | e2e | Q TC-097 | Pass | 2026-11-13 |
 | TC-098 | OMX-016 | แก้ไขแล้ว list/total อัปเดต | seed | edit amount | ยอดใหม่ | P1 | e2e | A | Pass | 2026-11-13 |
@@ -157,7 +157,7 @@
 | TC-119 | OMX-024 | สลับภาษาทันที + persist + `<html lang>` | — | สลับ TH↔EN, reload | ข้อความเปลี่ยน, lang attr ถูก | P1 | e2e | A "language switch" | Pass | 2026-11-13 |
 | TC-121 | OMX-024 | TH/EN key parity, ไม่มี raw key | — | `npm run i18n:check` + X | 345 keys parity; ไม่มี raw key ทุกหน้า | P1 | unit + e2e | `scripts/check-i18n-keys.mjs`, X | Pass | 2026-11-13 |
 | TC-122 | OMX-024 | EN UI ไม่มีข้อความไทยหลงเหลือ (ยกเว้น "ไทย" ในปุ่มภาษา) | EN | X ทุกหน้า | ไม่มี | P2 | e2e | X | Pass | 2026-11-13 |
-| TC-120 | OMX-025 | ไม่มี horizontal scroll ที่ **320px** | 320×640 | `#/transactions`, `#/transactions/new` | scrollWidth ≤ 320 | P2 | e2e | Q TC-120 (`test.fail`) | **Fail → BUG-003 (Medium)** | 2026-11-13 |
+| TC-120 | OMX-025 | ไม่มี horizontal scroll ที่ **320px** | 320×640 | `#/transactions`, `#/transactions/new` | scrollWidth ≤ 320 | P2 | e2e | Q TC-120 | Pass (after BUG-003 fix, re-test) | 2026-11-13 |
 | TC-124 | OMX-025 | ไม่มี horizontal scroll ที่ 375 / 1280 ทุกหน้า (TH/EN, light/dark) | — | X matrix | ผ่านทุกหน้า | P1 | e2e | X | Pass | 2026-11-13 |
 | TC-125 | OMX-025 | Bottom nav (mobile) / side nav (≥1024) + Add action sheet | — | ดู 375 / 1280 | ลำดับ Home·Transactions·Add·Settings, sheet 3 ตัวเลือก | P1 | e2e + manual | screens, X, M | Pass | 2026-11-13 |
 | TC-126 | OMX-025 | HashRouter deep link ทุกหน้า | — | เปิด URL ตรง | โหลดได้ ไม่ 404 | P1 | e2e | A, X | Pass (local; Pages = Blocked B1) | 2026-11-13 |
@@ -198,8 +198,8 @@
 | TC-151 | 024–027 | Matrix TH dark | seed | X | + dark bg | P2 | e2e | X | Pass | 2026-11-13 |
 | TC-152 | 024–027 | Matrix EN light | seed | X | + ไม่มีไทยใน UI chrome | P1 | e2e | X | Pass | 2026-11-13 |
 | TC-153 | 024–027 | Matrix EN dark | seed | X | ตามข้างต้น | P2 | e2e | X | Pass | 2026-11-13 |
-| TC-160 | 006–010 | Layer A golden OCR-text (32 fixtures) | — | `npm test` | type/amount ≥ 95% | P1 | unit | G | Pass (type 100%, amount 100%, date 100%, category 90.6% — 3 = BUG-006) | 2026-11-13 |
-| TC-161 | 006–010 | Layer B real-OCR benchmark (27 images: 18 base + 9 degraded) | built app | BM | type ≥ 90, amount ≥ 80, category ≥ 60 | P1 | e2e | BM | Pass (100 / 96.3 / 92.6; date 100) | 2026-11-13 |
+| TC-160 | 006–010 | Layer A golden OCR-text (32 fixtures) | — | `npm test` | type/amount ≥ 95% | P1 | unit | G | Pass (35 fixtures: type/amount/date/category 100%) | 2026-11-13 |
+| TC-161 | 006–010 | Layer B real-OCR benchmark (27 images: 18 base + 9 degraded) | built app | BM | type ≥ 90, amount ≥ 80, category ≥ 60 | P1 | e2e | BM | Pass (type 100 / amount 96.3 / category 100; date 100) | 2026-11-13 |
 | TC-162 | 006–010 | Robustness: JPEG q35–55 low-res, blur, rotate 2°, dark theme | — | BM d13–d24 | ผลเท่ากับ base | P2 | e2e | BM | Pass (9/9 all fields) | 2026-11-13 |
 | TC-163 | 006–010 | Real-world accuracy (Layer C / customer slips) | สลิปจริง | วัด accuracy | ตาม MVP metrics | P1 | manual | — | Blocked (ยังไม่ได้รับสลิป A5; UAT exit #3) | — |
 
@@ -209,10 +209,10 @@
 
 | Result | Count |
 |---|---|
-| Pass | 115 (รวม 4 เคสที่ Pass หลัง QA แก้ BUG-001/002/004/005 และ re-test) |
-| Fail | 4 — TC-069 (BUG-006 Medium), TC-120 (BUG-003 Medium), TC-045 (BUG-007 Low), TC-095 (BUG-008 Low) |
+| Pass | 118 (รวม 7 เคสที่ Pass หลังแก้ BUG-001/002/003/004/005/006/008 และ re-test) |
+| Fail | 1 — TC-045 (BUG-007 Low, backlog / known limitation) |
 | Blocked | 12 — B1 (push/Pages): TC-137, 138, 139 · B2 (Google Client ID): TC-015, 016, 017 · อุปกรณ์จริง/เครื่องมือ: TC-008, 118, 135, 141 · data (Layer C): TC-163 · partial: TC-149 (gitleaks) |
 | Not run | 1 — TC-142 (1,000 rows perf, ต้องอุปกรณ์อ้างอิง) |
 | **Total** | **132** |
 
-> นับตามแถวในตาราง (TC ที่ "Pass (after fix)" = Pass หลัง re-test). Automated run counts: Vitest 197/197 · Playwright mobile+desktop+screens 87 passed / 1 skipped (by design) · qa-explore 4/4 · real-ocr 2/2
+> นับตามแถวในตาราง (TC ที่ "Pass (after fix)" = Pass หลัง re-test). Automated run counts (re-test): Vitest 209/209 · Playwright 93 passed / 5 skipped (by design) / 0 failed (mobile+desktop+screens+explore+real-ocr)
