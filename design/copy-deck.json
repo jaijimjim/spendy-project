@@ -534,7 +534,7 @@
       "dayTotal": "Day total {{amount}}",
       "noPayee": "No payee",
       "searchLabel": "Search transactions",
-      "searchPlaceholder": "Search payee, note or amount",
+      "searchPlaceholder": "Search name, note, amount",
       "filters": "Filters",
       "filtersCount": "Filters ({{count}})",
       "filterType": "Type",
