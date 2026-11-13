@@ -47,24 +47,10 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
   expect(files.length).toBeGreaterThan(0);
 
   await setup(page, { ocr: 'real', now: `${expectedFile.today}T10:00:00+07:00` }, 'en');
-  await page.goto('./#/add');
-  const started = Date.now();
-  await page.getByTestId('file-input').setInputFiles(
-    files.map((f) => ({
-      name: f,
-      mimeType: f.endsWith('.png') ? 'image/png' : 'image/jpeg',
-      buffer: readFileSync(join(DIR, 'images', f)),
-    })),
-  );
-  await expect(page.getByRole('button', { name: `Review (${files.length} ready)` })).toBeVisible({
-    timeout: 18 * 60_000,
-  });
-  const totalMs = Date.now() - started;
-  await page.getByRole('button', { name: /Review \(/ }).click();
-
-  const cards = page.getByTestId('review-card');
-  await expect(cards).toHaveCount(files.length);
-
+  // The import queue holds at most 20 images (OMX-001 AC4) → benchmark in batches, reloading the
+  // page between batches to start from an empty in-memory queue.
+  const BATCH = 10;
+  let totalMs = 0;
   const rows: {
     file: string;
     expected: (typeof expectedFile.images)[string]['expected'];
@@ -79,48 +65,72 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
     ok: Record<'type' | 'amount' | 'category' | 'date' | 'time', boolean>;
     rawText: string;
   }[] = [];
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i]!;
-    const exp = expectedFile.images[file]!.expected;
-    const card = cards.nth(i);
-    const rawText = (await card.locator('details pre').textContent()) ?? '';
-    const appType = (
-      await card.getByRole('radio', { checked: true }).first().textContent()
-    )?.includes('Income')
-      ? 'income'
-      : 'expense';
-    const appAmount = await card.getByLabel('Amount (THB)').inputValue();
-    const appDate = await card.locator('input[type="date"]').first().inputValue();
-    const appTime = await card.locator('input[type="time"]').first().inputValue();
-    const catText = (await card.locator('p').nth(1).textContent())?.trim() ?? '';
-    const appCategory = CATEGORY_BY_EN_NAME[catText] ?? `?${catText}`;
-    const parsed = parseSlip(rawText, expectedFile.today);
-    const appSatang = appAmount ? Math.round(Number(appAmount.replace(/,/g, '')) * 100) : null;
-    rows.push({
-      file,
-      expected: exp,
-      app: {
-        type: appType,
-        category: appCategory,
-        amountSatang: appSatang,
-        date: appDate,
-        time: appTime || null,
-      },
-      reparsed: {
-        type: parsed.type,
-        category: parsed.categoryId,
-        amountSatang: parsed.amountSatang,
-        date: parsed.flags.noDate ? null : parsed.date,
-      },
-      ok: {
-        type: appType === exp.type,
-        amount: appSatang === exp.amountSatang,
-        category: appCategory === exp.category,
-        date: appDate === exp.date,
-        time: (appTime || null) === (exp.time ?? null),
-      },
-      rawText,
+  for (let start = 0; start < files.length; start += BATCH) {
+    const batch = files.slice(start, start + BATCH);
+    await page.goto('./#/add');
+    await page.reload();
+    const started = Date.now();
+    await page.getByTestId('file-input').setInputFiles(
+      batch.map((f) => ({
+        name: f,
+        mimeType: f.endsWith('.png') ? 'image/png' : 'image/jpeg',
+        buffer: readFileSync(join(DIR, 'images', f)),
+      })),
+    );
+    await expect(page.getByRole('button', { name: `Review (${batch.length} ready)` })).toBeVisible({
+      timeout: 8 * 60_000,
     });
+    totalMs += Date.now() - started;
+    await page.getByRole('button', { name: /Review \(/ }).click();
+
+    const cards = page.getByTestId('review-card');
+    await expect(cards).toHaveCount(batch.length);
+
+    for (let i = 0; i < batch.length; i++) {
+      const file = batch[i]!;
+      const exp = expectedFile.images[file]!.expected;
+      const card = cards.nth(i);
+      const rawText = (await card.locator('details pre').textContent()) ?? '';
+      const appType = (
+        await card.getByRole('radio', { checked: true }).first().textContent()
+      )?.includes('Income')
+        ? 'income'
+        : 'expense';
+      const appAmount = await card.getByLabel('Amount (THB)').inputValue();
+      const appDate = await card.locator('input[type="date"]').first().inputValue();
+      const appTime = await card.locator('input[type="time"]').first().inputValue();
+      const catText = (await card.locator('p').nth(1).textContent())?.trim() ?? '';
+      const appCategory = CATEGORY_BY_EN_NAME[catText] ?? `?${catText}`;
+      const parsed = parseSlip(rawText, expectedFile.today);
+      const appSatang = appAmount ? Math.round(Number(appAmount.replace(/,/g, '')) * 100) : null;
+      rows.push({
+        file,
+        expected: exp,
+        app: {
+          type: appType,
+          category: appCategory,
+          amountSatang: appSatang,
+          date: appDate,
+          time: appTime || null,
+        },
+        reparsed: {
+          type: parsed.type,
+          category: parsed.categoryId,
+          amountSatang: parsed.amountSatang,
+          date: parsed.flags.noDate ? null : parsed.date,
+        },
+        ok: {
+          type: appType === exp.type,
+          amount: appSatang === exp.amountSatang,
+          category: appCategory === exp.category,
+          date: appDate === exp.date,
+          time: (appTime || null) === (exp.time ?? null),
+        },
+        rawText,
+      });
+    }
+    // Leave Review without saving: the leave-guard dialog may appear — accept it.
+    page.once('dialog', (d) => void d.accept());
   }
 
   const n = rows.length;

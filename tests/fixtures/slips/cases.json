@@ -340,6 +340,175 @@
         "time": "21:10"
       },
       "covers": ["OMX-031 AC2"]
+    },
+    {
+      "id": "b13-salary-th-bonus-month",
+      "template": "salary-th",
+      "data": {
+        "accent": "#7a2e2e",
+        "employer": "บริษัท ตัวอย่างการค้า จำกัด",
+        "employee": "นางสาว ทดสอบ ข้อมูล",
+        "employeeId": "E-0107",
+        "period": "กันยายน 2569",
+        "earningRows": [
+          ["เงินเดือน", "28,000.00"],
+          ["โบนัส", "5,000.00"],
+          ["ค่าเดินทาง", "1,200.00"]
+        ],
+        "gross": "34,200.00",
+        "deductionRows": [
+          ["ประกันสังคม", "750.00"],
+          ["ภาษีหัก ณ ที่จ่าย", "980.50"],
+          ["กองทุนสำรองเลี้ยงชีพ", "1,400.00"]
+        ],
+        "totalDeduction": "3,130.50",
+        "net": "31,069.50",
+        "payDate": "30/09/2569",
+        "account": "xxx-x-x5678-x"
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 3106950,
+        "date": "2026-09-30",
+        "time": null
+      },
+      "covers": [
+        "OMX-006 AC1 (salary beats โบนัส keyword)",
+        "OMX-007 AC2 (net with satang)",
+        "OMX-008 AC5"
+      ]
+    },
+    {
+      "id": "b14-salary-en-ce-paydate",
+      "template": "salary-en",
+      "data": {
+        "accent": "#3d5a80",
+        "employer": "Sample Trading Co., Ltd.",
+        "employee": "Data Tester",
+        "employeeId": "E-0311",
+        "period": "November 2026",
+        "earningRows": [
+          ["Basic Salary", "38,500.00"],
+          ["Allowance", "1,500.00"]
+        ],
+        "gross": "40,000.00",
+        "deductionRows": [
+          ["Social Security", "750.00"],
+          ["Withholding Tax", "1,125.00"]
+        ],
+        "totalDeduction": "1,875.00",
+        "net": "38,125.00"
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 3812500,
+        "date": "2026-11-13",
+        "time": null
+      },
+      "note": "No pay-date label → last day of period = 2026-11-30 (OMX-008 AC5), which is after today 2026-11-13 → AC6 fallback to today + highlighted hint.",
+      "covers": [
+        "OMX-007 AC2 (Net Pay)",
+        "OMX-008 AC5 + AC6 (period end in the future → today fallback)"
+      ]
+    },
+    {
+      "id": "b15-received-en",
+      "template": "transfer-en",
+      "data": {
+        "accent": "#2d6a4f",
+        "bankName": "Sample Test Bank",
+        "title": "Money received",
+        "when": "05 Nov 2026 16:40",
+        "fromName": "MS. SAMPLE FRIEND",
+        "fromAcct": "xxx-x-x2468-x",
+        "toName": "MR. TEST SYSTEM",
+        "toSub": "xxx-x-x1234-x",
+        "amount": "750.00",
+        "fee": "0.00",
+        "ref": "2026110516400077"
+      },
+      "expected": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 75000,
+        "date": "2026-11-05",
+        "time": "16:40"
+      },
+      "covers": ["OMX-006 AC2 (EN received)", "OMX-010 AC6"]
+    },
+    {
+      "id": "b16-bill-water-thai-digits",
+      "template": "bill",
+      "data": {
+        "accent": "#1b6f8a",
+        "bankName": "ธนาคารตัวอย่าง",
+        "title": "จ่ายบิลสำเร็จ",
+        "when": "3 พ.ย. 2569 08:05 น.",
+        "toName": "การประปานครหลวง",
+        "toSub": "ค่าน้ำประปา",
+        "customerRef": "9876543210",
+        "amount": "๓๕๒.๕๐",
+        "fee": "0.00",
+        "ref": "BP2026110308050033"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 35250,
+        "date": "2026-11-03",
+        "time": "08:05"
+      },
+      "covers": ["OMX-007 AC5 (Thai digits)", "OMX-008 AC1 (4-digit BE)", "OMX-010 AC1 (การประปา)"]
+    },
+    {
+      "id": "b17-qr-shopee-shopping",
+      "template": "qr-payment",
+      "data": {
+        "accent": "#a4471e",
+        "bankName": "ธนาคารตัวอย่าง",
+        "scheme": "พร้อมเพย์ / PromptPay QR",
+        "title": "ชำระเงินสำเร็จ",
+        "when": "06/11/2569 20:30",
+        "toName": "Shopee (Thailand)",
+        "toSub": "ร้านค้า QR",
+        "amount": "1,099.00",
+        "ref": "QR20261106203000"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "shopping",
+        "amountSatang": 109900,
+        "date": "2026-11-06",
+        "time": "20:30"
+      },
+      "covers": ["OMX-008 AC2 (06/11 = 6 Nov, not Jun 11)", "OMX-010 AC2 (shopping)"]
+    },
+    {
+      "id": "b18-transfer-en-netflix-ce",
+      "template": "transfer-en",
+      "data": {
+        "accent": "#5b3f8c",
+        "bankName": "Sample Test Bank",
+        "title": "Payment successful",
+        "when": "02/11/2026 22:10",
+        "fromName": "MR. TEST SYSTEM",
+        "fromAcct": "xxx-x-x1234-x",
+        "toName": "NETFLIX",
+        "toSub": "Subscription",
+        "amount": "419.00",
+        "fee": "0.00",
+        "ref": "2026110222100009"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "entertainment",
+        "amountSatang": 41900,
+        "date": "2026-11-02",
+        "time": "22:10"
+      },
+      "covers": ["OMX-008 AC2 (dd/mm/CE)", "OMX-010 AC2 (entertainment)"]
     }
   ],
   "variants": [
@@ -362,6 +531,46 @@
       "base": "b01-transfer-th-person",
       "bodyClass": "dark",
       "covers": ["robustness: dark theme"]
+    },
+    {
+      "id": "d19-b10-jpeg-lowres",
+      "base": "b10-salary-th-table",
+      "scale": 0.75,
+      "format": "jpeg",
+      "quality": 55,
+      "covers": ["robustness: salary JPEG q55 low-res"]
+    },
+    {
+      "id": "d20-b11-dark",
+      "base": "b11-salary-en-two-column",
+      "bodyClass": "dark",
+      "covers": ["robustness: salary EN dark theme"]
+    },
+    {
+      "id": "d21-b03-rotated-blur",
+      "base": "b03-transfer-en-grab-ride",
+      "bodyClass": "rotate blur",
+      "covers": ["robustness: EN transfer 2° rotation + blur"]
+    },
+    {
+      "id": "d22-b05-jpeg-q35",
+      "base": "b05-bill-electricity",
+      "scale": 0.75,
+      "format": "jpeg",
+      "quality": 35,
+      "covers": ["robustness: heavy JPEG q35 low-res"]
+    },
+    {
+      "id": "d23-b07-blur",
+      "base": "b07-received-th",
+      "bodyClass": "blur",
+      "covers": ["robustness: blur only"]
+    },
+    {
+      "id": "d24-b13-rotated",
+      "base": "b13-salary-th-bonus-month",
+      "bodyClass": "rotate",
+      "covers": ["robustness: salary rotated 2°"]
     }
   ]
 }

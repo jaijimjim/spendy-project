@@ -189,6 +189,99 @@
         "OMX-031 AC2"
       ]
     },
+    "b13-salary-th-bonus-month.png": {
+      "case": "b13-salary-th-bonus-month",
+      "template": "salary-th",
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 3106950,
+        "date": "2026-09-30",
+        "time": null
+      },
+      "covers": [
+        "OMX-006 AC1 (salary beats โบนัส keyword)",
+        "OMX-007 AC2 (net with satang)",
+        "OMX-008 AC5"
+      ]
+    },
+    "b14-salary-en-ce-paydate.png": {
+      "case": "b14-salary-en-ce-paydate",
+      "template": "salary-en",
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 3812500,
+        "date": "2026-11-13",
+        "time": null
+      },
+      "covers": [
+        "OMX-007 AC2 (Net Pay)",
+        "OMX-008 AC5 + AC6 (period end in the future → today fallback)"
+      ],
+      "note": "No pay-date label → last day of period = 2026-11-30 (OMX-008 AC5), which is after today 2026-11-13 → AC6 fallback to today + highlighted hint."
+    },
+    "b15-received-en.png": {
+      "case": "b15-received-en",
+      "template": "transfer-en",
+      "expected": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 75000,
+        "date": "2026-11-05",
+        "time": "16:40"
+      },
+      "covers": [
+        "OMX-006 AC2 (EN received)",
+        "OMX-010 AC6"
+      ]
+    },
+    "b16-bill-water-thai-digits.png": {
+      "case": "b16-bill-water-thai-digits",
+      "template": "bill",
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 35250,
+        "date": "2026-11-03",
+        "time": "08:05"
+      },
+      "covers": [
+        "OMX-007 AC5 (Thai digits)",
+        "OMX-008 AC1 (4-digit BE)",
+        "OMX-010 AC1 (การประปา)"
+      ]
+    },
+    "b17-qr-shopee-shopping.png": {
+      "case": "b17-qr-shopee-shopping",
+      "template": "qr-payment",
+      "expected": {
+        "type": "expense",
+        "category": "shopping",
+        "amountSatang": 109900,
+        "date": "2026-11-06",
+        "time": "20:30"
+      },
+      "covers": [
+        "OMX-008 AC2 (06/11 = 6 Nov, not Jun 11)",
+        "OMX-010 AC2 (shopping)"
+      ]
+    },
+    "b18-transfer-en-netflix-ce.png": {
+      "case": "b18-transfer-en-netflix-ce",
+      "template": "transfer-en",
+      "expected": {
+        "type": "expense",
+        "category": "entertainment",
+        "amountSatang": 41900,
+        "date": "2026-11-02",
+        "time": "22:10"
+      },
+      "covers": [
+        "OMX-008 AC2 (dd/mm/CE)",
+        "OMX-010 AC2 (entertainment)"
+      ]
+    },
     "d13-b02-jpeg-lowres.jpg": {
       "case": "b02-transfer-th-grabfood-balance",
       "template": "transfer-th",
@@ -251,6 +344,133 @@
         "OMX-008 AC1",
         "OMX-010 AC5",
         "robustness: dark theme"
+      ]
+    },
+    "d19-b10-jpeg-lowres.jpg": {
+      "case": "b10-salary-th-table",
+      "template": "salary-th",
+      "variant": {
+        "scale": 0.75,
+        "format": "jpeg",
+        "quality": 55
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4620000,
+        "date": "2026-10-25",
+        "time": null
+      },
+      "covers": [
+        "OMX-006 AC1/AC6 (salary vs 'โอนเข้าบัญชี')",
+        "OMX-007 AC2 (net, never gross)",
+        "OMX-008 AC5 (pay date)",
+        "robustness: salary JPEG q55 low-res"
+      ]
+    },
+    "d20-b11-dark.png": {
+      "case": "b11-salary-en-two-column",
+      "template": "salary-en",
+      "variant": {
+        "bodyClass": "dark",
+        "format": "png"
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 4935075,
+        "date": "2026-10-31",
+        "time": null
+      },
+      "covers": [
+        "OMX-007 AC2 (Net Pay)",
+        "OMX-008 AC5 (no pay date → last day of period)",
+        "robustness: salary EN dark theme"
+      ]
+    },
+    "d21-b03-rotated-blur.png": {
+      "case": "b03-transfer-en-grab-ride",
+      "template": "transfer-en",
+      "variant": {
+        "bodyClass": "rotate blur",
+        "format": "png"
+      },
+      "expected": {
+        "type": "expense",
+        "category": "transport",
+        "amountSatang": 125050,
+        "date": "2026-11-10",
+        "time": "08:15"
+      },
+      "covers": [
+        "OMX-006 AC3 (EN)",
+        "OMX-007 AC4 (THB suffix)",
+        "OMX-008 AC2 (EN date)",
+        "OMX-010 AC2 (Grab = transport)",
+        "robustness: EN transfer 2° rotation + blur"
+      ]
+    },
+    "d22-b05-jpeg-q35.jpg": {
+      "case": "b05-bill-electricity",
+      "template": "bill",
+      "variant": {
+        "scale": 0.75,
+        "format": "jpeg",
+        "quality": 35
+      },
+      "expected": {
+        "type": "expense",
+        "category": "bills",
+        "amountSatang": 138500,
+        "date": "2026-11-12",
+        "time": "19:40"
+      },
+      "covers": [
+        "OMX-006 AC3 (จ่ายบิลสำเร็จ)",
+        "OMX-007 AC3 (10-digit customer ref excluded)",
+        "OMX-010 AC1",
+        "robustness: heavy JPEG q35 low-res"
+      ]
+    },
+    "d23-b07-blur.png": {
+      "case": "b07-received-th",
+      "template": "transfer-th",
+      "variant": {
+        "bodyClass": "blur",
+        "format": "png"
+      },
+      "expected": {
+        "type": "income",
+        "category": "other_income",
+        "amountSatang": 300000,
+        "date": "2026-11-08",
+        "time": "18:20"
+      },
+      "covers": [
+        "OMX-006 AC2 (received)",
+        "OMX-010 AC6",
+        "robustness: blur only"
+      ]
+    },
+    "d24-b13-rotated.png": {
+      "case": "b13-salary-th-bonus-month",
+      "template": "salary-th",
+      "variant": {
+        "bodyClass": "rotate",
+        "format": "png"
+      },
+      "expected": {
+        "type": "income",
+        "category": "salary",
+        "amountSatang": 3106950,
+        "date": "2026-09-30",
+        "time": null
+      },
+      "covers": [
+        "OMX-006 AC1 (salary beats โบนัส keyword)",
+        "OMX-007 AC2 (net with satang)",
+        "OMX-008 AC5",
+        "robustness: salary rotated 2°"
       ]
     }
   }
