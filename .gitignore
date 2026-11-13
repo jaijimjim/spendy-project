@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+*.log
+.env
+.env.local
+.env.*.local
+# Tesseract assets are copied from pinned npm packages at build time (ADR-0001)
+public/tesseract/
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
