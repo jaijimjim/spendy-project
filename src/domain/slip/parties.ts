@@ -145,8 +145,17 @@ export function extractParties(lines: string[], text: string): Parties {
 export const PERSON_PREFIX =
   /^(?:นาย|นางสาว|นาง|น\.ส\.?|ด\.ช\.|ด\.ญ\.|Mr\.?|Mrs\.?|Ms\.?|Miss)(?:\s|(?=[฀-๿]))/i;
 
+/**
+ * OCR-tolerant personal prefix (BUG-006): Tesseract often adds 1–2 stray Thai glyphs before the
+ * prefix ("แนายข", "นแนายข") and may read "ย" as "ข". The "นาข" variant is only accepted after
+ * such junk (so real words like "นาขวัญ" don't count), and never before a vowel/tone mark.
+ */
+const NOISY_PERSON_PREFIX = /^[ก-๏]{1,2}?(?:นาย|นางสาว|นาง|น\.ส\.?|นา[ขซ](?![ัิ-ฺ็-๎]))(?:\s|(?=[ก-ฮ]))/;
+
 export function looksLikePerson(name: string): boolean {
-  return PERSON_PREFIX.test(name.trim()) && !COMPANY_RE.test(name);
+  const n = name.trim();
+  if (COMPANY_RE.test(n)) return false;
+  return PERSON_PREFIX.test(n) || NOISY_PERSON_PREFIX.test(n);
 }
 
 export function isCompany(name: string): boolean {

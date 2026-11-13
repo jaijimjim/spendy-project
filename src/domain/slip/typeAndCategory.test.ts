@@ -182,3 +182,18 @@ describe('parties (OMX-009)', () => {
     expect(normalizePayee(undefined)).toBe('');
   });
 });
+
+describe('BUG-006: OCR-noisy personal prefixes', () => {
+  it.each(['แนายข ทดสอบ ระบบ', 'นแนายข ทดสอบ ระบบ', 'แนาขกถก ทดสอบ', 'ขนางสาว สมใจ', 'น.ส. สมใจ'])(
+    '%s → person',
+    (n) => {
+      expect(looksLikePerson(n)).toBe(true);
+    },
+  );
+  it.each(['นาขวัญ ฟาร์มสุข', 'สวนนายเฒ่า', 'นาข้าวดี', 'แนายข จำกัด บริษัท ก จำกัด'])(
+    '%s → not person',
+    (n) => {
+      expect(looksLikePerson(n)).toBe(false);
+    },
+  );
+});

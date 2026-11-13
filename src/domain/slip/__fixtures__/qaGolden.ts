@@ -236,6 +236,24 @@ export const QA_FIXTURES: QaFixture[] = [
     knownBug: [],
   },
   {
+    id: 'dev-bug006-junk-before-nangsao',
+    text: 'โอนเงินสำเร็จ\n9 พ.ย. 69 21:10 น.\nไปยัง\nขนางสาว สมใจ ใจดี\nจำนวนเงิน 150.00 บาท',
+    expected: { type: 'expense', category: 'transfer', amountSatang: 15000, date: '2026-11-09' },
+    knownBug: [],
+  },
+  {
+    id: 'dev-bug006-no-false-positive-shop-name',
+    text: 'ชำระเงินสำเร็จ\n9 พ.ย. 69 21:10 น.\nไปยัง\nนาขวัญ ฟาร์มสุข\nจำนวนเงิน 150.00 บาท',
+    expected: { type: 'expense', category: 'other', amountSatang: 15000, date: '2026-11-09' },
+    knownBug: [],
+  },
+  {
+    id: 'dev-bug006-no-false-positive-nai-inside-word',
+    text: 'ชำระเงินสำเร็จ\n9 พ.ย. 69 21:10 น.\nไปยัง\nสวนนายเฒ่า\nจำนวนเงิน 150.00 บาท',
+    expected: { type: 'expense', category: 'other', amountSatang: 15000, date: '2026-11-09' },
+    knownBug: [],
+  },
+  {
     id: 'qa-ocr-prefix-noise-nai',
     text: 'โอนเงินสำเร็จ\n9 พ.ย. 69 21:10 น.\nไปยัง\nแนายข ทดสอบ ระบบ\nจำนวนเงิน 10.00 บาท',
     expected: {
@@ -244,7 +262,7 @@ export const QA_FIXTURES: QaFixture[] = [
       amountSatang: 1000,
       date: '2026-11-09',
     },
-    knownBug: ['BUG-006'],
+    knownBug: [],
   },
   {
     id: 'rec-b01-transfer-th-person',
@@ -340,7 +358,7 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-07',
       time: '12:00',
     },
-    knownBug: ['BUG-006'],
+    knownBug: [],
   },
   {
     id: 'rec-b09-transfer-company-rent-month-end',
@@ -388,6 +406,6 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-09',
       time: '21:10',
     },
-    knownBug: ['BUG-006'],
+    knownBug: [],
   },
 ];
