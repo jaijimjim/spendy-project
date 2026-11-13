@@ -1,9 +1,9 @@
 {
   "summary": {
-    "runAt": "2026-11-13T14:50:54.548Z",
+    "runAt": "2026-11-13T15:05:23.366Z",
     "images": 27,
-    "ocrTotalSeconds": 42.8,
-    "ocrSecondsPerImage": 1.6,
+    "ocrTotalSeconds": 40.2,
+    "ocrSecondsPerImage": 1.5,
     "accuracy": {
       "type": 100,
       "amount": 96.3,
