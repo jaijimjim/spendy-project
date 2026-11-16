@@ -53,4 +53,14 @@ export default tseslint.config(
     files: ['scripts/**/*.{js,mjs}', 'tests/**/*.ts', '*.config.{js,ts}'],
     languageOptions: { globals: globals.node },
   },
+  {
+    // CommonJS Playwright scripts (e.g. record-demo.cjs): Node at the top level, plus
+    // browser globals for the callbacks they pass to page.evaluate / addInitScript.
+    files: ['scripts/**/*.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: { ...globals.node, ...globals.browser },
+    },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
 );
