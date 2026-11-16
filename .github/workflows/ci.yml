@@ -61,7 +61,14 @@ jobs:
           test -f dist/tesseract/worker.min.js
           test -f dist/tesseract/lang/tha.traineddata.gz
           test -f dist/tesseract/lang/eng.traineddata.gz
-          ! grep -rE "cdn\.jsdelivr|unpkg\.com|fonts\.googleapis" dist/assets/*.js
+          # tesseract.js ships an unused default workerPath on jsDelivr; tesseractEngine.ts always
+          # overrides workerPath/corePath/langPath with self-hosted assets (ADR-0001). Any other
+          # CDN reference in the bundle fails the build.
+          if grep -rhoE "(cdn\.jsdelivr|unpkg\.com|fonts\.googleapis)[^\"'\`]*" dist/assets/*.js \
+            | grep -vF 'cdn.jsdelivr.net/npm/tesseract.js@v$'; then
+            echo "::error::CDN reference found in dist/assets (ADR-0001: self-host all assets)"
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         if: matrix.variant == 'without-google'
         with:
