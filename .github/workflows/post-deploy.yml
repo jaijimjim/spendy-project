@@ -1,0 +1,154 @@
+# OMX-048 — post-deploy verification on GitHub Pages (planning §9.6).
+# Runs after every successful "Deploy to GitHub Pages" on main, or by hand (workflow_dispatch).
+# It never blocks a deploy (the site is already live); a red run ⇒ QA opens a bug, PO decides.
+#   e2e-live        → 048 AC1  Playwright suite against the live URL (fake OCR + real OCR)
+#   lighthouse-live → 048 AC2 / 029 AC1  Lighthouse CI mobile ×3: a11y ≥ 0.90 (error), LCP recorded
+#   har-live        → 048 AC3 / 030 AC1  HAR of upload → real OCR → save with a SYNTHETIC slip
+# Note: `workflow_run` workflows are read from the default branch — this file only fires after it
+# is merged to main. Real customer slips are never used here (tests/fixtures/slips only).
+name: Post-deploy verification
+
+on:
+  workflow_run:
+    workflows: ['Deploy to GitHub Pages']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployed site to verify (must end with /)
+        required: true
+        default: https://jaijimjim.github.io/spendy-project/
+
+permissions:
+  contents: read
+
+concurrency:
+  group: post-deploy
+  cancel-in-progress: true
+
+env:
+  BASE_URL: ${{ inputs.base_url || 'https://jaijimjim.github.io/spendy-project/' }}
+  # Test the commit that was deployed (workflow_run), or the dispatched ref.
+  TEST_REF: ${{ github.event.workflow_run.head_sha || github.sha }}
+  LHCI: '@lhci/cli@0.16.1'
+
+jobs:
+  live-ready:
+    name: Live site is up
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wait for Pages and check base path + self-hosted Tesseract assets (028 AC2)
+        run: |
+          set -euo pipefail
+          case "$BASE_URL" in https://*/) ;; *) echo "::error::base_url must be https and end with /"; exit 1;; esac
+          curl -fsS --retry 10 --retry-all-errors --retry-delay 15 -o index.html "$BASE_URL"
+          grep -q '<title>.*Spendy Money' index.html || { echo "::error::unexpected <title>"; exit 1; }
+          for a in tesseract/worker.min.js tesseract/lang/tha.traineddata.gz tesseract/lang/eng.traineddata.gz; do
+            curl -fsSI --retry 5 --retry-all-errors --retry-delay 10 "$BASE_URL$a" -o /dev/null
+            echo "ok $BASE_URL$a"
+          done
+          {
+            echo "## Post-deploy verification"
+            echo ""
+            echo "- Site: $BASE_URL"
+            echo "- Tests from commit: \`$TEST_REF\`"
+            echo "- Trigger: ${{ github.event_name }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  e2e-live:
+    name: E2E on live (048 AC1)
+    needs: live-ready
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ env.TEST_REF }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Same projects as ci.yml, but against Pages. Excluded: Google Photos journeys (048 AC1
+      # "non-Google"; the live build may have a Client ID) and the 20-min Layer B benchmark.
+      - name: Playwright → live
+        run: >-
+          npx playwright test --project=mobile --project=desktop --project=real-ocr
+          --grep-invert "Google Photos|Layer B"
+        env:
+          E2E_BASE_URL: ${{ env.BASE_URL }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: e2e-live-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+  lighthouse-live:
+    name: Lighthouse mobile ×3 (048 AC2, 029 AC1)
+    needs: live-ready
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ env.TEST_REF }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      # Lighthouse default = mobile preset (Moto G Power, simulated Slow 4G, 4× CPU); 3 runs per URL.
+      - name: Lighthouse CI collect
+        run: npx --yes "$LHCI" collect --url="$BASE_URL" --url="${BASE_URL}#/add"
+      - name: Write reports
+        if: always()
+        run: npx --yes "$LHCI" upload
+      - name: Job summary (median LCP, a11y)
+        if: always()
+        run: node scripts/lhci-summary.mjs lhci-report
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: lighthouse-live
+          path: |
+            lhci-report/
+            .lighthouseci/
+          retention-days: 30
+      - name: Assert a11y ≥ 0.90 (error) · LCP ≤ 2.5 s (warn)
+        run: npx --yes "$LHCI" assert
+
+  har-live:
+    name: HAR upload → OCR → save (048 AC3, 030 AC1)
+    needs: live-ready
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ env.TEST_REF }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Playwright (live project, synthetic slips) → HAR
+        run: npx playwright test --project=live
+        env:
+          E2E_BASE_URL: ${{ env.BASE_URL }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: har-live
+          path: |
+            test-results/live-har/
+            playwright-report/
+          retention-days: 30

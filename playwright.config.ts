@@ -4,6 +4,8 @@ import { defineConfig, devices } from '@playwright/test';
  * E2E runs against the production build served by `vite preview` under the GitHub Pages base path.
  * - default projects use the fake OCR engine (fast, deterministic) — QA request
  * - `real-ocr` runs real Tesseract on a generated slip image to prove self-hosted assets load
+ * - `live` (OMX-048 AC3) records a HAR of upload → real OCR → save with a synthetic slip; meant for
+ *   the deployed site (`E2E_BASE_URL`, `.github/workflows/post-deploy.yml`) but also runs locally
  * Set PW_CHROMIUM_PATH to use a pre-installed Chromium (offline sandboxes).
  */
 const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4173/spendy-project/';
@@ -28,7 +30,7 @@ export default defineConfig({
   projects: [
     {
       name: 'mobile',
-      testIgnore: /real-ocr|screens/,
+      testIgnore: /real-ocr|screens|live-/,
       use: {
         ...devices['Pixel 7'],
         viewport: { width: 375, height: 812 },
@@ -38,7 +40,7 @@ export default defineConfig({
     },
     {
       name: 'desktop',
-      testIgnore: /real-ocr|screens/,
+      testIgnore: /real-ocr|screens|live-/,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 }, launchOptions },
     },
     {
@@ -50,6 +52,12 @@ export default defineConfig({
         deviceScaleFactor: 1,
         launchOptions,
       },
+    },
+    {
+      name: 'live',
+      testMatch: /live-har\.spec/,
+      timeout: 300_000,
+      use: { ...devices['Desktop Chrome'], launchOptions },
     },
     {
       name: 'real-ocr',
