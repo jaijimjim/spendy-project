@@ -1,6 +1,7 @@
 # 01 — Product Backlog: Spendy Money (MVP_0001) — เดิมชื่อ Omnitrix Money
 
-> Owner: PO/PM · Last updated: 2026-11-23 (หลัง Sprint 2 Grooming) · Version: v5
+> Owner: PO/PM · Last updated: 2026-11-23 (Sprint 2 Planning) · Version: v7
+> **v7 (2026-11-23, Sprint 2 Planning):** **B3 ปิดแล้ว** — repo public `spendy-project`, Pages Source = GitHub Actions, run `45208481550` (commit `6ebe779`) เขียวทุก job รวม Deploy · live https://jaijimjim.github.io/spendy-project/ · Sprint 2 commit **26 pts** (Sprint = `S2`): 052, 028, 048, 051, 049, 050a, 050b, 043, 042, 029, 040, 045, 046 · stretch `S2-stretch` = 003a/003b, 041 (B2, UQ3 ยังไม่ยืนยัน) · 044 conditional · DoR ของ 049/050a/050b = ✓ ภายใต้สมมติฐาน **UQ1 = synthetic OCR text** · URL ใน AC ของ 028/048 เปลี่ยนเป็น `spendy-project` · ดู `sprints/sprint-2/02-sprint-planning.md`
 > **v6 (2026-11-23):** FB-013 → **OMX-052** rename เป็น Spendy Money + repo `spendy-project` (public) · 1 pt · Done ในโค้ด รอ deploy · ปลด B3 ได้เมื่อผู้ใช้ตั้ง Pages Source = GitHub Actions
 > v5 (2026-11-23, Sprint 2 Grooming): estimate สุดท้าย (planning poker) · OMX-050 แตกเป็น **OMX-050a** (precedence + คำอาหารไทย, 3) / **OMX-050b** (fuzzy Lazada/Shopee, 2) · item ใหม่ **OMX-051** payee measurement enabler (2) แยกจาก OMX-049 (3) · Designer D1 → OMX-049 AC6, D2 + `aria-describedby` → OMX-050a AC6 · D3 → parked, D4 = OMX-035 คง Won't · §4 weak-tier rule ยืนยันแล้ว · OMX-045 = option A · OMX-039/047 เลื่อนไป Sprint 3 · §9 อัปเดตตาม grooming · ดู `sprints/sprint-2/01-grooming-minutes.md`
 > v4 (2026-11-23): เพิ่ม **OMX-049** (BUG-009 recipient ใต้ลูกศร ↓ บนสลิป KBank/K PLUS) และ **OMX-050** (BUG-010 category precedence + fuzzy keyword Lazada/Shopee) จาก FB-011 (สลิปจริง 3 ใบ) · OMX-028 เปลี่ยน blocker จาก B1 → **B3** (Pages ยังไม่เปิด, repo private — FB-012) · อัปเดต §6 overview และ §9 candidate list · estimate ของ item ใหม่เป็นของ PO รอทีมยืนยันใน grooming (`sprints/sprint-2/00-grooming-agenda.md`)
@@ -9,7 +10,7 @@
 > Status values: `New` · `Ready` · `In Progress` · `In Review` · `In QA` · `Accepted (pending deploy)` · `Done` · `Blocked` · `Deferred`
 > `Accepted (pending deploy)` = PO accepted at Sprint Review, all AC verified on the local production build. The only open DoD items are merge on GitHub, QA on the Pages build and final PO acceptance there. The item moves to `Done` after the post-deploy smoke passes (charter §6)
 > Priority: **M**ust / **S**hould / **C**ould / **W**on't (this release)
-> Sprint: `S1` = committed in Sprint 1 · `S1-stretch` = stretch (ลำดับตาม Sprint Planning) · `—` = ยังไม่วางแผน
+> Sprint: `S1` = committed in Sprint 1 · `S1-stretch` = stretch (ลำดับตาม Sprint Planning) · `S2` = committed in Sprint 2 · `S2-stretch` = stretch Sprint 2 · `—` = ยังไม่วางแผน
 
 ---
 
@@ -92,8 +93,8 @@
 |---|---|---|---|---|---|---|
 | OMX-001 | E1 | Upload slip images (multi-file picker) | Must | 3 | Accepted (pending deploy) | S1 |
 | OMX-002 | E1 | Drag & drop upload | Should | 2 | Accepted (pending deploy) | S1-stretch #1 |
-| OMX-003a | E1 | Google Photos: sign-in & open Picker | Must | 5 | Blocked (B2) — carry-over | S1 → S2 |
-| OMX-003b | E1 | Google Photos: poll, download & queue | Must | 3 | Blocked (B2) — carry-over | S1 → S2 |
+| OMX-003a | E1 | Google Photos: sign-in & open Picker | Must | 5 | Blocked (B2, UQ3) — carry-over, remaining ≈ 1 | S2-stretch #1 |
+| OMX-003b | E1 | Google Photos: poll, download & queue | Must | 3 | Blocked (B2, UQ3) — carry-over, remaining ≈ 1 | S2-stretch #1 |
 | OMX-004 | E1 | Google Photos "not configured" & auth error states | Must | 2 | Accepted (pending deploy) | S1 |
 | OMX-005 | E2 | In-browser OCR with progress (queue) | Must | 5 | Accepted (pending deploy) | S1 |
 | OMX-006 | E2 | Auto-detect transaction type (income / expense) | Must | 3 | Accepted (pending deploy) | S1 |
@@ -119,8 +120,8 @@
 | OMX-025 | E7 | Mobile-first responsive layout & navigation | Must | 3 | Accepted (pending deploy) | S1 |
 | OMX-026 | E7 | Empty states & error handling | Must | 3 | Accepted (pending deploy) | S1 |
 | OMX-027 | E7 | Accessibility (WCAG 2.1 AA) | Must | 3 | Accepted (pending deploy) | S1 |
-| OMX-028 | E7 | Deploy to GitHub Pages via GitHub Actions | Must | 3 | Blocked (B3: Pages ยังไม่เปิด / repo private) — carry-over | S1 → S2 |
-| OMX-029 | E8 | NFR — Performance budget | Should | 3 | In Progress (partial) — carry-over | S1 → S2 |
+| OMX-028 | E7 | Deploy to GitHub Pages via GitHub Actions | Must | 3 | In QA — B3 closed, deploy run `45208481550` green (remaining 1) | S2 |
+| OMX-029 | E8 | NFR — Performance budget | Should | 3 | Ready — carry-over AC1/AC3/AC5 (remaining 2) | S2 |
 | OMX-030 | E8 | NFR — Privacy: images stay in the browser | Must | 2 | Accepted (pending deploy) | S1 |
 | OMX-031 | E8 | NFR — Security & configuration hygiene | Should | 2 | Accepted (pending deploy) | S1-stretch #10 |
 | OMX-032 | E9 | Cloud sync & login | Won't | — | Deferred | — |
@@ -131,30 +132,31 @@
 | OMX-037 | E9 | Installable PWA / offline mode | Won't | — | Deferred | — |
 | OMX-038 | E9 | HEIC/HEIF image support | Won't | — | Deferred | — |
 | OMX-039 | E2 | Detect received transfers via owner name/account (Settings) | Could | 3 | New — deferred (needs Designer spec M + 049/050b) | S3 candidate |
-| OMX-040 | E2 | Robust Thai-digit amount extraction (BUG-007) | Could | 2 | New | S2 candidate |
-| OMX-041 | E1 | Google Photos per-item Failed row + Retry (K1) | Must | 2 | New | S2 candidate |
-| OMX-042 | E2 | Real-slip accuracy measurement (Layer C + UAT) | Must | 3 | New | S2 candidate |
-| OMX-043 | E8 | Real-device & assistive-tech verification (Tier 1) | Must | 3 | New | S2 candidate |
-| OMX-044 | E4 | Transaction list virtualization (large months) | Should | 3 | New | S2 candidate |
-| OMX-045 | E2 | Salary slip date rule when pay-period end is in the future (O2) | Could | 1 | Ready — PO decided option A | S2 candidate |
-| OMX-046 | E7 | Search placeholder fits at 320px (O5) | Could | 1 | New | S2 candidate |
+| OMX-040 | E2 | Robust Thai-digit amount extraction (BUG-007) | Could | 2 | Ready | S2 |
+| OMX-041 | E1 | Google Photos per-item Failed row + Retry (K1) | Must | 2 | Blocked (B2 acceptance) — Dev may start on stub | S2-stretch #2 |
+| OMX-042 | E2 | Real-slip accuracy measurement (Layer C + UAT) | Must | 3 | Ready (conditional — slips ≥ 11, UQ4) | S2 |
+| OMX-043 | E8 | Real-device & assistive-tech verification (Tier 1) | Must | 3 | Ready (B3 closed) | S2 |
+| OMX-044 | E4 | Transaction list virtualization (large months) | Should | 3 | New — conditional (only if 029 AC5 fails) | S2-conditional |
+| OMX-045 | E2 | Salary slip date rule when pay-period end is in the future (O2) | Could | 1 | Ready — PO decided option A | S2 |
+| OMX-046 | E7 | Search placeholder fits at 320px (O5) | Could | 1 | Ready (copy G3) | S2 |
 | OMX-047 | E7 | Manual light/dark theme switch | Could | 2 | New — deferred (not needed for Sprint 2 Goal) | S3 candidate |
-| OMX-048 | E7 | Post-deploy verification on GitHub Pages (DoD closure) | Must | 2 | New — blocked by 028 (B3) | S2 candidate |
-| OMX-049 | E2 | Recipient extraction for KBank/K PLUS arrow (↓) layout (BUG-009) + payee empty state (D1) | Must (High) | 3 | New — groomed, DoR ✗ fixtures (UQ1) | S2 candidate |
+| OMX-048 | E7 | Post-deploy verification on GitHub Pages (DoD closure) | Must | 2 | In Progress (QA, Day 1) | S2 |
+| OMX-049 | E2 | Recipient extraction for KBank/K PLUS arrow (↓) layout (BUG-009) + payee empty state (D1) | Must (High) | 3 | In Progress (parser; DoR ✓ under UQ1 = synthetic) | S2 |
 | ~~OMX-050~~ | E2 | *Split in v5 → OMX-050a + OMX-050b* | — | ~~5~~ | Split | — |
-| OMX-050a | E2 | Category precedence: merchant/biller > transaction-type phrase + Thai food keywords + Medium highlight (D2) (BUG-010a) | Must (High) | 3 | New — groomed, DoR ✗ fixtures (UQ1) | S2 candidate |
-| OMX-050b | E2 | Fuzzy keywords Lazada/Shopee tolerant to OCR noise (BUG-010b) | Must (High) | 2 | New — groomed, DoR ✗ variant/negative list (QA Day 1) | S2 candidate |
-| OMX-051 | E2 | Payee measurement in Layer A/B fixtures & benchmark (enabler) | Must | 2 | Ready | S2 candidate |
-| OMX-052 | E7 | Rename app to Spendy Money / repo spendy-project (FB-013) | Must | 1 | Accepted (pending deploy) | S2 |
+| OMX-050a | E2 | Category precedence: merchant/biller > transaction-type phrase + Thai food keywords + Medium highlight (D2) (BUG-010a) | Must (High) | 3 | Ready (DoR ✓ under UQ1 = synthetic) | S2 |
+| OMX-050b | E2 | Fuzzy keywords Lazada/Shopee tolerant to OCR noise (BUG-010b) | Must (High) | 2 | Ready (DoR ✓ under UQ1 = synthetic; lists G6 Day 1) | S2 |
+| OMX-051 | E2 | Payee measurement in Layer A/B fixtures & benchmark (enabler) | Must | 2 | In Progress (QA + Dev, Day 1) | S2 |
+| OMX-052 | E7 | Rename app to Spendy Money / repo spendy-project (FB-013) | Must | 1 | In QA — deployed (live shows "Home · Spendy Money"), verify in 048 | S2 |
 
 ¹ ต้องมี Google OAuth Client ID + consent screen test users (action A3, owner PO) ก่อนทดสอบกับ Google จริง; dev ทำงานกับ wrapper ที่ mock ได้ระหว่างรอ
-² ต้องได้ push access + เปิด Pages source = GitHub Actions จาก repo owner (action A4) · *(v4)* push/CI ผ่านแล้ว (CI เขียวบน GitHub) เหลือ **B3** = เปิด Pages ซึ่ง repo private บน GitHub Free ทำไม่ได้ → ต้องเปลี่ยน repo เป็น public หรือใช้ plan ที่รองรับ Pages สำหรับ private repo (FB-012)
+² ต้องได้ push access + เปิด Pages source = GitHub Actions จาก repo owner (action A4) · *(v4)* push/CI ผ่านแล้ว (CI เขียวบน GitHub) เหลือ **B3** = เปิด Pages ซึ่ง repo private บน GitHub Free ทำไม่ได้ → ต้องเปลี่ยน repo เป็น public หรือใช้ plan ที่รองรับ Pages สำหรับ private repo (FB-012) · *(v7)* **B3 ปิดแล้ว 23 พ.ย. 69** — repo public `spendy-project`, deploy run `45208481550` เขียว
 
 **Totals (Sprint 1 scope):** Must = **77 pts** (23 items, committed S1) · Should = **29 pts** (10 items, stretch) · Could = 3 pts · Won't = not estimated
 **Sprint 1 outcome:** dev-complete Must 77/77 · stretch 26/29 · Accepted (pending deploy) = 66 Must + 26 Should = 92 pts · formally Done = 0 (B1) · carry-over: 028, 003a, 003b, 029
 **New in v3 (from Sprint 1 Review/Retro):** OMX-040 – OMX-048 = 19 pts
 **New in v4 (from FB-011, real slips):** OMX-049 – OMX-050 = 8 pts (PO estimate)
 **v5 (Sprint 2 Grooming):** OMX-049 (3) + OMX-050a (3) + OMX-050b (2) + OMX-051 (2) = **10 pts** (planning poker)
+**v7 (Sprint 2 Planning):** committed `S2` = **26 pts** (Must 20 · Should 2 · Could 4) · `S2-stretch` = 4 pts (003a/b 2 + 041 2, B2) · 044 conditional · buffer ~10 · ดู `sprints/sprint-2/02-sprint-planning.md`
 
 ---
 
@@ -190,7 +192,7 @@
 - **AC5** — Given viewport < 768px, When the screen renders, Then the "drag files" hint is hidden. *(v2)*
 
 #### OMX-003a — Google Photos: sign-in & open Picker *(split from OMX-003 in v2)*
-**Priority:** Must · **Pts:** 5 · **Status:** Blocked (B2) — carry-over · **Sprint:** S1 → S2
+**Priority:** Must · **Pts:** 5 · **Status:** Blocked (B2, UQ3) — carry-over · **Sprint:** S2-stretch *(v7)*
 **Story:** As a user who keeps slips in Google Photos, I want to sign in with Google and open the Google Photos Picker so that I can choose slip photos without downloading them first.
 
 **Acceptance Criteria**
@@ -202,7 +204,7 @@
 - **AC6** — Given Google APIs, When called, Then they are accessed through a single wrapper module that can be stubbed in e2e tests.
 
 #### OMX-003b — Google Photos: poll, download & queue *(split from OMX-003 in v2)*
-**Priority:** Must · **Pts:** 3 · **Status:** Blocked (B2) — carry-over · **Sprint:** S1 → S2
+**Priority:** Must · **Pts:** 3 · **Status:** Blocked (B2, UQ3) — carry-over · **Sprint:** S2-stretch *(v7)*
 **Story:** As a user, I want the photos I picked in Google Photos to be added to the processing queue automatically so that they are read like uploaded slips.
 
 **Acceptance Criteria**
@@ -531,14 +533,15 @@
 - **AC8** — Given interactive elements, When measured, Then touch targets are ≥ 44×44 px (moved here from OMX-025). *(v2)*
 
 #### OMX-028 — Deploy to GitHub Pages via GitHub Actions
-**Priority:** Must · **Pts:** 3 · **Status:** Blocked (B3) — carry-over · **Sprint:** S1 → S2
+**Priority:** Must · **Pts:** 3 · **Status:** In QA — B3 closed (v7) · **Sprint:** S2 (remaining 1)
 > *(v4, 2026-11-23)* B1 ส่วน push/CI ปิดแล้ว — ทุก job ใน `ci.yml` เขียวบน GitHub แต่ `deploy.yml` ล้มที่ `configure-pages` เพราะ repo เป็น private และยังไม่เปิด Pages → live URL ตอบ 404 (FB-012). Blocker ใหม่ **B3** owner = repo owner (ผู้ใช้), PO ติดตาม. AC1, AC3, AC4 คาดว่าผ่านแล้วจาก CI run แต่ยืนยันพร้อม AC2 หลัง deploy สำเร็จครั้งแรก
 > *(v5, grooming)* Remaining ≈ 1 pt: Dev ยืนยันว่า **ไม่ต้องแก้ workflow** · task ใน 028 (ไม่เพิ่ม pts): step ตรวจ Pages ก่อน `configure-pages` ที่พิมพ์ error อ่านง่าย ("Pages is not enabled… private repos need a paid plan") · ถ้า repo ต้องเปลี่ยนเป็น public (UQ2): รัน gitleaks full history + ยืนยันว่าไม่มีรูปสลิปจริงใน `git log --all` ก่อนเปลี่ยน · การอัปเกรด actions Node 20 → 24 = tech debt (parked)
+> *(v7, Sprint 2 Planning)* **B3 ปิดแล้ว:** ผู้ใช้เปลี่ยน repo เป็น public + ชื่อ `spendy-project` และตั้ง Pages Source = GitHub Actions · run `45208481550` (commit `6ebe779`) ผ่านทุก job รวม Build for Pages + Deploy · live https://jaijimjim.github.io/spendy-project/ ขึ้นหน้า "Home · Spendy Money" → AC2 ผ่านเบื้องต้น · เหลือ AC5 (README live URL) + ยืนยัน AC1 ผ่าน PR แรกของ Sprint 2
 **Story:** As the customer, I want the app hosted on a public URL so that anyone can access it from outside without installing anything.
 
 **Acceptance Criteria**
 - **AC1** — Given a push/merge to `main`, When the workflow runs, Then it runs `npm ci`, typecheck, lint, i18n check, unit tests, build and e2e smoke, then deploys via `actions/deploy-pages`; any failed step blocks deployment (verified with an intentionally failing PR).
-- **AC2** — Given the deployment, When I open `https://jaijimjim.github.io/omnitrix-project/`, Then the app loads with the correct base path; assets, hash routes and self-hosted Tesseract worker/core/language files all resolve.
+- **AC2** — Given the deployment, When I open `https://jaijimjim.github.io/spendy-project/` *(v7; เดิม `omnitrix-project`)*, Then the app loads with the correct base path; assets, hash routes and self-hosted Tesseract worker/core/language files all resolve.
 - **AC3** — Given the repository **variable** `VITE_GOOGLE_CLIENT_ID`, When the workflow builds, Then it is injected at build time; CI builds both with and without it and both succeed (without → OMX-004 state). *(v2)*
 - **AC4** — Given Tesseract assets, When building, Then they are copied from pinned npm packages at build time (not committed to git, no CDN). *(v2)*
 - **AC5** — Given the README, When read, Then it includes the live URL, local dev steps, and deployment/config notes.
@@ -546,7 +549,7 @@
 ### E8 — Non-functional Requirements
 
 #### OMX-029 — NFR — Performance budget *(rewritten v2)*
-**Priority:** Should · **Pts:** 3 · **Status:** In Progress (partial) — carry-over · **Sprint:** S1-stretch #9 → S2
+**Priority:** Should · **Pts:** 3 · **Status:** Ready — carry-over AC1/AC3/AC5 (remaining 2) · **Sprint:** S2 *(v7)*
 **Story:** As a user on a mid-range phone, I want the app to load and respond quickly so that recording slips doesn't feel slow.
 
 **Reference devices:** 1 mid-range Android (2023–2024, e.g. Samsung Galaxy A-series) + 1 iPhone 2–3 generations old; exact models owned by the team are recorded in the QA test plan.
@@ -594,7 +597,7 @@
 ### New items from Sprint 1 Review / Retrospective (v3)
 
 #### OMX-040 — Robust Thai-digit amount extraction (BUG-007)
-**Priority:** Could · **Pts:** 2 · **Status:** New · **Source:** BUG-007 (Low), Sprint 1 Review
+**Priority:** Could · **Pts:** 2 · **Status:** Ready · **Sprint:** S2 *(v7)* · **Source:** BUG-007 (Low), Sprint 1 Review
 **Story:** As a user whose slip shows Thai digits, I want the amount to be read correctly so that I don't need to type it.
 
 **Acceptance Criteria**
@@ -603,7 +606,7 @@
 - **AC3** — Given existing Layer A fixtures, When unit tests run, Then all still pass.
 
 #### OMX-041 — Google Photos per-item Failed row + Retry (K1)
-**Priority:** Must · **Pts:** 2 · **Status:** New · **Source:** Dev K1, closes OMX-003b AC5
+**Priority:** Must · **Pts:** 2 · **Status:** Blocked (B2 acceptance) · **Sprint:** S2-stretch *(v7)* · **Source:** Dev K1, closes OMX-003b AC5
 **Story:** As a user importing from Google Photos, I want each photo that fails to download to show its own Retry so that I don't lose photos when the network flickers.
 
 **Acceptance Criteria**
@@ -613,7 +616,7 @@
 - **AC4** — Given the stub Google wrapper, When e2e tests run, Then failure → Retry → success is covered.
 
 #### OMX-042 — Real-slip accuracy measurement (Layer C + UAT)
-**Priority:** Must · **Pts:** 3 · **Status:** New · **Source:** QA risk R1, UAT exit #3
+**Priority:** Must · **Pts:** 3 · **Status:** Ready (conditional — UQ4) · **Sprint:** S2 *(v7)* · **Source:** QA risk R1, UAT exit #3
 **Story:** As the PO, I want accuracy measured on real, redacted slips so that we know whether the app meets the MVP metrics outside synthetic data.
 
 **Acceptance Criteria**
@@ -623,7 +626,7 @@
 - **AC4** — Given UAT participants process their own slips on their own devices, When UAT ends, Then their correction rate (fields edited on Review) is collected anonymously by the participant reporting counts (no data leaves the device).
 
 #### OMX-043 — Real-device & assistive-tech verification (Tier 1)
-**Priority:** Must · **Pts:** 3 · **Status:** New · **Source:** QA condition C5, 12 Blocked TCs
+**Priority:** Must · **Pts:** 3 · **Status:** Ready · **Sprint:** S2 *(v7)* · **Source:** QA condition C5, 12 Blocked TCs
 **Story:** As a mobile user, I want the app verified on real phones and screen readers so that it works where I actually use it.
 
 **Acceptance Criteria**
@@ -643,7 +646,7 @@
 - **AC4** — Given virtualization, When measured, Then the initial JS budget (≤ 300 KB gz) still holds.
 
 #### OMX-045 — Salary slip date rule when the pay-period end is in the future (O2)
-**Priority:** Could · **Pts:** 1 · **Status:** Ready — **PO decision (Sprint 2 grooming): option A** (date = today ถ้าวันนี้อยู่ใน pay period; ไม่ยกเว้น R3 future-date rule) · **Source:** QA O2
+**Priority:** Could · **Pts:** 1 · **Sprint:** S2 *(v7)* · **Status:** Ready — **PO decision (Sprint 2 grooming): option A** (date = today ถ้าวันนี้อยู่ใน pay period; ไม่ยกเว้น R3 future-date rule) · **Source:** QA O2
 **Story:** As a salaried user, I want a salary slip without a pay date to be dated sensibly so that it lands in the right month.
 
 **Acceptance Criteria (draft, depends on the decision)**
@@ -651,7 +654,7 @@
 - **AC2** — Given the chosen rule, When Review opens, Then a hint explains how the date was chosen.
 
 #### OMX-046 — Search placeholder fits at 320px (O5)
-**Priority:** Could · **Pts:** 1 · **Status:** New · **Source:** QA O5
+**Priority:** Could · **Pts:** 1 · **Status:** Ready · **Sprint:** S2 *(v7)* · **Source:** QA O5
 **Story:** As a user on a very small screen, I want the search hint to be fully readable so that I know what I can search.
 - **AC1** — Given 320px width, TH and EN, When Transactions renders, Then the search placeholder is not truncated (shorter copy or responsive placeholder approved by the Designer); the 375px behaviour is unchanged.
 
@@ -662,11 +665,11 @@
 - **AC2** — Given either theme, When checked, Then contrast stays at WCAG AA (existing token tables) and axe reports 0 critical/serious.
 
 #### OMX-048 — Post-deploy verification on GitHub Pages (DoD closure)
-**Priority:** Must · **Pts:** 2 · **Status:** New · **Source:** Sprint 1 Review (QA condition C1). Depends on OMX-028
+**Priority:** Must · **Pts:** 2 · **Status:** In Progress (Sprint 2 Day 1, QA + PO) · **Sprint:** S2 · **Source:** Sprint 1 Review (QA condition C1). Depends on OMX-028 (B3 closed v7)
 **Story:** As the PO, I want every accepted story verified on the deployed Pages build so that Sprint 1 work becomes formally Done.
 
 **Acceptance Criteria**
-- **AC1** — Given the first successful deploy, When QA runs the e2e suite with `E2E_BASE_URL=https://jaijimjim.github.io/omnitrix-project/`, Then all non-Google journeys pass.
+- **AC1** — Given the first successful deploy, When QA runs the e2e suite with `E2E_BASE_URL=https://jaijimjim.github.io/spendy-project/` *(v7)*, Then all non-Google journeys pass.
 - **AC2** — Given the Pages URL, When Lighthouse mobile runs (median of 3), Then a11y ≥ 90 and LCP is recorded (OMX-029 AC1).
 - **AC3** — Given a HAR capture of upload → OCR → save on Pages, When reviewed, Then no request leaves the allowlist (OMX-030), and Tesseract assets load from our origin and are cached on the second visit.
 - **AC4** — Given AC1–AC3 pass, When the PO reviews, Then all stories in status "Accepted (pending deploy)" move to **Done** and the build is tagged `v0.1.0-uat`.
@@ -685,7 +688,7 @@
 
 #### OMX-052 — Rename app to Spendy Money *(new v6, FB-013)*
 
-**Priority:** Must · **Pts:** 1 · **Status:** Accepted (pending deploy) · **Sprint:** S2 (chore, ทำก่อน Planning ตามคำขอผู้ใช้)
+**Priority:** Must · **Pts:** 1 · **Status:** In QA — deployed in run `45208481550`, ยืนยัน AC บน live ใน OMX-048 *(v7)* · **Sprint:** S2 (chore, ทำก่อน Planning ตามคำขอผู้ใช้)
 
 - **AC1** — Given the production build, When opened, Then `<title>`, meta description, sidebar brand และ copy deck TH/EN แสดง "Spendy Money"
 - **AC2** — Given an export, Then filenames are `spendy-money-*.json|csv` and backup `app` = `spendy-money`
@@ -694,7 +697,7 @@
 - **AC5** — Build/preview/e2e default base = `/spendy-project/`; deploy ใช้ `/<repo-name>/`
 
 #### OMX-051 — Payee measurement in fixtures & benchmark (enabler) *(new v5, from grooming)*
-**Priority:** Must (enabler ของ 049) · **Pts:** 2 · **Status:** Ready · **Sprint:** S2 candidate · **Owner:** QA (Dev pairs) · **Source:** Dev benchmark gap + QA estimate (grooming 2026-11-23)
+**Priority:** Must (enabler ของ 049) · **Pts:** 2 · **Status:** In Progress (Day 1) · **Sprint:** S2 · **Owner:** QA (Dev pairs) · **Source:** Dev benchmark gap + QA estimate (grooming 2026-11-23)
 **Story:** As the team, we want payee to be measured in Layer A and Layer B so that a payee fix (OMX-049) and any regression can be proven with numbers instead of eyeballing.
 
 **Acceptance Criteria**
@@ -704,7 +707,7 @@
 - **AC4 (no regression)** — Given the change, When CI runs, Then type/amount/date/category results on Layer A and the 27 Layer B slips are identical to before (test-infra change only).
 
 #### OMX-049 — Recipient extraction for KBank / K PLUS arrow (↓) layout (BUG-009)
-**Priority:** Must · **Severity:** High · **Pts:** **3** *(planning poker round 2 — ดู minutes §3.1)* · **Status:** New — DoR ✗ (fixtures UQ1) · **Sprint:** S2 candidate · **Source:** FB-011 / BUG-009
+**Priority:** Must · **Severity:** High · **Pts:** **3** *(planning poker round 2 — ดู minutes §3.1)* · **Status:** In Progress — DoR ✓ *(v7: UQ1 = synthetic OCR text)* · **Sprint:** S2 · **Source:** FB-011 / BUG-009
 **Depends on:** OMX-051 (AC7) · fixtures (UQ1 A/B) · extends OMX-009 AC1 · feeds OMX-010 / OMX-050a (`payee`, `payeeExtra`) · joint acceptance with 050a/050b on real slips
 **Story:** As a K PLUS / KBank user, I want the app to read who I paid even when the slip shows the recipient under an arrow without a "ไปยัง/To" label, so that I can recognise each transaction later and the category is based on the right payee.
 
@@ -723,7 +726,7 @@
 - **AC9 (privacy)** — Given the PR, When reviewed, Then `git diff --stat` contains no real slip image (no `.png/.jpg/.heic` outside generated `tests/fixtures/slips/images`), fixtures are redacted text only (QA checklist) and gitleaks passes.
 
 #### OMX-050a — Category precedence: merchant/biller outranks transaction-type phrase + Thai food keywords (BUG-010 part a) *(split v5)*
-**Priority:** Must · **Severity:** High · **Pts:** **3** · **Status:** New — DoR ✗ (fixtures UQ1) · **Sprint:** S2 candidate · **Source:** FB-011 / BUG-010
+**Priority:** Must · **Severity:** High · **Pts:** **3** · **Status:** Ready — DoR ✓ *(v7: UQ1 = synthetic OCR text)* · **Sprint:** S2 · **Source:** FB-011 / BUG-010
 **Depends on:** OMX-049 (joint — สลิปไก่ย่างต้องการทั้งคู่; `payeeExtra`) · fixtures (UQ1) · changes OMX-010 AC2 and §4 rule *(v5 confirmed)*
 **Story:** As a user who pays restaurants through bill-payment flows, I want the category to follow the shop or biller rather than the words "จ่ายบิล/ชำระเงิน", so that my food spending is not counted as Bills.
 
@@ -739,7 +742,7 @@
 - **AC9 (privacy)** — Same as OMX-049 AC9.
 
 #### OMX-050b — Fuzzy keywords for Lazada / Shopee tolerant to Thai OCR noise (BUG-010 part b) *(split v5)*
-**Priority:** Must · **Severity:** High · **Pts:** **2** · **Status:** New — DoR ✗ (variant + negative list, QA Day 1) · **Sprint:** S2 candidate · **Source:** FB-011 / BUG-010
+**Priority:** Must · **Severity:** High · **Pts:** **2** · **Status:** Ready — DoR ✓ *(v7: UQ1 = synthetic; variant + negative list QA G6 Day 1)* · **Sprint:** S2 · **Source:** FB-011 / BUG-010
 **Depends on:** OMX-050a (same rules file, merge after) · reusable later by OMX-039 (`fold()`)
 **Story:** As a user who pays through Lazada/Shopee wallets, I want those payments recognised as Shopping even when OCR garbles the Thai name, so that they don't fall into Other.
 
@@ -782,7 +785,9 @@
 
 ---
 
-## 9. Sprint 2 Candidate List (groomed 2026-11-23 — to be confirmed at Sprint 2 Planning)
+## 9. Sprint 2 Candidate List (groomed 2026-11-23 — **confirmed at Sprint 2 Planning, v7**)
+
+> *(v7, Sprint 2 Planning)* **ผลการวางแผน:** commit **26 pts** = ranks 1–8, 11–14 ด้านล่าง (ยกเว้น 003a/b และ 041) + OMX-052 (1) · B3 ปิดแล้ว → 028/048/043/029 Ready · 003a/b + 041 (4) = **stretch** เพราะ B2/UQ3 ยังไม่ยืนยัน · DoR 049/050a/050b ✓ ภายใต้สมมติฐาน UQ1 = synthetic · Sprint Goal ปรับเป็น "live แล้ว → ยืนยันบน live ปิด DoD 92 pts (Day 2) + bundle parser deploy Day 3 ให้ผู้ใช้ re-test" · รายละเอียด/งานรายวันใน `sprints/sprint-2/02-sprint-planning.md` · ตารางด้านล่างคงไว้เป็นบันทึก grooming
 
 **Proposed Sprint 2 Goal (v5, unchanged from v4):** ทำให้ MVP_0001 **ใช้งานได้จริงบน GitHub Pages** (ปิด DoD ของงาน 92 pts จาก Sprint 1) และ **อ่านสลิปจริงของ KBank/K PLUS ได้ถูกต้อง** — ผู้รับและหมวดหมู่ถูก 3/3 (ขั้นต่ำ 2/3) บนสลิปของผู้ใช้ (BUG-009/010) พร้อมวัดความแม่นยำบนสลิปจริงและเริ่ม UAT เพื่อปล่อย `v0.1.0`
 *(v3 goal เดิม: get MVP_0001 live on GitHub Pages, verify it on real devices and real slips, connect Google Photos for real, and complete UAT with the customer, so that `v0.1.0` can be released.)*
