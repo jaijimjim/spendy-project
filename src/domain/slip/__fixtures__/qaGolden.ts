@@ -9,17 +9,34 @@
  * No real personal data. today = 2026-11-13 (Asia/Bangkok).
  */
 import type { CategoryId, TxType } from '../../types';
+import realR01 from '../../../../tests/fixtures/real-slips/redacted/r01.txt?raw';
+import realR02 from '../../../../tests/fixtures/real-slips/redacted/r02.txt?raw';
+import realR03 from '../../../../tests/fixtures/real-slips/redacted/r03.txt?raw';
+import realR10 from '../../../../tests/fixtures/real-slips/redacted/r10.txt?raw';
+import realR04 from '../../../../tests/fixtures/real-slips/redacted/r04.txt?raw';
+import realR05 from '../../../../tests/fixtures/real-slips/redacted/r05.txt?raw';
+
+/** Capture day of the real-slip set (tests/fixtures/real-slips/expected.json). */
+const REAL_TODAY = '2026-11-23';
 
 export interface QaFixture {
   id: string;
   text: string;
+  /** "today" for the parse; default 2026-11-13. Real redacted slips use their capture day. */
+  today?: string;
   expected: {
     type: TxType;
-    category: CategoryId;
+    /** undefined ⇒ category pending user confirmation (real slips, UQ7) — not asserted */
+    category?: CategoryId;
     amountSatang: number | null;
     /** null ⇒ no acceptable date on the slip (parser falls back to today + flags.noDate) */
     date: string | null;
     time?: string | null;
+    /**
+     * OMX-051: expected payee, compared after `normalizePayee()`. `null` ⇒ payee must stay empty;
+     * omitted ⇒ not measured for this fixture.
+     */
+    payee?: string | null;
   };
   knownBug: string[];
 }
@@ -44,6 +61,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transfer',
       amountSatang: 900000,
       date: '2026-11-10',
+      payee: 'นาง มาลี ดีใจ',
     },
     knownBug: [],
   },
@@ -55,6 +73,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transport',
       amountSatang: 125050,
       date: '2026-11-10',
+      payee: 'GRAB',
     },
     knownBug: [],
   },
@@ -99,6 +118,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'other',
       amountSatang: 100000,
       date: '2026-11-05',
+      payee: 'บริษัท สมมติ จำกัด',
     },
     knownBug: [],
   },
@@ -188,6 +208,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'housing',
       amountSatang: 850000,
       date: '2026-10-31',
+      payee: 'บริษัท สุขสบาย แมนชั่น จำกัด',
     },
     knownBug: [],
   },
@@ -272,6 +293,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transfer',
       amountSatang: 150000,
       date: '2026-11-12',
+      payee: 'น.ส. สมใจ ใจดี',
       time: '09:12',
     },
     knownBug: [],
@@ -284,6 +306,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'food',
       amountSatang: 24500,
       date: '2026-11-13',
+      payee: 'GrabFood',
       time: '14:35',
     },
     knownBug: [],
@@ -296,6 +319,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transport',
       amountSatang: 125050,
       date: '2026-11-10',
+      payee: 'GRAB',
       time: '08:15',
     },
     knownBug: [],
@@ -308,6 +332,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'food',
       amountSatang: 6500,
       date: '2026-11-11',
+      payee: 'Café Amazon สาขา PTT วิภาวดี',
       time: '07:45',
     },
     knownBug: [],
@@ -380,6 +405,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'salary',
       amountSatang: 4620000,
       date: '2026-10-25',
+      payee: 'บริษัท ทดสอบซอฟต์แวร์ จำกัด',
       time: null,
     },
     knownBug: [],
@@ -392,6 +418,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'salary',
       amountSatang: 4935075,
       date: '2026-10-31',
+      payee: 'Omni Test Co., Ltd.',
       time: null,
     },
     knownBug: [],
@@ -405,6 +432,92 @@ export const QA_FIXTURES: QaFixture[] = [
       amountSatang: 1000,
       date: '2026-11-09',
       time: '21:10',
+    },
+    knownBug: [],
+  },
+  // ---- OMX-049 AC11: real slips fixed by the arrow-layout payee rule (REDACTED text, fake names) ----
+  {
+    id: 'real-redacted-r01',
+    text: realR01,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'transfer',
+      amountSatang: 18400,
+      date: '2026-11-22',
+      time: '12:18',
+      payee: 'นายชัยพร ดำเนิน',
+    },
+    knownBug: [],
+  },
+  {
+    id: 'real-redacted-r02',
+    text: realR02,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'transfer',
+      amountSatang: 1700,
+      date: '2026-11-22',
+      time: '16:44',
+      payee: 'น.ส. วิมลรัตน์ บุญมีศรีสุข',
+    },
+    knownBug: [],
+  },
+  // ---- OMX-053 AC5: amount junk under the label / "บาท" OCR variants (REDACTED text) ----
+  {
+    id: 'real-redacted-r04',
+    text: realR04,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      // category pending UQ7 (air-con cleaning) — not asserted, rules not tuned to it
+      amountSatang: 120000,
+      date: '2026-11-18',
+      time: '14:01',
+      payee: 'ฮิปโป เซอร์วิส เซ็นเตอร์',
+    },
+    knownBug: [],
+  },
+  {
+    id: 'real-redacted-r05',
+    text: realR05,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'transport',
+      amountSatang: 20000,
+      date: '2026-11-19',
+      time: '07:47',
+    },
+    knownBug: [], // BUG-014 fixed by OMX-050b (Rabbit / บางกอก สมาร์ทการ์ด → transport)
+  },
+  // ---- OMX-050a: K PLUS bill flow to a merchant is not `bills` (REDACTED text) ----
+  {
+    id: 'real-redacted-r03',
+    text: realR03,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'food',
+      amountSatang: 6000,
+      date: '2026-11-18',
+      time: '12:50',
+      payee: 'ถุงเงิน (ก๋วยเตียวเรือธิดาสมุทร)',
+    },
+    knownBug: [],
+  },
+  {
+    id: 'real-redacted-r10',
+    text: realR10,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'other',
+      amountSatang: 3000,
+      date: '2026-11-12',
+      time: '17:06',
+      payee: 'ถุงเงิน เติมบุญ (วัดกลางเกร็ด)',
     },
     knownBug: [],
   },

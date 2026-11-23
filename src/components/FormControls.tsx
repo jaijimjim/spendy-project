@@ -222,12 +222,15 @@ export function CategoryPicker({
   value,
   onChange,
   error,
+  warning,
 }: {
   id: string;
   type: TxType;
   value: CategoryId | null;
   onChange: (c: CategoryId) => void;
   error?: string | null;
+  /** OMX-050a AC6 (D2): "needs review" text from Field — highlighted + read on focus */
+  warning?: string | null;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -247,10 +250,10 @@ export function CategoryPicker({
       <button
         id={id}
         type="button"
-        className={cn(s.catTrigger, error && s.controlInvalid)}
+        className={cn(s.catTrigger, error ? s.controlInvalid : warning ? s.controlWarn : undefined)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-describedby={describedBy(id, !!error)}
+        aria-describedby={describedBy(id, !!(error || warning))}
         onClick={() => setOpen(true)}
       >
         {value ? <CategoryChip id={value} size="sm" /> : <span />}

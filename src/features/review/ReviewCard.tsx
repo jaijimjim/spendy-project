@@ -8,6 +8,7 @@ import {
   ChevronUp,
   CopyCheck,
   FileText,
+  Info,
   Trash2,
   TriangleAlert,
   ZoomIn,
@@ -18,6 +19,7 @@ import { useUiStore } from '../../store/uiStore';
 import { validateDraft, type Draft, type DraftErrors } from '../../domain/validation';
 import { parseMoneyInput } from '../../domain/money';
 import { resetCategoryForType } from '../../domain/categories';
+import { categoryNeedsCheck } from '../../domain/slip/needsReview';
 import type { TxType } from '../../domain/types';
 import {
   AmountInput,
@@ -26,6 +28,7 @@ import {
   Field,
   TypeToggle,
   controlClass,
+  describedBy,
 } from '../../components/FormControls';
 import { CategoryChip } from '../../components/CategoryIcon';
 import { Button } from '../../components/Button';
@@ -106,8 +109,13 @@ export function ReviewCard({
           : null;
   const dateWarn = !touched.date && p.flags.noDate ? t('review.noDate') : null;
   const typeWarn = !touched.type && p.flags.lowType ? t('review.lowTypeConfidence') : null;
-  const catWarn =
-    !touched.categoryId && p.categoryResult.confidence === 'low' ? t('review.checkField') : null;
+  const catWarn = !touched.categoryId && categoryNeedsCheck(p) ? t('review.checkField') : null;
+  // OMX-049 AC6 (D1): info — not a warning — when an expense slip had no payee; gone once typed.
+  const payeeInfo =
+    d.type === 'expense' && p.flags.noPayee && !touched.payee && !d.payee.trim()
+      ? t('review.noPayee')
+      : null;
+  const payeeErr = err('payee');
 
   const money = parseMoneyInput(d.amount);
   const income = d.type === 'income';
@@ -161,6 +169,13 @@ export function ReviewCard({
             {d.date ? f.date(d.date) : ''}
             {d.time ? ` · ${d.time}` : ''}
             {bank ? ` · ${bank}` : ''}
+          </p>
+          <p className={s.metaLine} data-testid="review-payee-line">
+            {d.payee.trim() ? (
+              <span className={s.payeeName}>{d.payee.trim()}</span>
+            ) : (
+              <span className={s.payeeEmpty}>{t('transactions.noPayee')}</span>
+            )}
           </p>
           <div className={s.badges}>
             {p.confidence !== 'high' && (
@@ -250,6 +265,7 @@ export function ReviewCard({
                 value={d.categoryId}
                 onChange={(categoryId) => set({ categoryId })}
                 error={err('categoryId')}
+                warning={catWarn}
               />
             </Field>
             <Field id={`${idp}-date`} label={t('form.date')} error={err('date')} warning={dateWarn}>
@@ -271,12 +287,27 @@ export function ReviewCard({
                 />
               </div>
             </Field>
-            <Field id={`${idp}-payee`} label={t('form.payee')} optional error={err('payee')}>
-              <div className={controlClass(err('payee'))}>
+            <Field
+              id={`${idp}-payee`}
+              label={t('form.payee')}
+              optional
+              error={payeeErr}
+              helper={
+                payeeInfo && (
+                  <span className={s.payeeInfo}>
+                    <Info size={16} aria-hidden="true" />
+                    {payeeInfo}
+                  </span>
+                )
+              }
+            >
+              <div className={controlClass(payeeErr)}>
                 <input
                   id={`${idp}-payee`}
                   value={d.payee}
                   maxLength={120}
+                  placeholder={t('form.payeePlaceholder')}
+                  aria-describedby={describedBy(`${idp}-payee`, !!(payeeErr || payeeInfo))}
                   onChange={(e) => set({ payee: e.target.value })}
                 />
               </div>

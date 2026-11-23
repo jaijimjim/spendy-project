@@ -28,6 +28,7 @@ import { useAppStore } from '../../store/appStore';
 import { useUiStore } from '../../store/uiStore';
 import { useBeforeUnload } from '../add/useBeforeUnload';
 import { ReviewCard } from './ReviewCard';
+import { categoryNeedsCheck } from '../../domain/slip/needsReview';
 import ui from '../../components/ui.module.css';
 import s from './review.module.css';
 
@@ -89,8 +90,12 @@ export function ReviewPage() {
   // First card needing attention starts expanded.
   const firstAttention = useMemo(
     () =>
-      reviewable.find((i) => !isItemValid(i) || i.parsed?.confidence !== 'high')?.id ??
-      reviewable[0]?.id,
+      reviewable.find(
+        (i) =>
+          !isItemValid(i) ||
+          i.parsed?.confidence !== 'high' ||
+          (i.parsed && categoryNeedsCheck(i.parsed)),
+      )?.id ?? reviewable[0]?.id,
     // only on first render
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

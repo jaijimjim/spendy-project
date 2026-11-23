@@ -47,14 +47,21 @@ const RAW_LOCAL = import.meta.glob<{ text: string }[] | Record<string, { text: s
  */
 const BASELINE = {
   type: 16,
-  amount: 13,
-  /** wrong non-null amounts (worse than empty, BUG-011) — must not increase */
-  amountWrong: 2,
-  date: 13,
+  /** OMX-053: r04, r05 fixed; r14 = BUG-012 (split amount) stays empty */
+  amount: 15,
+  /** wrong non-null amounts (worse than empty, BUG-011) — OMX-053 AC1: must stay 0 */
+  amountWrong: 0,
+  /** OMX-054: r08, r14, r15 "w.g." → พ.ย. */
+  date: 16,
   time: 16,
-  payee: 0,
-  category: 2,
-  categoryClear: 0,
+  /** OMX-049: 11 exact + r08 empty (own account, AC10) */
+  payee: 12,
+  /**
+   * OMX-049: r01, r02 → transfer (BUG-014); OMX-050a: r03 food, r10 other; OMX-050b: r05, r16
+   * transport (+ pending r07/r09/r11). Clear 6/9 = bundle gate (050a AC10c).
+   */
+  category: 9,
+  categoryClear: 6,
 } as const;
 
 const textOf = (id: string): string => {
@@ -63,7 +70,17 @@ const textOf = (id: string): string => {
   return t;
 };
 
+/**
+ * OMX-049 AC10 / planning §9.3 (PO): r08 is a transfer to the owner's own account at another bank
+ * (recipient = sender). The sender guard (AC4) must keep payee EMPTY there, and empty counts as
+ * correct for this slip only — owner detection is OMX-039 (Sprint 3).
+ */
+const OWN_ACCOUNT = new Set(['r08']);
+/** Fake owner (sender) name used in every redacted slip, incl. its OCR-distorted forms. */
+const SENDER_NAME = /ปร[ีึ]ยาแ?นุช/;
+
 const samePayee = (actual: string | null, e: ExpectedSlip): boolean => {
+  if (OWN_ACCOUNT.has(e.id)) return !actual;
   if (!actual) return false;
   const n = (s: string) => normalizePayee(s.replace(/ํา/g, 'ำ'));
   return [e.payee, ...(e.payeeAlt ?? [])].some((p) => n(p) === n(actual));
@@ -78,6 +95,7 @@ interface Row {
   date: boolean;
   time: boolean;
   payee: boolean;
+  payeeIsSender: boolean;
   category: boolean;
   categoryStatus: string;
   got: string;
@@ -93,6 +111,7 @@ function score(e: ExpectedSlip, r: ParsedSlip): Row {
     date: !r.flags.noDate && r.date === e.date,
     time: r.time === e.time,
     payee: samePayee(r.payee, e),
+    payeeIsSender: SENDER_NAME.test(r.payee ?? ''),
     category: r.categoryId === e.category,
     categoryStatus: e.categoryStatus,
     got: `${r.amountSatang ?? '∅'} · ${r.flags.noDate ? 'today' : r.date} · ${r.categoryId} · ${r.payee ?? '∅'}`,
@@ -175,6 +194,8 @@ describe('OMX-042 real slips (Layer C, redacted OCR text, n = 16)', () => {
     expect(fields.payee).toBeGreaterThanOrEqual(BASELINE.payee);
     expect(fields.category).toBeGreaterThanOrEqual(BASELINE.category);
     expect(fields.categoryClear).toBeGreaterThanOrEqual(BASELINE.categoryClear);
+    // OMX-049 AC10: the sender's name is never returned as payee.
+    expect(rows.filter((x) => x.payeeIsSender).map((x) => x.id)).toEqual([]);
   });
 
   const raw = Object.values(RAW_LOCAL)[0] as Record<string, { text: string }> | undefined;

@@ -4,7 +4,9 @@
  * `categorize.test.ts` (table-driven). Nothing else needs to change.
  *
  * Matching (see keywords.ts): case-/space-insensitive; English keywords use word boundaries.
- * Precedence (categorize.ts): payee > memo > other text; then longest keyword; then `priority`.
+ * Precedence (categorize.ts, OMX-050a): payee > payeeExtra (2nd biller line) > memo > person >
+ * whole text (strong keywords) > weak tier `TX_PHRASES` (only when no payee was found) > other;
+ * inside one field the longest keyword wins, then `priority`.
  */
 import type { ExpenseCategoryId } from '../types';
 
@@ -13,6 +15,11 @@ export interface CategoryRule {
   /** Higher wins remaining ties (AC2 step 3). */
   priority: number;
   keywords: readonly string[];
+  /**
+   * OMX-050b: keywords (also listed in `keywords`) that may match after OCR-confusable folding
+   * (`fold()` in keywords.ts). Each must fold to ≥ 5 characters (AC3, R6).
+   */
+  fuzzy?: readonly string[];
 }
 
 export const CATEGORY_RULES: readonly CategoryRule[] = [
@@ -24,6 +31,20 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'อาหาร',
       'ข้าว',
       'ก๋วยเตี๋ยว',
+      // OMX-050a AC10b: OCR often drops the tone mark on "เตี๋ยว"
+      'ก๋วยเตียว',
+      'ลูกชิ้น',
+      // OMX-050a AC4 (grooming): shop names are often the dish — not "ครัว" (R5)
+      'ไก่ย่าง',
+      'ไก่ทอด',
+      'หมูปิ้ง',
+      'ข้าวมันไก่',
+      'ข้าวขาหมู',
+      'ก๋วยจั๊บ',
+      'ราดหน้า',
+      'ผัดไทย',
+      'ร้านข้าว',
+      'ShopeeFood',
       'กาแฟ',
       'ชานม',
       'หมูกระทะ',
@@ -83,7 +104,16 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'ขนส่ง',
       'ที่จอดรถ',
       'parking',
+      // OMX-050b AC8 (BUG-014): Rabbit card top-ups (บริษัท บางกอก สมาร์ทการ์ด ซิสเทม จำกัด)
+      'Rabbit',
+      'แรบบิท',
+      'บางกอก สมาร์ทการ์ด',
+      'Bangkok Smart Card',
+      'สมาร์ทการ์ด ซิสเทม',
+      'สมาร์ทการ์ด ซิสแทม',
+      'สมาร์ทการ์ด ซัสเทม',
     ],
+    fuzzy: ['แรบบิท', 'บางกอก สมาร์ทการ์ด', 'สมาร์ทการ์ด ซิสเทม'],
   },
   {
     category: 'shopping',
@@ -91,7 +121,15 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
     keywords: [
       'Shopee',
       'ShopeePay',
+      'Shopee Pay',
+      'ช้อปปี้',
+      'ช้อปปี้เพย์',
       'Lazada',
+      'LazPay',
+      'ลาซาด้า',
+      'ลาซาดา',
+      'ลาซาด้าเพย์',
+      'บลูเพย์',
       'Central',
       'Big C',
       "Lotus's",
@@ -110,6 +148,18 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'ห้างสรรพสินค้า',
       'ซูเปอร์มาร์เก็ต',
       'TikTok Shop',
+    ],
+    // OMX-050b AC1/AC2: OCR garbles the Thai names ("บลูเพย-ลาชาดาเพย", "ชอปปี")
+    fuzzy: [
+      'Shopee',
+      'ShopeePay',
+      'ช้อปปี้',
+      'ช้อปปี้เพย์',
+      'Lazada',
+      'LazPay',
+      'ลาซาด้า',
+      'ลาซาด้าเพย์',
+      'บลูเพย์',
     ],
   },
   {
@@ -140,7 +190,6 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'credit card',
       'ประกัน',
       'insurance',
-      'จ่ายบิล',
     ],
   },
   {
@@ -223,4 +272,24 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'กวดวิชา',
     ],
   },
+];
+
+export interface TxPhrase {
+  phrase: string;
+  /** category when nothing stronger is known; null = only a signal, never a category */
+  category: 'bills' | null;
+}
+
+/**
+ * Weak tier (OMX-050a AC2): words that describe the TRANSACTION TYPE, not the merchant. Used only
+ * when no strong keyword matched anywhere AND the slip has no payee (a known merchant paid
+ * through a bill flow is not a bill) → `bills` with Medium confidence (AC3).
+ */
+export const TX_PHRASES: readonly TxPhrase[] = [
+  { phrase: 'จ่ายบิล', category: 'bills' },
+  { phrase: 'ชำระบิล', category: 'bills' },
+  { phrase: 'Bill Payment', category: 'bills' },
+  { phrase: 'ชำระเงิน', category: null },
+  { phrase: 'โอนเงิน', category: null },
+  { phrase: 'Payment', category: null },
 ];

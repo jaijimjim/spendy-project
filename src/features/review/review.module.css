@@ -88,6 +88,25 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.payeeName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--omx-color-text);
+}
+.payeeEmpty {
+  color: var(--omx-color-text-muted);
+}
+.payeeInfo {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--omx-space-1);
+}
+.payeeInfo svg {
+  margin-top: 3px;
+  flex: none;
+}
 .badges {
   display: flex;
   flex-wrap: wrap;

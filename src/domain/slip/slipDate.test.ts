@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { findDates, findSalaryDate, findTime, resolveYear } from './slipDate';
+import { parseSlip } from './parseSlip';
 
 const first = (s: string, thai = true) => findDates(s, thai)[0]?.date ?? null;
 
@@ -90,5 +91,51 @@ describe('findSalaryDate', () => {
     expect(findSalaryDate(['งวดเดือน พฤศจิกายน 2569'], true, accept)).toBe('2026-11-30');
     expect(findSalaryDate(['ประจำเดือน ก.พ. 2567'], true, accept)).toBe('2024-02-29');
     expect(findSalaryDate(['nothing here'], true, accept)).toBeNull();
+  });
+});
+
+// OMX-054 (BUG-013): make by KBank OCR turns "พ.ย." into Latin "w.g.".
+describe('Latin look-alike month "w.g." → พ.ย. (OMX-054)', () => {
+  it.each([
+    ['16 w.g. 2569 17:10', '2026-11-16'],
+    ['03 w.g. 2569 23:04', '2026-11-03'],
+    ['3 W.G. 2569 19:03', '2026-11-03'],
+    ['03 w. g. 69 19:03 น.', '2026-11-03'],
+    ['16 w.g 2569 - 17:10', '2026-11-16'],
+  ])('AC1/AC2: %s → %s', (text, date) => {
+    expect(findDates(text, true).map((c) => c.date)).toEqual([date]);
+  });
+
+  it.each([
+    ['w.g. in free text', 'ดูรายละเอียดที่ w.g. 2569 ได้'],
+    ['no year / time', '16 w.g.'],
+    ['no time', '16 w.g. 2569'],
+    ['CE year is not a plausible BE year', '16 w.g. 2026 17:10'],
+    ['no dot (a word)', '16 wg 2569 17:10'],
+    ['other Latin pair', '16 w.q. 2569 17:10'],
+  ])('AC2 negative: %s stays unchanged', (_name, text) => {
+    expect(findDates(text, true)).toEqual([]);
+  });
+
+  it('AC3: BUG-001 variants still pass', () => {
+    expect(findDates('14 พุย. 69', true)[0]?.date).toBe('2026-11-14');
+    expect(findDates('14 พ.ุย. 2569', true)[0]?.date).toBe('2026-11-14');
+  });
+});
+
+describe('real make slips with "w.g." (REDACTED text) — OMX-054 AC1', () => {
+  const REDACTED = import.meta.glob<string>('/tests/fixtures/real-slips/redacted/*.txt', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  });
+  it.each([
+    ['r08', '2026-11-16'],
+    ['r14', '2026-11-03'],
+    ['r15', '2026-11-03'],
+  ])('%s → %s, noDate false', (id, date) => {
+    const r = parseSlip(REDACTED[`/tests/fixtures/real-slips/redacted/${id}.txt`]!, '2026-11-23');
+    expect(r.flags.noDate).toBe(false);
+    expect(r.date).toBe(date);
   });
 });

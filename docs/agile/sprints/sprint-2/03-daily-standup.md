@@ -77,3 +77,15 @@
 | 040, 045, 046 · ใหม่ 055, 056, 057 | 049 (5) · 053 (2, High) · 050a (3) · 050b (3) · 054 (1) · 051 (2) · 043 (3) · 029 (2) · stretch 003a/b, 041 (blocked B2) | 028 (1) · 048 (3) | — | 052 (1) · **042 (3)** |
 
 **Burndown:** commit 29 · Done 4 · **remaining 25** (Day 1 of 5) · Sprint 1: 92 pts ยังรอ 048
+
+### Day 1 — Update ค่ำ (Dev · parser) · 2026-11-23
+
+| Role | Done | Next | Blockers |
+|---|---|---|---|
+| **Dev (parser)** | ส่ง `qa` ครบ 6 ticket ตามลำดับ (commit ในเครื่องบน `main`, ยังไม่ push): **051** `23f00d6` — payee ใน Layer A schema + Layer B `expected.payee` 27 ใบ + benchmark payee exact/CER (report) + `layerBRecorded.test.ts` (gate type/category/date 100%, amount ≥ 26/27 บน OCR text ที่บันทึกไว้, ทุก PR) · baseline Layer B payee **17/27 (63.0%, CER 0.322)** · **049** `10e2593` — masked-account anchor + junk skip + left column + fuzzy sender guard + merchant 2 บรรทัด (`payeeExtra`) + D1 UI · **053** `aaa662b` — label lookahead ≤ 3 บรรทัด, บาท OCR (`vn/um/vm/unm`), ไม่มียอดผิดแบบเงียบ · **050a** `874e141` — `TX_PHRASES` weak tier + precedence + คำอาหารไทย + D2 · **050b** `a9625c5` — `fold()` + fuzzy Lazada/Shopee + Rabbit/บางกอก สมาร์ทการ์ด → transport + fuzzy `ชําระเจิน` · **054** — `w.g.` → พ.ย. (เฉพาะรูปแบบเต็ม) | QA ตรวจ bundle · bundle PR/merge + deploy ตาม V9 (orchestrator push) · QA Q7: Layer B template ภาพใหม่ (arrow ×2, restaurant FOOD, marketplace) ต้อง gen ด้วย Playwright — Dev ทำในเครื่องไม่ได้ | ไม่มี |
+
+**`realSlips.test.ts` (n = 16) ก่อน → หลัง:** payee **0 → 12/16** (make 7/9 · K PLUS 4/6 · Krungthai 1/1 · ชื่อผู้โอน 0/16 · r08 ว่าง = ผ่านตาม AC10) · category ใบชัด **0 → 6/9** (= gate; K PLUS จ่ายบิลเป็น bills 4/4 → 0/4) · amount **13 → 15/16**, ผิดแบบเงียบ **2 → 0** (r14 = BUG-012 ว่างตามเดิม) · date **13 → 16/16** · type/time 16/16 คงเดิม · `BASELINE` ยกครบใน commit ของแต่ละ ticket
+
+**ไม่ถึง target / ข้อจำกัด (ไม่ได้ปรับ expected):** payee ✗ r05/r16 (OCR "ซิสแทม"/"ซัส เทม" ≠ "ซิสเทม"), r09 (โลโก้ SCB อ่านเป็น "5008"), r15 ("ลูกช์แปลา") → ต้อง re-OCR/fuzzy compare (S3) · category ✗ r08 (โอนเข้าบัญชีตัวเอง → OMX-039), r12 (memo ไม่มีป้าย → OMX-056), r15 (ชื่อร้าน OCR เพี้ยน) → target 7/9 ไม่ถึง · ใบ pending UQ7 ไม่ได้ปรับ rule ให้ตรง
+
+**Estimate ยืนยัน (Dev):** 049 = 5 · 053 = 2 · 050a = 3 · 050b = 3 · 054 = 1 (ตาม PO prelim)

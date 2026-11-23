@@ -3,6 +3,7 @@
 > Owner: QA · Version 1.2 · Execution run: **2026-11-13** (Sprint 1 Day 4) + re-test หลัง Dev fix BUG-003/006/008 (`a1249eb..8c779d0`) บน local `vite preview` + Chromium 1243, TZ Asia/Bangkok
 > **v1.2 (2026-11-23, Sprint 2 Day 0):** re-run 12 TC ที่ Blocked — หลักฐาน: GitHub Actions run `43827185503` (commit `e17c62e`), URL live (404), Lighthouse **local interim** บน `vite preview` (Lighthouse 13.6.0, HeadlessChrome 153), ผลสลิปจริง 3 ใบของผู้ใช้ (FB-011, 14 พ.ย.) · สรุปใน [`test-summary-report.md` §7](test-summary-report.md#7-sprint-2-day-0--blocked-re-run-2026-11-23)
 > **v1.3 (2026-11-23, Sprint 2 Day 1):** live verification บน `https://jaijimjim.github.io/spendy-project/` (หลักฐานจาก orchestrator ที่ตรวจด้วยเบราว์เซอร์จริง — sandbox เข้า github.io ไม่ได้เพราะ proxy) + GitHub Actions run `45208481550` (commit `6ebe779`) · OMX-042 Layer C บนสลิปจริง **n = 16** (redacted OCR text) → TC-126, 137, 139, 149, 163, 008, 135 · สรุปใน [`test-summary-report.md` §8–§9](test-summary-report.md#8-sprint-2-day-1--live-verification-2026-11-23)
+> **v1.4 (2026-11-23, Sprint 2 Day 1 ค่ำ — PR #3 verification):** QA ตรวจ PR #3 `feat/s2-parser-fixes` (OMX-051, 049, 053, 050a, 050b, 054) — CI run `45223158558` (pull_request) ✓ ทุก job · local `npm run ci` ✓ (Vitest 414/414) · e2e local ด้วย system Chrome (`PW_CHROMIUM_PATH=/usr/bin/google-chrome`, ไม่แก้ config): mobile + desktop 89 passed / 5 skipped, real-ocr 2 passed · สลิปจริง: OCR ดิบ (มีชื่อจริง, local-only) → `parseSlip` เทียบ `expected.local.json` · OMX-028 AC1 จาก run `45218667703` → TC-137, 138, 163, TC-170…184 · สรุปใน [`test-summary-report.md` §11](test-summary-report.md#11-sprint-2--pr-3-verification-2026-11-23)
 > ครอบคลุม: ทุก **Must** story + **Should** ที่ Dev ทำเสร็จ (002, 009, 011, 015, 019, 020, 022, 023, 029 บางส่วน, 031)
 > Test plan: [`test-plan.md`](test-plan.md) · Bugs: [`bug-report.md`](bug-report.md) · Summary: [`test-summary-report.md`](test-summary-report.md)
 
@@ -175,8 +176,8 @@
 | TC-134 | OMX-027 | `prefers-reduced-motion` ปิด animation | reduce | ดู transition | 0s | P2 | manual | M | Pass | 2026-11-13 |
 | TC-135 | OMX-027 | Screen reader (NVDA/VoiceOver/TalkBack), Lighthouse a11y ≥ 90, 200% zoom | อุปกรณ์จริง / Pages | ตาม AC3/AC5/AC6 | ใช้งานได้ | P1 | manual | — | Blocked (DEV; B3 ปิดแล้ว — Lighthouse บน Pages ยังไม่ได้รันเพราะ sandbox เข้า github.io ไม่ได้) — **local interim:** Lighthouse a11y **100 / 100 / 100** (mobile ×3, `vite preview`) ≥ 90 ✅ · screen reader จริง + 200% zoom บนอุปกรณ์ + Lighthouse บน Pages ยังไม่ได้ทำ | 2026-11-23 |
 | TC-136 | OMX-028 | Production build + bundle budget | — | `npm run build && npm run size:check` | สำเร็จ; initial JS 170 KB gz ≤ 300 | P1 | e2e (CI step) | `scripts/check-bundle-size.mjs` | Pass | 2026-11-13 |
-| TC-137 | OMX-028 | Deploy GitHub Pages ผ่าน Actions + post-deploy smoke | push access | push `main` | URL ใช้งานได้ | P1 | manual | `.github/workflows/deploy.yml`, live check | **Pass** — run `45208481550` (commit `6ebe779`) ทุก job ✓: Secret scan · Lint·typecheck·unit · Build ×2 · E2E · Build for Pages · Deploy · `https://jaijimjim.github.io/spendy-project/` HTTP 200, title "Home · Spendy Money" · asset ทั้งหมด (JS, CSS, IBM Plex Sans Thai, Tesseract worker/core + `tha` 896,631 B / `eng` 2,952,873 B) มาจาก origin เดียว, ไม่มี third-party request · CSP meta อยู่ · console: ไม่มี error ของแอป (404 ที่เห็นมาจาก HEAD probe ผิด path ของผู้ตรวจเอง) · *ยังไม่ได้:* e2e บน Pages (→ OMX-048 AC1), OCR จริงบน live | 2026-11-23 |
-| TC-138 | OMX-028 | CI (`ci.yml`) เขียวบน PR | push access | เปิด PR | ทุก job ผ่าน | P1 | manual | `.github/workflows/ci.yml` | Pass (on push) — run `43827185503` (commit `e17c62e`, "Deploy to GitHub Pages" → `workflow_call` ci.yml): Secret scan (gitleaks) ✓ · Lint·typecheck·unit ✓ · Build without-google ✓ · Build with-google ✓ · E2E (Playwright) ✓ · *Note:* trigger เป็น push `main` ไม่ใช่ PR — `ci.yml` มี `on: pull_request` และ job graph เดียวกันทุก trigger จึงยอมรับเป็นหลักฐาน; จะยืนยัน trigger PR ใน PR แรกของ Sprint 2 | 2026-11-23 |
+| TC-137 | OMX-028 | Deploy GitHub Pages ผ่าน Actions + post-deploy smoke | push access | push `main` | URL ใช้งานได้ | P1 | manual | `.github/workflows/deploy.yml`, live check | **Pass** — run `45208481550` (commit `6ebe779`) ทุก job ✓: Secret scan · Lint·typecheck·unit · Build ×2 · E2E · Build for Pages · Deploy · `https://jaijimjim.github.io/spendy-project/` HTTP 200, title "Home · Spendy Money" · asset ทั้งหมด (JS, CSS, IBM Plex Sans Thai, Tesseract worker/core + `tha` 896,631 B / `eng` 2,952,873 B) มาจาก origin เดียว, ไม่มี third-party request · CSP meta อยู่ · console: ไม่มี error ของแอป (404 ที่เห็นมาจาก HEAD probe ผิด path ของผู้ตรวจเอง) · *ยังไม่ได้:* e2e บน Pages (→ OMX-048 AC1), OCR จริงบน live · **AC1 (failing gate blocks deploy) → TC-184 Pass** | 2026-11-23 |
+| TC-138 | OMX-028 | CI (`ci.yml`) เขียวบน PR | push access | เปิด PR | ทุก job ผ่าน | P1 | manual | `.github/workflows/ci.yml` | **Pass (PR trigger ยืนยันแล้ว)** — PR #3 run `45223158558` (event `pull_request`, 2026-11-23): Secret scan ✓ · Lint·typecheck·unit ✓ · Build without/with-google ✓ · E2E (mobile + desktop + real-ocr รวม Layer B benchmark) ✓ 91 passed · PR #2 run `45220797909` (pull_request) ✓ เช่นกัน · *เดิม:* Pass on push run `43827185503` | 2026-11-23 |
 
 ## E8 — Non-functional
 
@@ -205,11 +206,48 @@
 | TC-160 | 006–010 | Layer A golden OCR-text (32 fixtures) | — | `npm test` | type/amount ≥ 95% | P1 | unit | G | Pass (35 fixtures: type/amount/date/category 100%) | 2026-11-13 |
 | TC-161 | 006–010 | Layer B real-OCR benchmark (27 images: 18 base + 9 degraded) | built app | BM | type ≥ 90, amount ≥ 80, category ≥ 60 | P1 | e2e | BM | Pass (type 100 / amount 96.3 / category 100; date 100) | 2026-11-13 |
 | TC-162 | 006–010 | Robustness: JPEG q35–55 low-res, blur, rotate 2°, dark theme | — | BM d13–d24 | ผลเท่ากับ base | P2 | e2e | BM | Pass (9/9 all fields) | 2026-11-13 |
-| TC-163 | 006–010 | Real-world accuracy (Layer C / customer slips) | สลิปจริง | วัด accuracy | ตาม MVP metrics | P1 | unit (report + ratchet) | RS | **Fail (n = 16) → BUG-009, 010, 011, 013, 014 (+012, 015)** — สลิปจริง 16 ใบ (make 9 · K PLUS 6 · Krungthai 1), parser บน redacted OCR: type **16/16 (100%)** ✅ ≥ 90 · amount **13/16 (81.3%)** ✅ ≥ 80 (แต่ผิดแบบไม่ว่าง 2 ใบ → BUG-011 High) · date 13/16 (81.3%) · time 16/16 · category **2/16 (12.5%)** ❌ < 60 — ใบที่หมวดชัดเจน **0/9** · payee **0/16** · ⚠️ ไม่มี SCB / PromptPay app / salary / รายรับ → OMX-042 AC1 bank-mix ยังไม่ครบ · ผล interim n = 3 (FB-011) เดิม: category 1/3, payee 0/3 | 2026-11-23 |
+| TC-163 | 006–010 | Real-world accuracy (Layer C / customer slips) | สลิปจริง | วัด accuracy | ตาม MVP metrics / gate ของ OMX-049 AC10 + 050a AC10c | P1 | unit (report + ratchet) + local raw | RS | **Pass (PR #3, local + CI; re-verify บน live หลัง deploy)** — n = 16 ทั้ง redacted (CI) และ **OCR ดิบที่มีชื่อจริง** (local, เทียบ `expected.local.json`) ได้ผลเท่ากันทุก field: type 16/16 · amount **15/16** (r14 = BUG-012 ว่าง) · ยอดผิดแบบเงียบ **0/16** · date **16/16** · time 16/16 · payee **12/16** (make 7/9 · K PLUS 4/6 · Krungthai 1/1; รวม r08 ว่าง = ผ่านตาม AC10; ไม่นับ r08 = 11/16) · **ชื่อผู้โอน (เจ้าของบัญชี) เป็น payee 0/16** · category ใบชัด **6/9 (66.7%)** ✅ ≥ 60 · category ทุกใบเทียบหมวดที่เสนอ 9/16 (56.3%) — 7 ใบ pending UQ7 · ✗ payee r05/r16/r09/r15 = OCR เพี้ยนในชื่อร้าน (S3) · ✗ category r08/r12/r15 · ⚠️ bank-mix (OMX-042 AC1) ยังไม่ครบ · *เดิม (Day 1):* Fail payee 0/16, category ใบชัด 0/9, amount 13/16, date 13/16 | 2026-11-23 |
+
+
+## Sprint 2 — Real-slip parser fixes (PR #3) + OMX-028 AC1
+
+> Code เพิ่ม: **RAW** = OCR ดิบของสลิปจริง (`ocr-raw.local.json`, git-ignored) → `parseSlip` → เทียบ `expected.local.json` ด้วย test ชั่วคราวใน `src/` ที่ลบทิ้งหลังรัน (ไม่ commit) · **C** = component test (`ReviewCard.test.tsx`) · **E320** = ad-hoc Playwright 320px TH/EN (system Chrome, ไม่ commit) · **LB** = `layerBRecorded.test.ts`
+
+| ID | Story | Title | Preconditions | Steps | Expected | Prio | Type | Automated | Result | Run date |
+|---|---|---|---|---|---|---|---|---|---|---|
+| TC-170 | OMX-051 AC1/AC4 | Layer A วัด payee (`expected.payee?` หลัง `normalizePayee`) | — | `qaGolden.test.ts` | fixture ที่มี payee ผ่าน, fixture เดิมไม่เปลี่ยน | P1 | unit | G | Pass — 10/10 fixture ที่ระบุ payee · type/amount/date/category ยัง 100% | 2026-11-23 |
+| TC-171 | OMX-051 AC2/AC3 | Layer B payee exact % + CER (report only) + baseline | built app | BM + LB | `summary.payee` ใน benchmark, baseline ใน summary report §10 | P2 | e2e + unit | BM, LB | Pass — CI run `45223158558`: payee 17/27 (63.0%), CER 0.322 = baseline · type 100 / amount 96.3 / category 100 / date 100 ไม่เปลี่ยน | 2026-11-23 |
+| TC-172 | OMX-049 AC1/AC3/AC10 | Payee ใต้ลูกศรบนสลิปจริง make / K PLUS / Krungthai | redacted + raw | RS + RAW | ≥ 12/16, ≥ 1 ต่อแอป, merchant 2 บรรทัด → `payeeExtra` | P1 | unit + local | RS, RAW, `arrowPayee.test.ts` | Pass — 12/16 ทั้ง redacted และ raw (make 7/9 · K PLUS 4/6 · KTB 1/1) · r08 ว่าง = ผ่านตาม AC10 (รอ PO) | 2026-11-23 |
+| TC-173 | OMX-049 AC2/AC4/AC5 | Noise (junk ลูกศร, mask เพี้ยน) · ไม่คืนชื่อผู้โอน · ไม่เดา · label layout ไม่เปลี่ยน | — | RS + RAW + unit + G | sender = payee 0/16, received/salary ว่าง, b01/b08/b12/d15 ยัง transfer | P1 | unit + local | RS, RAW, `arrowPayee.test.ts`, LB | Pass — **ชื่อเจ้าของบัญชีจริงไม่หลุดเป็น payee ใบใดเลย (raw 0/16)** · Layer B category 100% | 2026-11-23 |
+| TC-174 | OMX-049 AC6 (D1) | Payee empty state: helper `review.noPayee` + Info icon + placeholder + `aria-describedby`; หายเมื่อพิมพ์; card "ไม่ระบุผู้รับ / No payee"; ไม่ block Save | expense ไม่มี payee | E320 TH/EN + C | ตาม AC6, ไม่มี horizontal scroll ที่ 320px | P1 | component + e2e (ad-hoc) | C, E320 | Pass — TH "ไม่พบชื่อผู้รับในสลิป — แตะเพื่อกรอก" / EN "No recipient found on the slip — tap to add" ผูก `aria-describedby=…-payee-msg` · พิมพ์แล้ว `aria-describedby` = null · `scrollWidth` 320 · (Low: ปุ่ม X ที่หัวการ์ดทับคำว่า "รายจ่าย" ที่ 320px → BUG-016) | 2026-11-23 |
+| TC-175 | OMX-049 AC7 · 050a AC7 · 050b AC6 | Layer B template ภาพใหม่: arrow ×2 (base + degraded), restaurant bill "…FOOD" ×1, marketplace e-wallet ×1 | `generate.mjs` | BM | template ใหม่อยู่ใน `cases.json`/`expected.json`/images และ benchmark ผ่าน | P2 | e2e | BM | **Fail — ไม่มีใน PR #3** (Dev: "ต้อง gen ด้วย Playwright") · QA ยืนยันว่าในเครื่องนี้ gen ได้: `PW_CHROMIUM_PATH=/usr/bin/google-chrome node tests/fixtures/slips/generate.mjs` (Playwright รันกับ system Chrome ได้แล้ว) | 2026-11-23 |
+| TC-176 | OMX-049 AC11 | สลิปจริงที่แก้แล้วเข้า `qaGolden.ts` เป็น `real-redacted-rNN` | — | G | ทุกใบที่ story นี้แก้ | P2 | unit | G | **Fail (partial)** — มี r01, r02, r03, r04, r05, r10 (6 ใบ) · ขาดใบที่ payee/date/category ถูกแล้ว: r06, r07, r08, r11, r12, r13, r14, r15, r16 · (ratchet RS ครอบคลุมจำนวนรวม แต่ไม่ล็อกรายใบ) | 2026-11-23 |
+| TC-177 | OMX-050a AC1–AC5/AC10a-b | Merchant/biller > "จ่ายบิล" · weak tier `TX_PHRASES` · คำอาหารไทย + ก๋วยเตี๋ยว/ก๋วยเตียว/ลูกชิ้น · บิลจริงยัง bills | — | unit + RS + RAW | K PLUS จ่ายบิล 0/4 เป็น bills, r03 food, r10 other, "จ่ายบิล" เดี่ยว = bills Medium | P1 | unit + local | `categoryPrecedence.test.ts`, RS, RAW, LB | Pass — 0/4 bills · r03 food · r10 other · Layer B b05/b06/b16/b09/b17/b18 ไม่เปลี่ยน · BUG-006 guards ผ่าน | 2026-11-23 |
+| TC-178 | OMX-050a AC6 (D2) | Category Medium (text/weak) → highlight + `review.checkField` + `CategoryPicker aria-describedby` | "จ่ายบิล" ไม่มี biller | E320 TH/EN + C | class `controlWarn`, describedby ชี้ข้อความ | P1 | component + e2e (ad-hoc) | C, E320 | Pass — `aria-describedby=…-cat-msg` = "ตรวจสอบช่องนี้" / "Check this field" · การ์ดนับเป็น needs review | 2026-11-23 |
+| TC-179 | OMX-050b AC1–AC5 | Fuzzy Lazada/Shopee (fold) · ≥ 20 negatives 0 FP · "ชําระเจิน" → expense High · noise invariance | — | unit + LB | ตาม AC | P1 | unit | `fuzzyKeywords.test.ts`, LB | Pass — negatives 25 ตัว 0 FP · 27 Layer B texts ไม่มี fuzzy match · ShopeeFood/GrabFood/LINE MAN ยัง food | 2026-11-23 |
+| TC-180 | OMX-050b AC8 + 050a AC10c | Rabbit/บางกอก สมาร์ทการ์ด/BTS/MRT → transport · bundle gate category ใบชัด ≥ 6/9 | — | RS + RAW | r05, r16 transport, ≥ 5 negatives, ใบชัด ≥ 6/9 | P1 | unit + local | `fuzzyKeywords.test.ts`, RS, RAW | Pass — r05/r16 transport · ใบชัด 6/9 (r01, r02, r03, r05, r10, r16) · target 7/9 ไม่ถึง (r15) | 2026-11-23 |
+| TC-181 | OMX-053 AC1–AC5 | ยอดเงิน make: junk ใต้ label, "บาท" OCR (`vn/um/vm/unm`), ไม่มียอดผิดแบบเงียบ | — | unit + RS + RAW + G | amount ≥ 15/16, wrong 0/16, r04 = 120000, r05 = 20000 | P1 | unit + local | `amount.test.ts`, RS, RAW, G | Pass — 15/16, wrong 0/16 (redacted + raw) · `qa-balance-and-fee-excluded` ผ่าน · Layer B 26/27 | 2026-11-23 |
+| TC-182 | OMX-054 AC1–AC3 | "w.g." → พ.ย. เฉพาะรูปแบบเต็ม `dd w.g. 25xx hh:mm` | — | unit + RS + RAW | r08/r14/r15 = 2026-11-16/03/03, date 16/16, negatives ไม่เปลี่ยน | P2 | unit + local | `slipDate.test.ts`, RS, RAW | Pass — 16/16 · 4 negatives (free text, ไม่มีปี/เวลา, ปี ค.ศ.) · BUG-001 variants ยังผ่าน | 2026-11-23 |
+| TC-183 | OMX-049/050a/050b AC9 · 053 AC5 | Privacy ของ PR #3 | — | `git diff --stat main...HEAD` + denylist ชื่อ/เลขจริง 60 token (เก็บนอก repo) + gitleaks | ไม่มีรูป/ชื่อจริงใน diff | P1 | manual + CI | — | Pass — ไม่มีไฟล์ `.png/.jpg/.heic` ใน diff · denylist 0 match · Secret scan ✓ · ไฟล์ temp ของ QA ลบแล้ว (`git status` สะอาด) | 2026-11-23 |
+| TC-184 | OMX-028 AC1 | Failing test ต้องหยุด deploy (TC-138 แบบตั้งใจให้แดง) | draft PR #1 (closed, not merged) | `workflow_dispatch` `deploy.yml` บน `ci/omx-028-failing-proof` | ci แดง → Build for Pages / Deploy = skipped | P1 | manual | run `45218667703` | **Pass** — `ci / Lint·typecheck·unit` failure (test:coverage) · `ci / Secret scan` failure · Build ×2, E2E, **Build for Pages, Deploy = skipped** · PR #1 state closed, merged = false | 2026-11-23 |
 
 ---
 
-## Execution totals (2026-11-23 — Sprint 2 Day 1: live verification + OMX-042)
+## Execution totals (2026-11-23 — Sprint 2 Day 1 ค่ำ: PR #3 verification)
+
+| Result | Count | Δ จาก Day 1 |
+|---|---|---|
+| Pass | **135** | +14 — TC-163 (Fail → Pass) · ใหม่ TC-170–174, 177–184 (13) · TC-138 ยืนยัน PR trigger (นับ Pass อยู่แล้ว) |
+| Fail | **3** — TC-045 (BUG-007 Low) · **TC-175** (Layer B template ภาพใหม่ยังไม่ทำ — 049 AC7 / 050a AC7 / 050b AC6) · **TC-176** (049 AC11 promote qaGolden บางส่วน) | +1 |
+| Blocked | **8** — เหมือน Day 1 | 0 |
+| Not run | 1 — TC-142 | 0 |
+| **Total** | **147** | +15 |
+
+> Automated: Vitest **414/414** local (`npm run ci` ✓; CI 413 + 1 skipped = เคส raw-only) · Playwright local (system Chrome) mobile + desktop 89 passed / 5 skipped, real-ocr 2 passed · CI run `45223158558` ✓ ทุก job (E2E 91 passed, ไม่มี retry/flaky)
+
+<details><summary>Execution totals Day 1 (live verification + OMX-042)</summary>
+
+**Sprint 2 Day 1: live verification + OMX-042**
 
 | Result | Count | Δ จาก Day 0 |
 |---|---|---|
@@ -220,6 +258,8 @@
 | **Total** | **132** | |
 
 > Automated: Vitest **212/212** (+3 tests `realSlips.test.ts`; เคส "redaction is neutral" รันเฉพาะเครื่องที่มี `ocr-raw.local.json` — CI จะ skip) · CI run `45208481550` ✓ ทุก job
+
+</details>
 
 <details><summary>Execution totals Day 0 (2026-11-23)</summary>
 
