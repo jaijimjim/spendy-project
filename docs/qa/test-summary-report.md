@@ -364,3 +364,14 @@ UAT readiness จะประเมินใหม่เมื่อ #1, #2, #4 
 | r13 | เติมเงิน G-Wallet (เป๋าตัง) · 100 | `transfer` | เติมเป๋าตังให้นับเป็น "โอน" หรือหมวดอื่น |
 | r14 | วิสาหกิจชุมชนท่องเที่ยว · memo "โกรกอีดก" · 321 | `entertainment` | เป็นค่าเที่ยว/กิจกรรมใช่ไหม |
 | r10 | บริจาควัด (ถุงเงิน เติมบุญ) · 30 | `other` | โอเคกับ "อื่น ๆ" หรืออยากได้หมวด "บริจาค" (ลดหย่อนภาษี) — ถ้าอยากได้ = story ใหม่ |
+
+## 10. OMX-051 — Payee baseline (Layer A / Layer B) ก่อน OMX-049
+
+> Dev (pair กับ QA) · 2026-11-23 · `main` @ `f822880` (ก่อนแก้ parser ใด ๆ ของ Sprint 2) · test-infra เท่านั้น
+
+| ชุด | วิธีวัด | Payee baseline | หมายเหตุ |
+|---|---|---|---|
+| Layer A (`qaGolden.ts`) | `expected.payee?` (ใหม่) เทียบหลัง `normalizePayee()` ใน `qaGolden.test.ts` — fixture ที่ไม่ระบุ payee ไม่ถูกวัด | **10/10** fixture ที่ระบุ payee | ใส่ payee เฉพาะ fixture ที่ ground truth ชัด (rec-b01–b04, b10, b11, qa-transfer-memo, qa-grab-ride, qa-company, qa-month-end) · type/amount/date/category คงเดิม 35/35 |
+| Layer B 27 ใบ (`tests/fixtures/slips/expected.json`) | `expected.payee` ครบ 27 ใบ (expense = ชื่อผู้รับ, income รับโอน = ผู้โอน, เงินเดือน = นายจ้าง; ชื่อสมมติ) · re-parse OCR text ที่บันทึกใน `benchmark-results.json` → `src/domain/slip/layerBRecorded.test.ts` (CI ทุก PR) · benchmark real-OCR รายงาน `summary.payee` (exact % + mean CER) **report only** | **17/27 (63.0%) · mean CER 0.322** | ✗: bill 3 + 1 degraded (b05, b06, b16, d22 — payee ว่าง), received 3 + 1 (b07, b15, d23 ได้ชื่อเจ้าของบัญชี; b08 OCR prefix "นแนายข"), b09 OCR "แมนชั้น", b12 OCR "แนาขกถก" |
+
+**ใช้ใน OMX-049 AC7:** `BASELINE_PAYEE = 17` ใน `layerBRecorded.test.ts` (ratchet) — 049 ต้องไม่ต่ำกว่านี้ · `layerBRecorded.test.ts` ยัง gate type/category/date 100% + amount ≥ 26/27 บน OCR text ที่บันทึกไว้ (regression guard ที่รันใน CI โดยไม่ต้องใช้ browser) · AC4: ผล type/amount/date/category ของ Layer A/B ไม่เปลี่ยน

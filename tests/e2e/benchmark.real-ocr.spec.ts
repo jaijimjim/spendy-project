@@ -6,12 +6,14 @@
  *   - the raw OCR text (re-parsed with the same pure parser to double-check the app's values).
  * Writes tests/fixtures/slips/benchmark-results.json and fails only if a gate is missed:
  *   type ≥ 90%, amount ≥ 80%, category ≥ 60% (date: reported, no gate).
+ * Payee (OMX-051): exact match after normalizePayee() + mean CER — REPORT ONLY, no gate.
  * Runs in the `real-ocr` project:  npx playwright test --project=real-ocr benchmark
  */
 import { expect, test } from '@playwright/test';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseSlip } from '../../src/domain/slip/parseSlip';
+import { payeeCer, payeeMatches, payeeReport } from '../../src/domain/slip/payeeMetrics';
 import { setup } from './helpers';
 
 const DIR = join(process.cwd(), 'tests/fixtures/slips');
@@ -27,6 +29,7 @@ const expectedFile = JSON.parse(readFileSync(join(DIR, 'expected.json'), 'utf8')
         amountSatang: number | null;
         date: string | null;
         time?: string | null;
+        payee?: string | null;
       };
       note?: string;
     }
@@ -60,9 +63,11 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
       amountSatang: number | null;
       date: string;
       time: string | null;
+      payee: string | null;
     };
     reparsed: { type: string; category: string; amountSatang: number | null; date: string | null };
-    ok: Record<'type' | 'amount' | 'category' | 'date' | 'time', boolean>;
+    ok: Record<'type' | 'amount' | 'category' | 'date' | 'time' | 'payee', boolean>;
+    payeeCer: number | null;
     rawText: string;
   }[] = [];
   for (let start = 0; start < files.length; start += BATCH) {
@@ -99,6 +104,8 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
       const appAmount = await card.getByLabel('Amount (THB)').inputValue();
       const appDate = await card.locator('input[type="date"]').first().inputValue();
       const appTime = await card.locator('input[type="time"]').first().inputValue();
+      const appPayee = (await card.locator('input[id$="-payee"]').inputValue()).trim() || null;
+      const expPayee = exp.payee ?? null;
       const catText = (await card.locator('p').nth(1).textContent())?.trim() ?? '';
       const appCategory = CATEGORY_BY_EN_NAME[catText] ?? `?${catText}`;
       const parsed = parseSlip(rawText, expectedFile.today);
@@ -112,6 +119,7 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
           amountSatang: appSatang,
           date: appDate,
           time: appTime || null,
+          payee: appPayee,
         },
         reparsed: {
           type: parsed.type,
@@ -125,7 +133,9 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
           category: appCategory === exp.category,
           date: appDate === exp.date,
           time: (appTime || null) === (exp.time ?? null),
+          payee: payeeMatches(appPayee, expPayee),
         },
+        payeeCer: expPayee === null ? null : Math.round(payeeCer(appPayee, expPayee) * 1000) / 1000,
         rawText,
       });
     }
@@ -148,7 +158,11 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
       date: pct('date'),
       time: pct('time'),
     },
-    targets: { type: 90, amount: 80, category: 60, date: null },
+    /** OMX-051: report only (OMX-009 AC6) — compare with the baseline in test-summary-report.md */
+    payee: payeeReport(
+      rows.map((r) => ({ actual: r.app.payee, expected: r.expected.payee ?? null })),
+    ),
+    targets: { type: 90, amount: 80, category: 60, date: null, payee: null },
     appMatchesReparse: rows.every(
       (r) => r.app.amountSatang === r.reparsed.amountSatang && r.app.type === r.reparsed.type,
     ),
@@ -161,7 +175,7 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
   for (const r of rows)
     console.log(
       `[benchmark] ${r.file}: ` +
-        (['type', 'amount', 'category', 'date', 'time'] as const)
+        (['type', 'amount', 'category', 'date', 'time', 'payee'] as const)
           .map((k) => `${k}=${r.ok[k] ? 'ok' : 'MISS'}`)
           .join(' ') +
         ` | app=${JSON.stringify(r.app)}`,

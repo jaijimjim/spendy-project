@@ -5,6 +5,7 @@
  * red as soon as it is fixed (then clear `knownBug` in qaGolden.ts).
  */
 import { parseSlip } from './parseSlip';
+import { payeeMatches } from './payeeMetrics';
 import { QA_FIXTURES, type QaFixture } from './__fixtures__/qaGolden';
 
 const TODAY = '2026-11-13';
@@ -23,6 +24,9 @@ function check(f: QaFixture) {
     date: f.expected.date,
   });
   if (f.expected.time !== undefined) expect(r.time).toBe(f.expected.time);
+  // OMX-051 AC1: payee only when the fixture states it (normalized compare).
+  if (f.expected.payee !== undefined)
+    expect(payeeMatches(r.payee, f.expected.payee), `payee "${r.payee}"`).toBe(true);
 }
 
 describe('QA golden OCR-text fixtures (Layer A)', () => {
@@ -32,17 +36,22 @@ describe('QA golden OCR-text fixtures (Layer A)', () => {
   }
 
   it('reports field accuracy on the QA set (gates apply to bug-free fixtures)', () => {
-    const fields = { type: 0, amount: 0, date: 0, category: 0 };
+    const fields = { type: 0, amount: 0, date: 0, category: 0, payee: 0 };
+    let payeeN = 0;
     for (const f of QA_FIXTURES) {
       const r = parseSlip(f.text, TODAY);
       if (r.type === f.expected.type) fields.type++;
       if (r.amountSatang === f.expected.amountSatang) fields.amount++;
       if ((r.flags.noDate ? null : r.date) === f.expected.date) fields.date++;
       if (r.categoryId === f.expected.category) fields.category++;
+      if (f.expected.payee !== undefined) {
+        payeeN++;
+        if (payeeMatches(r.payee, f.expected.payee)) fields.payee++;
+      }
     }
     const n = QA_FIXTURES.length;
     console.log(
-      `[qa-golden] n=${n} type=${fields.type}/${n} amount=${fields.amount}/${n} date=${fields.date}/${n} category=${fields.category}/${n}`,
+      `[qa-golden] n=${n} type=${fields.type}/${n} amount=${fields.amount}/${n} date=${fields.date}/${n} category=${fields.category}/${n} payee=${fields.payee}/${payeeN}`,
     );
     // CI gates from OMX-006/007/010 hold on this set even with the open defects
     expect(fields.type / n).toBeGreaterThanOrEqual(0.98);

@@ -1,5 +1,5 @@
 {
-  "$comment": "Layer B synthetic slip cases (QA-owned, R7). Fictional banks/people only; merchant names appear as text because the category rules match them. today = 2026-11-13 (Asia/Bangkok). expected.amountSatang uses integer satang (R1).",
+  "$comment": "Layer B synthetic slip cases (QA-owned, R7). Fictional banks/people only; merchant names appear as text because the category rules match them. today = 2026-11-13 (Asia/Bangkok). expected.amountSatang uses integer satang (R1). expected.payee (OMX-051) = name shown on the slip: recipient (toName) for expense, sender (fromName) for received income, employer for salary — fake names; benchmark reports payee exact-match/CER only (no gate).",
   "today": "2026-11-13",
   "cases": [
     {
@@ -20,6 +20,7 @@
         "ref": "016312091233ABC1001"
       },
       "expected": {
+        "payee": "น.ส. สมใจ ใจดี",
         "type": "expense",
         "category": "transfer",
         "amountSatang": 150000,
@@ -47,6 +48,7 @@
         "extraRows": [["ยอดเงินคงเหลือ", "12,345.67 บาท"]]
       },
       "expected": {
+        "payee": "GrabFood",
         "type": "expense",
         "category": "food",
         "amountSatang": 24500,
@@ -72,6 +74,7 @@
         "ref": "2026111008150001"
       },
       "expected": {
+        "payee": "GRAB",
         "type": "expense",
         "category": "transport",
         "amountSatang": 125050,
@@ -100,6 +103,7 @@
         "ref": "QR20261111074500"
       },
       "expected": {
+        "payee": "Café Amazon สาขา PTT วิภาวดี",
         "type": "expense",
         "category": "food",
         "amountSatang": 6500,
@@ -128,6 +132,7 @@
         "ref": "BP2026111219400012"
       },
       "expected": {
+        "payee": "การไฟฟ้านครหลวง",
         "type": "expense",
         "category": "bills",
         "amountSatang": 138500,
@@ -156,6 +161,7 @@
         "ref": "BP2026110110050044"
       },
       "expected": {
+        "payee": "AIS Fibre",
         "type": "expense",
         "category": "bills",
         "amountSatang": 59900,
@@ -182,6 +188,7 @@
         "ref": "016308182033ABC2002"
       },
       "expected": {
+        "payee": "นาย ประหยัด มีสุข",
         "type": "income",
         "category": "other_income",
         "amountSatang": 300000,
@@ -208,6 +215,7 @@
         "ref": "016307120011ABC3003"
       },
       "expected": {
+        "payee": "นาย ทดสอบ ระบบ",
         "type": "expense",
         "category": "transfer",
         "amountSatang": 200000,
@@ -236,6 +244,7 @@
         "extraRows": [["บันทึกช่วยจำ", "ค่าเช่าห้อง พ.ย."]]
       },
       "expected": {
+        "payee": "บริษัท สุขสบาย แมนชั่น จำกัด",
         "type": "expense",
         "category": "housing",
         "amountSatang": 850000,
@@ -272,6 +281,7 @@
         "account": "xxx-x-x1234-x"
       },
       "expected": {
+        "payee": "บริษัท ทดสอบซอฟต์แวร์ จำกัด",
         "type": "income",
         "category": "salary",
         "amountSatang": 4620000,
@@ -306,6 +316,7 @@
         "net": "49,350.75"
       },
       "expected": {
+        "payee": "Omni Test Co., Ltd.",
         "type": "income",
         "category": "salary",
         "amountSatang": 4935075,
@@ -333,6 +344,7 @@
         "extraRows": [["บันทึกช่วยจำ", "<img src=x onerror=alert(1)>"]]
       },
       "expected": {
+        "payee": "นาย ก ทดสอบ",
         "type": "expense",
         "category": "transfer",
         "amountSatang": 1000,
@@ -367,6 +379,7 @@
         "account": "xxx-x-x5678-x"
       },
       "expected": {
+        "payee": "บริษัท ตัวอย่างการค้า จำกัด",
         "type": "income",
         "category": "salary",
         "amountSatang": 3106950,
@@ -401,6 +414,7 @@
         "net": "38,125.00"
       },
       "expected": {
+        "payee": "Sample Trading Co., Ltd.",
         "type": "income",
         "category": "salary",
         "amountSatang": 3812500,
@@ -430,6 +444,7 @@
         "ref": "2026110516400077"
       },
       "expected": {
+        "payee": "MS. SAMPLE FRIEND",
         "type": "income",
         "category": "other_income",
         "amountSatang": 75000,
@@ -454,6 +469,7 @@
         "ref": "BP2026110308050033"
       },
       "expected": {
+        "payee": "การประปานครหลวง",
         "type": "expense",
         "category": "bills",
         "amountSatang": 35250,
@@ -477,6 +493,7 @@
         "ref": "QR20261106203000"
       },
       "expected": {
+        "payee": "Shopee (Thailand)",
         "type": "expense",
         "category": "shopping",
         "amountSatang": 109900,
@@ -502,6 +519,7 @@
         "ref": "2026110222100009"
       },
       "expected": {
+        "payee": "NETFLIX",
         "type": "expense",
         "category": "entertainment",
         "amountSatang": 41900,

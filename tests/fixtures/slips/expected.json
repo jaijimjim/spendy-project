@@ -6,6 +6,7 @@
       "case": "b01-transfer-th-person",
       "template": "transfer-th",
       "expected": {
+        "payee": "น.ส. สมใจ ใจดี",
         "type": "expense",
         "category": "transfer",
         "amountSatang": 150000,
@@ -23,6 +24,7 @@
       "case": "b02-transfer-th-grabfood-balance",
       "template": "transfer-th",
       "expected": {
+        "payee": "GrabFood",
         "type": "expense",
         "category": "food",
         "amountSatang": 24500,
@@ -38,6 +40,7 @@
       "case": "b03-transfer-en-grab-ride",
       "template": "transfer-en",
       "expected": {
+        "payee": "GRAB",
         "type": "expense",
         "category": "transport",
         "amountSatang": 125050,
@@ -55,6 +58,7 @@
       "case": "b04-qr-cafe-amazon",
       "template": "qr-payment",
       "expected": {
+        "payee": "Café Amazon สาขา PTT วิภาวดี",
         "type": "expense",
         "category": "food",
         "amountSatang": 6500,
@@ -71,6 +75,7 @@
       "case": "b05-bill-electricity",
       "template": "bill",
       "expected": {
+        "payee": "การไฟฟ้านครหลวง",
         "type": "expense",
         "category": "bills",
         "amountSatang": 138500,
@@ -87,6 +92,7 @@
       "case": "b06-bill-internet-ddmm",
       "template": "bill",
       "expected": {
+        "payee": "AIS Fibre",
         "type": "expense",
         "category": "bills",
         "amountSatang": 59900,
@@ -102,6 +108,7 @@
       "case": "b07-received-th",
       "template": "transfer-th",
       "expected": {
+        "payee": "นาย ประหยัด มีสุข",
         "type": "income",
         "category": "other_income",
         "amountSatang": 300000,
@@ -117,6 +124,7 @@
       "case": "b08-received-looks-like-sender",
       "template": "transfer-th",
       "expected": {
+        "payee": "นาย ทดสอบ ระบบ",
         "type": "expense",
         "category": "transfer",
         "amountSatang": 200000,
@@ -132,6 +140,7 @@
       "case": "b09-transfer-company-rent-month-end",
       "template": "transfer-th",
       "expected": {
+        "payee": "บริษัท สุขสบาย แมนชั่น จำกัด",
         "type": "expense",
         "category": "housing",
         "amountSatang": 850000,
@@ -148,6 +157,7 @@
       "case": "b10-salary-th-table",
       "template": "salary-th",
       "expected": {
+        "payee": "บริษัท ทดสอบซอฟต์แวร์ จำกัด",
         "type": "income",
         "category": "salary",
         "amountSatang": 4620000,
@@ -164,6 +174,7 @@
       "case": "b11-salary-en-two-column",
       "template": "salary-en",
       "expected": {
+        "payee": "Omni Test Co., Ltd.",
         "type": "income",
         "category": "salary",
         "amountSatang": 4935075,
@@ -179,6 +190,7 @@
       "case": "b12-transfer-th-xss-memo",
       "template": "transfer-th",
       "expected": {
+        "payee": "นาย ก ทดสอบ",
         "type": "expense",
         "category": "transfer",
         "amountSatang": 1000,
@@ -193,6 +205,7 @@
       "case": "b13-salary-th-bonus-month",
       "template": "salary-th",
       "expected": {
+        "payee": "บริษัท ตัวอย่างการค้า จำกัด",
         "type": "income",
         "category": "salary",
         "amountSatang": 3106950,
@@ -209,6 +222,7 @@
       "case": "b14-salary-en-ce-paydate",
       "template": "salary-en",
       "expected": {
+        "payee": "Sample Trading Co., Ltd.",
         "type": "income",
         "category": "salary",
         "amountSatang": 3812500,
@@ -225,6 +239,7 @@
       "case": "b15-received-en",
       "template": "transfer-en",
       "expected": {
+        "payee": "MS. SAMPLE FRIEND",
         "type": "income",
         "category": "other_income",
         "amountSatang": 75000,
@@ -240,6 +255,7 @@
       "case": "b16-bill-water-thai-digits",
       "template": "bill",
       "expected": {
+        "payee": "การประปานครหลวง",
         "type": "expense",
         "category": "bills",
         "amountSatang": 35250,
@@ -256,6 +272,7 @@
       "case": "b17-qr-shopee-shopping",
       "template": "qr-payment",
       "expected": {
+        "payee": "Shopee (Thailand)",
         "type": "expense",
         "category": "shopping",
         "amountSatang": 109900,
@@ -271,6 +288,7 @@
       "case": "b18-transfer-en-netflix-ce",
       "template": "transfer-en",
       "expected": {
+        "payee": "NETFLIX",
         "type": "expense",
         "category": "entertainment",
         "amountSatang": 41900,
@@ -291,6 +309,7 @@
         "quality": 55
       },
       "expected": {
+        "payee": "GrabFood",
         "type": "expense",
         "category": "food",
         "amountSatang": 24500,
@@ -311,6 +330,7 @@
         "format": "png"
       },
       "expected": {
+        "payee": "บริษัท ทดสอบซอฟต์แวร์ จำกัด",
         "type": "income",
         "category": "salary",
         "amountSatang": 4620000,
@@ -332,6 +352,7 @@
         "format": "png"
       },
       "expected": {
+        "payee": "น.ส. สมใจ ใจดี",
         "type": "expense",
         "category": "transfer",
         "amountSatang": 150000,
@@ -355,6 +376,7 @@
         "quality": 55
       },
       "expected": {
+        "payee": "บริษัท ทดสอบซอฟต์แวร์ จำกัด",
         "type": "income",
         "category": "salary",
         "amountSatang": 4620000,
@@ -376,6 +398,7 @@
         "format": "png"
       },
       "expected": {
+        "payee": "Omni Test Co., Ltd.",
         "type": "income",
         "category": "salary",
         "amountSatang": 4935075,
@@ -396,6 +419,7 @@
         "format": "png"
       },
       "expected": {
+        "payee": "GRAB",
         "type": "expense",
         "category": "transport",
         "amountSatang": 125050,
@@ -419,6 +443,7 @@
         "quality": 35
       },
       "expected": {
+        "payee": "การไฟฟ้านครหลวง",
         "type": "expense",
         "category": "bills",
         "amountSatang": 138500,
@@ -440,6 +465,7 @@
         "format": "png"
       },
       "expected": {
+        "payee": "นาย ประหยัด มีสุข",
         "type": "income",
         "category": "other_income",
         "amountSatang": 300000,
@@ -460,6 +486,7 @@
         "format": "png"
       },
       "expected": {
+        "payee": "บริษัท ตัวอย่างการค้า จำกัด",
         "type": "income",
         "category": "salary",
         "amountSatang": 3106950,

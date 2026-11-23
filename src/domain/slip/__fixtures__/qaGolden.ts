@@ -20,6 +20,11 @@ export interface QaFixture {
     /** null ⇒ no acceptable date on the slip (parser falls back to today + flags.noDate) */
     date: string | null;
     time?: string | null;
+    /**
+     * OMX-051: expected payee, compared after `normalizePayee()`. `null` ⇒ payee must stay empty;
+     * omitted ⇒ not measured for this fixture.
+     */
+    payee?: string | null;
   };
   knownBug: string[];
 }
@@ -44,6 +49,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transfer',
       amountSatang: 900000,
       date: '2026-11-10',
+      payee: 'นาง มาลี ดีใจ',
     },
     knownBug: [],
   },
@@ -55,6 +61,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transport',
       amountSatang: 125050,
       date: '2026-11-10',
+      payee: 'GRAB',
     },
     knownBug: [],
   },
@@ -99,6 +106,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'other',
       amountSatang: 100000,
       date: '2026-11-05',
+      payee: 'บริษัท สมมติ จำกัด',
     },
     knownBug: [],
   },
@@ -188,6 +196,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'housing',
       amountSatang: 850000,
       date: '2026-10-31',
+      payee: 'บริษัท สุขสบาย แมนชั่น จำกัด',
     },
     knownBug: [],
   },
@@ -272,6 +281,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transfer',
       amountSatang: 150000,
       date: '2026-11-12',
+      payee: 'น.ส. สมใจ ใจดี',
       time: '09:12',
     },
     knownBug: [],
@@ -284,6 +294,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'food',
       amountSatang: 24500,
       date: '2026-11-13',
+      payee: 'GrabFood',
       time: '14:35',
     },
     knownBug: [],
@@ -296,6 +307,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'transport',
       amountSatang: 125050,
       date: '2026-11-10',
+      payee: 'GRAB',
       time: '08:15',
     },
     knownBug: [],
@@ -308,6 +320,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'food',
       amountSatang: 6500,
       date: '2026-11-11',
+      payee: 'Café Amazon สาขา PTT วิภาวดี',
       time: '07:45',
     },
     knownBug: [],
@@ -380,6 +393,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'salary',
       amountSatang: 4620000,
       date: '2026-10-25',
+      payee: 'บริษัท ทดสอบซอฟต์แวร์ จำกัด',
       time: null,
     },
     knownBug: [],
@@ -392,6 +406,7 @@ export const QA_FIXTURES: QaFixture[] = [
       category: 'salary',
       amountSatang: 4935075,
       date: '2026-10-31',
+      payee: 'Omni Test Co., Ltd.',
       time: null,
     },
     knownBug: [],
