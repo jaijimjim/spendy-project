@@ -78,6 +78,14 @@ Story ถือว่า Done เมื่อ:
 - **Language:** เอกสารภาษาไทยใช้ศัพท์เทคนิคภาษาอังกฤษได้; code/comment ภาษาอังกฤษ
 - **Respect & blameless:** Retro เน้นที่ระบบ/กระบวนการ ไม่โทษตัวบุคคล
 
+### 6.1 Spendy board — อัปเดตทุกครั้งที่ ticket เปลี่ยนสถานะ *(กฎจากผู้ใช้ · 23 พ.ย. 69)*
+
+- **ทุก role (PO, Designer, Dev, QA)** ที่เริ่ม ส่งต่อ หรือทำ ticket เสร็จ ต้องอัปเดตสถานะบน Spendy board ทันทีในงานชิ้นเดียวกัน ไม่รอ stand-up
+- วิธีอัปเดต: `node docs/agile/board/board.mjs set <OMX-id> <backlog|blocked|todo|progress|qa|done> [--note "..."]` · item ใหม่: `board.mjs add ...` · แล้ว commit `docs/agile/board/data.json` พร้อมงาน
+- คอลัมน์: Dev เริ่มงาน → `progress` · ส่ง QA → `qa` · QA ผ่าน + PO รับ → `done` · ติด blocker → `blocked` (ใส่ `--note` ว่าติดอะไร)
+- หลังอัปเดต ผู้ประสานงาน (orchestrator) รัน `board.mjs build` แล้ว publish `docs/agile/board/dist/index.html` ไปที่ artifact "Spendy Sprint 2 Board" เดิม
+- Daily stand-up และ DoD อ้างสถานะจากบอร์ดนี้
+
 ## 7. Feedback Intake Process
 ช่องทาง: Sprint Review/Demo, GitHub Issues, ข้อความจากลูกค้า/ผู้ใช้, ผลการทดสอบของ QA, ข้อเสนอจากทีม
 

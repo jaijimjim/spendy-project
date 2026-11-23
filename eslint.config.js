@@ -50,7 +50,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['scripts/**/*.{js,mjs}', 'tests/**/*.ts', '*.config.{js,ts}'],
+    files: ['scripts/**/*.{js,mjs}', 'docs/agile/board/*.mjs', 'tests/**/*.ts', '*.config.{js,ts}'],
     languageOptions: { globals: globals.node },
   },
   {

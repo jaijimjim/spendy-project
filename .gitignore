@@ -13,3 +13,7 @@ public/tesseract/
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# Real customer slips (PII) — local-only, never commit (OMX-030, OMX-042 AC4)
+tests/fixtures/real-slips/images/
+tests/fixtures/real-slips/*.local.json
