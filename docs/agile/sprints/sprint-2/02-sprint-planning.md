@@ -4,6 +4,7 @@
 > Sprint: **Sprint 2** · 1 สัปดาห์ (compressed mode ตาม charter §5) · Day 1 = 23 พ.ย. → Day 5 = 27 พ.ย. 2569 (Review/Demo + Retro)
 > Inputs: `01-product-backlog.md` v6 (§6, §7, §9), `00-grooming-agenda.md`, `01-grooming-minutes.md` (§4, §6–§10), `grooming/sprint-2-{design,dev,qa}.md`, `docs/qa/test-summary-report.md` §7, `sprints/sprint-1/05-retrospective.md` (AI-3)
 > Output: Sprint Goal, Sprint Backlog (commit **26 pts**), stretch, task breakdown, risks · backlog → **v7** · `03-daily-standup.md` Day 1
+> **⚠️ Scope change Day 1 (23 พ.ย. บ่าย) — commit 26 → 29 pts:** หลัง OMX-042 (สลิปจริง n = 16) · ดู **§9** (มีผลเหนือ §2–§5 ในส่วนที่ขัดกัน) · backlog → **v8**
 
 ## 0. สถานะก่อน Planning (สิ่งที่เปลี่ยนตั้งแต่ grooming)
 
@@ -14,7 +15,7 @@
 | **OMX-052** rename (FB-013, 1 pt) | ทำเสร็จในโค้ดแล้ว และอยู่ใน build ที่ deploy · รอยืนยัน AC บน live ใน OMX-048 |
 | **UQ1** (OCR text จริงแบบ redact) | **ยังไม่ได้คำตอบ** → ใช้สมมติฐาน A1 (§6) = synthetic OCR text |
 | **UQ3** (Google Client ID / B2) | **ยังไม่ได้คำตอบ** → B2 ยังเปิด · 003a/003b/041 ไม่นับใน commitment |
-| UQ4–UQ6 | ยังไม่ได้คำตอบ (ติดตามต่อ — ดู §6) |
+| UQ4–UQ6 | ยังไม่ได้คำตอบ (ติดตามต่อ — ดู §6) · *(Day 1 บ่าย)* **UQ4 ปิด** — ผู้ใช้ส่งสลิปจริง 16 ใบ → §9 |
 | QA re-run บน live | QA กำลังรัน TC ที่เคยติด B3 บน live URL — ผลจะบันทึกใน `docs/qa/` และ Daily Day 2 |
 | Sprint 1 | Accepted (pending deploy) = 92 pts · **Done = 0** จนกว่า OMX-048 ผ่าน → เป็นงาน Day 1 ของ QA + PO |
 
@@ -235,7 +236,7 @@ Day 5 ─ Hardening, UAT (buffer), Sprint Review/Demo บน live URL, Retro
 | **A1** | **UQ1 = ใช้ synthetic OCR text** — ไม่มี redacted text จริง · fixture เลียนแบบ layout KBank/K PLUS จากคำบรรยาย FB-011 + seed S1–S4 · **ห้ามใช้รูปสลิปจริง** | ผู้ใช้สั่งเริ่ม sprint แต่ยังไม่ตอบ UQ1; grooming กำหนด fallback B ไว้แล้ว | DoR #6 ของ 049/050a/050b = ✓ · QA G7 เริ่ม Day 1 แทน Day 2 · Layer C re-test โดยผู้ใช้ (UQ5) เป็นตัวยืนยันจริงเพียงตัวเดียว |
 | **A2** | **UQ2 = ปิดแล้ว** (repo public, Pages เปิด, deploy เขียว) | run `45208481550` + หน้า live | 028/048/043/029 Ready |
 | **A3** | **UQ3 = ยังไม่ยืนยัน** → B2 เปิด | ไม่มีคำตอบ | 003a/003b/041 = Blocked (B2), stretch, ไม่นับใน commit |
-| A4 | UQ4 ยังไม่ตอบ → OMX-042 เริ่มด้วย n = 3 (FB-011) | ผู้ใช้ยังไม่ยินยอม/ส่งสลิปเพิ่ม | ถ้าไม่ได้สลิปเพิ่มภายใน Day 3 → report เท่าที่มี + บันทึกเหตุผล (S4) และ PO ตัดสินว่า 042 accept บางส่วนหรือ carry-over (AC1 ต้อง ≥ 11) |
+| A4 | ~~UQ4 ยังไม่ตอบ → OMX-042 เริ่มด้วย n = 3 (FB-011)~~ **ปิด Day 1: ได้ n = 16 → 042 Done (§9.1)** | ผู้ใช้ยังไม่ยินยอม/ส่งสลิปเพิ่ม | ถ้าไม่ได้สลิปเพิ่มภายใน Day 3 → report เท่าที่มี + บันทึกเหตุผล (S4) และ PO ตัดสินว่า 042 accept บางส่วนหรือ carry-over (AC1 ต้อง ≥ 11) |
 | A5 | UQ5: ผู้ใช้ re-test ได้ Day 4 | ตามที่ขอใน grooming | ถ้าไม่ได้ → AC8 ของ bundle ค้าง; PO ตัดสินตาม UAT exit #3 (ไม่ block merge อัตโนมัติ) |
 | A6 | Build ที่ live ทำงานถูกต้อง (QA ยืนยัน Day 1) | หน้า Home ขึ้นแล้ว แต่ TC บน live ยังไม่ครบ | ถ้า TC บน live fail → hotfix จาก buffer ก่อน bundle |
 
@@ -248,6 +249,15 @@ Day 5 ─ Hardening, UAT (buffer), Sprint Review/Demo บน live URL, Retro
 | **ผู้ใช้ยืนยัน UQ3 หลัง Day 3** | ไม่ดึงเข้า sprint (เหลือ buffer สำหรับ UAT) · เตรียมเป็น Sprint 3 item แรก · QA อาจรัน TC-015/016/017 แบบ exploratory ถ้ามีเวลา | PO | 0 |
 | **ผู้ใช้ตอบ UQ3 = ยอมรับ "Not configured"** | PO บันทึกการตัดสินใจ (AI-6) · 003a/b/041 → Sprint 3 candidate · UAT ทำโดยไม่มี Google Photos จริง | PO | 0 |
 | **ผู้ใช้ส่งสลิปเพิ่ม (UQ4)** | QA รัน Layer C local-only, ผลเป็นตัวเลข · ไม่มีรูป/text จริงเข้า repo/sandbox | QA | 0 (อยู่ใน 042) |
+
+### 6.2a คำถามถึงผู้ใช้ที่เปิดใหม่ Day 1 *(scope change §9)*
+
+| # | คำถาม | ทำไมต้องรู้ | ผลต่อแผน | Owner / Due |
+|---|---|---|---|---|
+| **UQ7** | ยืนยันหมวดของสลิปจริง 7 ใบ (FB-015): **r04** ล้างแอร์ (ฮิปโป เซอร์วิส เซ็นเตอร์) → ที่อยู่อาศัย? · **r06** TrueMoney Shop (นัวสะเด็ด) → อาหาร? · **r07** QR ร้าน TTB(ชื่อบุคคล) 140 บาท → ซื้ออะไร? · **r09** SCB มณี SHOP (โจนมุมตึก) → ร้านประเภทไหน? · **r11** KSHER_SIAM PARAGON ONLINE → ช้อปปิ้ง (หรือที่จอดรถ/อาหาร)? · **r13** เติม G-Wallet (เป๋าตัง) → โอน หรือหมวดอื่น? · **r14** วิสาหกิจชุมชนท่องเที่ยว → บันเทิง/ท่องเที่ยว? | ground truth ของ category gate (§9.3) — QA ไม่เดา | ใบที่ยืนยันแล้วเข้า "ใบที่หมวดชัด" → gate = ≥ 60% ของชุดที่ขยาย (ปัดขึ้น) · ไม่ตอบ → gate คงที่ 9 ใบ | PO · Day 2 |
+| **UQ8** | r10 บริจาควัด → โอเคกับ "อื่น ๆ" หรืออยากได้หมวดใหม่ "บริจาค / Donation" (ลดหย่อนภาษี)? | taxonomy v1 ไม่มีหมวดนี้ | "อื่น ๆ" → ใช้ `other` ต่อ · "อยากได้" → story ใหม่ (taxonomy v2, Designer + i18n) **Sprint 3** ไม่เข้า Sprint 2 | PO · Day 3 |
+| **UQ9** | FB-016 อัปโหลดหลายรูป: รุ่นเครื่อง/OS, เบราว์เซอร์ (หรือเปิดจาก LINE/FB), ปุ่มที่กด, หน้าต่างเลือกรูปเป็นแอปอะไร | โค้ดมี `multiple` ทุกจุด + TC-005 (21 รูป) ผ่าน → น่าจะเป็น picker ของเครื่อง | ยังไม่สร้าง ticket · Dev ตรวจ append/replace (≤ 30 นาที, buffer) · QA ลองใน 043 | PO · Day 2 |
+| UQ10 *(ไม่ block)* | ขอสลิปเพิ่ม: SCB EASY ≥ 2, Krungthai +1, สลิปเงินเดือน, สลิปรับเงิน | OMX-042 AC1 bank mix ที่ยกไป OMX-057 | Sprint 3 | PO · ก่อน Sprint 3 Planning |
 
 ### 6.3 Risks
 
@@ -288,3 +298,130 @@ Day 5 ─ Hardening, UAT (buffer), Sprint Review/Demo บน live URL, Retro
 | **26 pts committed** | **4** | **0** | **2** | **0** |
 
 > Live board updates อยู่ใน `03-daily-standup.md`
+
+---
+
+## 9. Scope Change — Day 1 บ่าย (2026-11-23) หลัง OMX-042 n = 16
+
+> Facilitator: PO/PM · Input: `docs/qa/test-summary-report.md` §8–§9, `docs/qa/bug-report.md` BUG-009…015, `tests/fixtures/real-slips/README.md`, FB-014–016 · ใช้ Change Coordination (charter §8) — Dev ยืนยัน estimate ใน Daily Day 2 · board อัปเดตด้วย `board.mjs` แล้ว
+
+### 9.0 เกิดอะไรขึ้น
+- **UQ4 ปิด:** ผู้ใช้ส่งสลิปจริง **16 ใบ** (make by KBank 9 · K PLUS 6 · Krungthai 1) และอนุญาตให้ QA เก็บไว้ทดสอบแบบ **local-only, git-ignored** (`images/`, `*.local.json`) — commit เฉพาะ OCR text ที่ redact แล้ว + `expected.json` ชื่อสมมติ · วัดซ้ำได้ใน CI: `npx vitest run src/domain/slip/realSlips.test.ts` (ratchet `BASELINE`)
+- **Baseline (`main` @ `6ebe779`):** type **16/16** · amount **13/16** (ยอดผิดแบบไม่ว่าง **2/16** r04, r05) · date 13/16 · time 16/16 · **payee 0/16** · category 2/16 (**ใบที่หมวดชัด 0/9**)
+- ข้อสรุป PO: ปัญหาใหญ่กว่าที่ 3 สลิปของ FB-011 บอก — payee ว่างทุกแอปรวมร้านค้า/biller และ "ยอดเงินผิดแบบเงียบ" เป็นความเสี่ยงต่อความเชื่อถือสูงสุด → Sprint Goal ส่วน "อ่านสลิปจริงให้ถูก" ต้องขยาย scope ไม่ใช่รอ Sprint 3
+
+### 9.1 PO review — OMX-042 → **Accepted (Done)**
+
+| AC | ผล | การตัดสินของ PO |
+|---|---|---|
+| AC1 ≥ 11 slips, private, report ต่อธนาคาร/รูปแบบ | n = 16 ✓ · รูป/OCR ดิบ git-ignored ✓ · report ไม่มีชื่อจริง ✓ · bank mix ไม่ครบ (ไม่มี SCB EASY, เงินเดือน, รายรับ; Krungthai 1) | **ยอมรับ scope = 3 แอปที่ผู้ใช้ใช้จริง** — รายชื่อธนาคารใน AC1 เขียนก่อนรู้ว่าผู้ใช้ใช้แอปอะไร; เป้าหมายของ story (รู้ว่าแอปผ่าน MVP metric นอก synthetic หรือไม่) บรรลุแล้ว · bank mix ที่ขาด → **OMX-057** (S3) |
+| AC2 เทียบ MVP metrics + log gap เป็น FB พร้อมข้อเสนอ | ✓ BUG-011…015 + scope BUG-009/010 พร้อม suggestion · PO log **FB-014/015** แล้ว | ✓ |
+| AC3 OCR text ที่ fail เป็น Layer A fixture (redacted) | ✓ `redacted/r01–r16.txt` + `realSlips.test.ts` ใน CI | ✓ |
+| AC4 UAT correction rate | ⛔ UAT ยังไม่เริ่ม | **แยกออกไป OMX-057** — วัดได้ตอน UAT exit เท่านั้น ไม่ใช่งานวัด accuracy ของ story นี้; ไม่ถือว่า story ค้าง |
+
+**เหตุผลที่รับ:** n = 16 ≥ 11, ข้อมูลเชื่อถือได้ (redaction ยืนยันว่าไม่เปลี่ยนผล parser), วัดซ้ำได้ใน CI ทุก PR และให้ gate ตัวเลขที่ใช้กับ 049/050a/050b/053/054 ทันที · ส่วนที่ไม่ครบแยกเป็น story ชัดเจน (ไม่ซ่อน) · `board.mjs set OMX-042 done` · **3 pts นับ velocity Sprint 2** · S4 (§1) ✓
+
+### 9.2 Bug triage
+
+| Bug | Sev | การตัดสิน | Ticket | Pts (PO prelim → Dev ยืนยัน Day 2) | Sprint |
+|---|---|---|---|---|---|
+| **BUG-009 ขยาย** (payee 0/16 ทุกแอป รวมร้าน/biller) | High | **รวมเข้า OMX-049** — rule เดียวกัน (บรรทัดชื่อแรกหลัง masked account ผู้โอน) ขยายให้ครอบคลุม make + K PLUS + Krungthai, mask ที่ OCR เพี้ยน, junk ลูกศร, ชื่อธนาคาร, merchant 2 บรรทัด · Dev re-estimate trigger (§6.2) เกิดแล้ว | OMX-049 | **3 → 5** | S2 |
+| **BUG-010 ขยาย** (K PLUS "จ่ายบิล" 4/4 → bills, ก๋วยเตี๋ยว/ลูกชิ้น) | High | **รวมเข้า OMX-050a** (precedence + คำอาหาร) — เป็น scope เดิม เพิ่ม keyword + AC บนสลิปจริง | OMX-050a | 3 → 3 | S2 |
+| **BUG-011** ยอดผิดแบบไม่ว่าง (r04, r05) | **High** | **OMX ใหม่** — ต่างจาก 040 (เลขไทยปน) แม้ใช้ไฟล์เดียวกัน; High ต้องเห็นบนบอร์ดแยก · **เข้า Sprint นี้** | **OMX-053** | **2** | **S2** |
+| **BUG-013** "พ.ย." → `w.g.` (3/9 ของ make) | Medium | **OMX ใหม่** (แยกจาก 053 เพื่อให้ตัดได้อิสระ) · เข้า sprint เพราะ make คือแอปหลักของผู้ใช้ และรายการตกเดือนผิดถ้าข้ามเดือน | **OMX-054** | **1** | **S2** (ตัดเป็นตัวแรกถ้าเสี่ยง) |
+| **BUG-014** Rabbit / บางกอก สมาร์ทการ์ด → transport | Medium | **รวมเข้า OMX-050b** (fuzzy keyword — OCR "ซิสแทม") · จำเป็นต่อ gate 60% (QA projection: ไม่มี Rabbit = 56%) | OMX-050b | **2 → 3** | S2 |
+| BUG-014 r01/r02 (โอนบุคคล → transfer) | Medium | หายเมื่อ 049 ได้ payee — **รวมใน OMX-049 AC10** | OMX-049 | — | S2 |
+| BUG-014 r08 (โอนเข้าบัญชีตัวเอง) | Medium | **รวมเข้า OMX-039** (owner name/account ใน Settings) — 049 AC4 sender guard ทำให้ payee ว่างถูกต้อง | OMX-039 | 3 (เดิม) | S3 |
+| BUG-014 r12 (memo "ค่ากางเกง") | Medium | ต้องอ่าน memo make ก่อน → **รวมเข้า OMX-056** | OMX-056 | — | S3 |
+| **BUG-012** ยอดแตกหลายบรรทัด → ว่าง | Low | **OMX ใหม่ (spike)** — ห้ามเดาต่อตัวเลข; known limitation ระหว่างนี้ | **OMX-055** | 2 | S3 candidate |
+| **BUG-015** memo make, disclaimer เป็น memo, bank null, type Low ("เติมเงิน") | Low | **OMX ใหม่** · ส่วน "ชําระเจิน" อยู่ใน 050b AC4 แล้ว | **OMX-056** | 3 | S3 candidate |
+| OMX-042 AC1 bank mix + AC4 | — | **OMX ใหม่** (split จาก 042) | **OMX-057** | 2 | S3 candidate |
+
+### 9.3 เกณฑ์ตัวเลขบนสลิปจริง (fixture `tests/fixtures/real-slips`, รันใน `realSlips.test.ts`)
+
+| Field | Baseline | **Gate (ขั้นต่ำ, ต้องผ่านก่อน PO accept)** | Target | Ticket ที่รับผิดชอบ |
+|---|---|---|---|---|
+| Payee | 0/16 | **≥ 12/16 (75%)** และถูก ≥ 1 ใบในทุกแอป (make, K PLUS, Krungthai) · **0 ใบ** ที่คืนชื่อผู้โอนเป็น payee · r08 (บัญชีตัวเอง) payee ว่าง = ผ่าน | 14/16 | 049 |
+| Category — ใบที่หมวดชัด | 0/9 | **≥ 6/9 (67% ≥ MVP 60%)** วัดรวม bundle · เมื่อผู้ใช้ตอบ UQ7 ใบที่ยืนยันเข้าชุดนี้ → gate = ≥ 60% ของชุดใหม่ (ปัดขึ้น) | 7/9 (r01, r02, r03, r05, r10, r15, r16) | 049 + 050a + 050b |
+| Category — K PLUS "จ่ายบิล" | 4/4 เป็น `bills` | **0/4 เป็น `bills`** (ไม่มีใบใดเป็น biller สาธารณูปโภค) | r03 food, r10 other | 050a |
+| Amount | 13/16, ผิด 2 | **≥ 15/16 และยอดผิดแบบไม่ว่าง = 0** (r14 = BUG-012 ยกเว้น) | 15/16 | 053 |
+| Date | 13/16 | **16/16** | 16/16 | 054 |
+| Type / Time | 16/16 | ไม่ลด | — | ทุก ticket |
+
+กฎ: ทุก PR ที่แก้ต้อง **ยก `BASELINE` ใน `realSlips.test.ts`** ใน PR เดียวกัน (ratchet) · Layer A 100% และ Layer B 27/27 ไม่ถอย (gate เดิม) · ใบที่แก้ได้ย้ายเข้า `qaGolden.ts` เป็น `real-redacted-rNN` · **AC8 เดิม (ผู้ใช้ re-test 3 ใบ FB-011)** คงไว้เป็น signal บนเครื่องจริง แต่ gate หลักย้ายมาที่ n = 16 ใน CI (ไม่ขึ้นกับเวลาว่างของผู้ใช้ — ลด R6)
+
+### 9.4 Capacity & commitment ใหม่
+
+| | Pts |
+|---|---|
+| Commit เดิม | 26 |
+| + OMX-049 re-estimate 3 → 5 | +2 |
+| + OMX-050b 2 → 3 (Rabbit/transport) | +1 |
+| + OMX-048 2 → 3 (Dev ทำ `post-deploy.yml` — §9.6) | +1 |
+| + **OMX-053** (BUG-011 High) | +2 |
+| + **OMX-054** (BUG-013) | +1 |
+| = ก่อนตัด | **33** — เกิน commit line ~30 |
+| − OMX-040 Thai digits (Could, BUG-007 Low — สลิปจริงไม่พบปัญหานี้) → S3 | −2 |
+| − OMX-045 salary date (Could) → S3 | −1 |
+| − OMX-046 search 320px (Could) → S3 | −1 |
+| **Commit ใหม่** | **29** (Must 26 · Should 3: 029 + 054 · Could 0) |
+| Done แล้ว | 052 (1) + 042 (3) = **4** → remaining **25** |
+| Buffer (UAT, hotfix, FB-016 ตรวจ append/replace) | ~10 → รวม ~39 ≤ velocity ~40 ✓ |
+| Stretch (B2) | 003a/b + 041 = 4 — **ดึงได้เฉพาะเมื่อมี pts Done เกินแผนแล้วเท่านั้น** (ไม่ดึงเพียงเพราะ UQ3 ตอบ) เพื่อไม่ให้ commit เกิน velocity |
+
+**Trade-off (charter §8 ข้อ 4):** เพิ่มงาน High/real-slip 7 pts ↔ เอา Could ที่ไม่ช่วย goal ออก 4 pts + ใช้ช่องว่างเดิม 4 pts ถึง commit line · Sprint Goal ไม่เปลี่ยนเจตนา แต่ปรับเกณฑ์ (§9.7)
+
+**Cut order ใหม่ (LIFO):** **054 → 029 → 043 AC3 (CSV Excel/Sheets) → ลด target payee เป็น gate** · **ห้ามตัด** 049/050a/050b แยกกัน และ 053 (High) · ถ้า Dev ยืนยันว่า 049 > 5 (→ 8) ให้ PO ตัด 054 + 029 ทันทีและแจ้งผู้ใช้
+
+### 9.5 OMX-028 AC1 — การตัดสินใจ
+
+**ตัดสิน: ต้องมีหลักฐานจริง ไม่รับหลักฐานเชิงโครงสร้างอย่างเดียว** — แต่ปรับวิธีให้พิสูจน์สิ่งที่ AC ต้องการจริง:
+1. Dev สร้าง branch ทิ้ง `chore/omx-028-failing-gate` ที่มี unit test ล้มโดยตั้งใจ 1 ตัว → เปิด **draft PR** → ได้หลักฐาน TC-138 (PR trigger) + CI แดง
+2. รัน **`workflow_dispatch` ของ `deploy.yml` บน branch นั้น** → job `ci` แดง → **`Build for Pages` และ `Deploy` = skipped** → นี่คือหลักฐานว่า "failed step blocks deployment" (PR อย่างเดียวพิสูจน์ไม่ได้ เพราะ `deploy.yml` ไม่รันบน `pull_request` เลย)
+3. แนบลิงก์ run ทั้งสองใน PR → ปิด PR + ลบ branch · **ห้าม merge และห้าม push สิ่งที่ล้มเข้า `main`** (live site ไม่ถูกแตะ)
+
+**เหตุผล:** AC เขียนวิธีพิสูจน์ไว้ชัด และต้นทุน ≈ 15–20 นาที · หลักฐาน `needs: ci` เป็นแค่การอ่าน config ไม่ใช่การทดสอบ · repo public + มี deploy อัตโนมัติ → gate นี้คือสิ่งที่ปกป้องผู้ใช้จาก build ที่พัง · **Fallback:** ถ้า environment protection / สิทธิ์ทำให้ dispatch บน branch ไม่ได้ → PO ยอมรับ (1) run ของ draft PR ที่แดง + (2) `deploy.yml` `build needs: ci`, `deploy needs: build` เป็นลายลักษณ์อักษรใน 028 และบันทึกใน Daily · Owner: Dev (Day 1–2) → QA ส่ง `qa` → PO accept
+
+### 9.6 OMX-048 — แผนให้ AC1–AC3 ทำได้จริง (Dev task V14, Day 1–2)
+
+ปัญหา: sandbox ของ QA เข้า `github.io` ไม่ได้ (proxy) → ย้ายการรันไปที่ **GitHub Actions runner** ซึ่งเข้า Pages ได้ และได้หลักฐานถาวรเป็น artifact
+
+`.github/workflows/post-deploy.yml` — trigger: `workflow_run` (workflow "Deploy to GitHub Pages", `conclusion == success`) + `workflow_dispatch` · `BASE_URL = https://jaijimjim.github.io/spendy-project/`
+| Job | ทำอะไร | ปิด AC |
+|---|---|---|
+| `e2e-live` | `E2E_BASE_URL=$BASE_URL npx playwright test --project=mobile --project=desktop` (non-Google journeys; Google = skip ตามเดิม) · upload report | 048 AC1 |
+| `lighthouse-live` | Lighthouse CI (`@lhci/cli`) mobile, `numberOfRuns: 3`, categories performance + accessibility · assert a11y ≥ 0.90 (error), LCP บันทึก + warn > 2,500 ms · upload JSON/HTML (median) | 048 AC2, 029 AC1 |
+| `har-live` | Playwright spec ใหม่ (`tests/e2e/live-har.spec.ts`, รันเฉพาะเมื่อมี `E2E_BASE_URL`): `recordHar` → upload **สลิปสังเคราะห์** จาก `tests/fixtures/slips/images` → real OCR → save → reload (visit 2) · assert ทุก request host = `jaijimjim.github.io`, Tesseract worker/core/lang มาจาก origin เดียว และ visit 2 มาจาก cache (Dev เลือกวิธี เช่น CDP `fromDiskCache`/`fromServiceWorker` หรือ `transferSize = 0`) · upload HAR | 048 AC3, OMX-030 |
+
+กติกา: **ห้ามใช้สลิปจริงใน workflow** (synthetic เท่านั้น) · workflow ไม่ block deploy (รันหลัง deploy) แต่ถ้าแดง → QA เปิด bug + PO ตัดสินภายในวัน · QA review artifact → ส่ง `qa` → PO accept → 92 pts + 028 + 052 → Done, tag `v0.1.0-uat` · ผลพลอยได้: ใช้ซ้ำทุก deploy (bundle Day 3 ด้วย) · **ทางสำรอง:** ถ้า workflow ยังไม่พร้อมภายใน Day 2 ให้ orchestrator/ผู้ใช้รัน 3 คำสั่งเดียวกันจากเครื่องที่เข้า github.io ได้ · 048: 2 → 3 pts (+1 งาน Dev)
+
+### 9.7 Sprint Goal & success measures (ปรับ)
+
+Goal เดิมคงเจตนา — เปลี่ยนเฉพาะเกณฑ์ "อ่านสลิปจริงให้ถูก":
+> …จากนั้นแก้การอ่านสลิปจริงของ **make by KBank / K PLUS / Krungthai** ให้ได้ **ผู้รับ หมวดหมู่ ยอดเงิน และวันที่** ถูกตามเกณฑ์บนสลิปจริง 16 ใบ (§9.3: payee ≥ 12/16, category ใบชัด ≥ 60%, ยอดผิดแบบเงียบ = 0) แล้ว deploy ภายใน Day 3…
+
+| # | เปลี่ยน |
+|---|---|
+| S1 | คงเดิม — วัดผ่าน `post-deploy.yml` (§9.6) |
+| S2 | **แทนที่:** gate §9.3 บน `realSlips.test.ts` (n = 16) · ผู้ใช้ re-test 3 ใบ = signal เพิ่มเติม |
+| S4 | ✓ **ผ่านแล้ว** (OMX-042 Done, n = 16) |
+| S5 | เพิ่ม: BUG-011 Closed (High) ก่อน UAT entry |
+
+### 9.8 Sprint Backlog ปัจจุบัน (29 pts)
+
+| Order (Dev) | ID | Pts | Status (board) |
+|---|---|---|---|
+| — | OMX-052 | 1 | Done |
+| — | OMX-042 | 3 | **Done** (PO accept Day 1) |
+| 1 | OMX-028 AC1 failing-gate proof | 1 | progress |
+| 2 | OMX-048 `post-deploy.yml` (Dev) → QA review | 3 | progress |
+| 3 | OMX-051 pair (baseline payee Layer A/B) | 2 | todo/progress |
+| 4 | **OMX-049** payee ทุกแอป | 5 | todo |
+| 5 | **OMX-053** amount (High) — ทำต่อทันทีระหว่างรอ review 049 | 2 | todo |
+| 6 | **OMX-050a** | 3 | todo |
+| 7 | **OMX-050b** (+ Rabbit) | 3 | todo |
+| 8 | OMX-054 date `w.g.` | 1 | todo |
+| 9 | Bundle merge + deploy (049 → 053 → 050a → 050b → 054) **Day 3 EOD** → `post-deploy.yml` รันอัตโนมัติ | — | — |
+| QA | OMX-043 (3), OMX-029 (2 — ใช้ผล Lighthouse จาก `post-deploy.yml`) | 5 | todo |
+
+**ความเสี่ยงใหม่:** R10 — Dev load (049 5 + 053 + 050a + 050b + 054 = 14 pts parser ใน Day 1–3) → bundle deploy อาจเลื่อนเป็น Day 4 เช้า · mitigation: checkpoint ครึ่งวัน Day 2 บ่าย, ถ้า 049 ยังไม่ PR → ตัด 054 ตาม cut order · R11 — gate payee 12/16 สูงเกินถ้า layout ต่างกันมาก → Dev แจ้งภายใน Day 2 เช้า, PO ตัดสินลด gate (ไม่ต่ำกว่า 10/16) พร้อมเหตุผล

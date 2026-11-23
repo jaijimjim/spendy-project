@@ -81,7 +81,7 @@ Story ถือว่า Done เมื่อ:
 ### 6.1 Spendy board — อัปเดตทุกครั้งที่ ticket เปลี่ยนสถานะ *(กฎจากผู้ใช้ · 23 พ.ย. 69)*
 
 - **ทุก role (PO, Designer, Dev, QA)** ที่เริ่ม ส่งต่อ หรือทำ ticket เสร็จ ต้องอัปเดตสถานะบน Spendy board ทันทีในงานชิ้นเดียวกัน ไม่รอ stand-up
-- วิธีอัปเดต: `node docs/agile/board/board.mjs set <OMX-id> <backlog|blocked|todo|progress|qa|done> [--note "..."]` · item ใหม่: `board.mjs add ...` · แล้ว commit `docs/agile/board/data.json` พร้อมงาน
+- วิธีอัปเดต: `node docs/agile/board/board.mjs set <OMX-id> <backlog|blocked|todo|progress|qa|done> [--note "..."]` · item ใหม่: `board.mjs add ...` · re-estimate / ย้าย sprint (คอลัมน์ไม่เปลี่ยน): `board.mjs edit <OMX-id> --pts N --sprint S2|S3|- [--note ...]` *(เพิ่ม 23 พ.ย. 69 — ยอดรวม Sprint บนบอร์ดนับจาก field sprint)* · แล้ว commit `docs/agile/board/data.json` พร้อมงาน
 - คอลัมน์: Dev เริ่มงาน → `progress` · ส่ง QA → `qa` · QA ผ่าน + PO รับ → `done` · ติด blocker → `blocked` (ใส่ `--note` ว่าติดอะไร)
 - หลังอัปเดต ผู้ประสานงาน (orchestrator) รัน `board.mjs build` แล้ว publish `docs/agile/board/dist/index.html` ไปที่ artifact "Spendy Sprint 2 Board" เดิม
 - Daily stand-up และ DoD อ้างสถานะจากบอร์ดนี้
@@ -126,6 +126,7 @@ Feedback เข้ามา
 | 2026-11-13 | Sprint 1 commits all Must stories (77 pts, incl. Google Photos 003a/003b/004) with extended capacity vs ~40 pts velocity; Should = stretch | Customer explicitly requires Google Photos, auto-categorisation and external hosting in MVP_0001 | Schedule risk accepted; Day-3 checkpoint; Must cut-last order in sprint plan | PO + Team |
 | 2026-11-13 | New status `Accepted (pending deploy)`; DoR #7 "Environment access verified"; DoR #6 fixture-first for parser stories; half-day checkpoint rule | Sprint 1 Review/Retro: deploy blocked all sprint (B1), late fixtures, container restart | Sprint 1 stories recorded as Accepted (pending deploy), 0 pts Done until Pages verification (OMX-048) | PO + Team |
 | 2026-11-13 | Sprint 2 planned at measured velocity (~40) minus UAT/hotfix buffer; AI-assisted throughput tracked separately | Retro AI-3: the 77 pts overcommit worked only thanks to AI agents | Sprint 2 candidate list in backlog §9 | PO + Team |
+| 2026-11-23 | Sprint 2 mid-sprint scope change (Day 1): +OMX-053 (2, BUG-011 High) +OMX-054 (1, BUG-013) · re-estimate 049 3→5, 050b 2→3, 048 2→3 · เลื่อน 040/045/046 (4) → Sprint 3 · commit 26 → **29** | OMX-042 วัดสลิปจริง n=16: ยอดผิดแบบเงียบ 2/16 (High), payee 0/16, category ใบชัด 0/9 — Sprint Goal (อ่านสลิปจริงให้ถูก) เสี่ยงถ้าไม่ขยาย scope | trade-off ตาม §8 ข้อ 4: เอา Could 4 pts ออก, commit ≤ ~30 + buffer ~10 ≤ velocity ~40 · `sprints/sprint-2/02-sprint-planning.md` §9 | PO (Dev ยืนยัน estimate Day 2) |
 
 ## 9. Risks & Assumptions (initial)
 | Risk | Mitigation |
