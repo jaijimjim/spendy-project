@@ -37,3 +37,41 @@ export function findKeywords(text: string, keywords: readonly string[]): string[
 export function keywordLength(keyword: string): number {
   return [...keyword.replace(/\s+/g, '')].length;
 }
+
+/**
+ * OMX-050b: confusable-character folding for the keyword MATCHER only (never applied to stored
+ * payee/memo/rawText — `normalizeText()` is unchanged). Round 1 table (grooming): drop Thai tone
+ * marks ่ ้ ๊ ๋, ์, ็, ๆ; ซ→ช, บ→ป, ผ→พ, ฝ→ฟ, ง→จ; Latin 0→o, 1/I/l/|→l, rn→m; lower case.
+ * ด↔ต is deliberately NOT folded (round 1).
+ */
+const FOLD_MAP: Record<string, string> = { ซ: 'ช', บ: 'ป', ผ: 'พ', ฝ: 'ฟ', ง: 'จ' };
+export function fold(s: string): string {
+  return s
+    .normalize('NFC')
+    .replace(/[่-๋์็ๆ]/g, '')
+    .replace(/[ซบผฝง]/g, (c) => FOLD_MAP[c]!)
+    .replace(/[1Il|]/g, 'l')
+    .replace(/0/g, 'o')
+    .toLowerCase()
+    .replace(/rn/g, 'm');
+}
+
+/** Fuzzy keywords must fold to at least this many characters (AC3 — bounds false positives). */
+export const FUZZY_MIN_LENGTH = 5;
+
+let lastText = '';
+let lastFolded = '';
+const foldedText = (text: string) => {
+  if (text !== lastText) {
+    lastText = text;
+    lastFolded = fold(text);
+  }
+  return lastFolded;
+};
+
+/** Keyword match after folding both sides; only for keywords that fold to ≥ 5 chars. */
+export function containsKeywordFuzzy(text: string, keyword: string): boolean {
+  const k = fold(keyword);
+  if (keywordLength(k) < FUZZY_MIN_LENGTH) return false;
+  return keywordRegex(k).test(foldedText(text));
+}

@@ -490,7 +490,7 @@ export const QA_FIXTURES: QaFixture[] = [
       date: '2026-11-19',
       time: '07:47',
     },
-    knownBug: ['BUG-014 Rabbit/บางกอก สมาร์ทการ์ด → transport (OMX-050b)'],
+    knownBug: [], // BUG-014 fixed by OMX-050b (Rabbit / บางกอก สมาร์ทการ์ด → transport)
   },
   // ---- OMX-050a: K PLUS bill flow to a merchant is not `bills` (REDACTED text) ----
   {

@@ -1,7 +1,7 @@
 /** Rule-based categorization (OMX-010). */
 import type { CategoryId, Confidence, TxType } from '../types';
 import { CATEGORY_RULES, TX_PHRASES } from './categories.rules';
-import { containsKeyword, keywordLength } from './keywords';
+import { containsKeyword, containsKeywordFuzzy, keywordLength } from './keywords';
 import { isCompany, looksLikePerson } from './parties';
 
 export type MatchField = 'payee' | 'payeeExtra' | 'memo' | 'text';
@@ -11,6 +11,8 @@ export interface CategoryResult {
   confidence: Confidence;
   field: MatchField | 'person' | 'income' | 'weak' | 'default';
   keyword?: string;
+  /** OMX-050b: the keyword matched only after OCR-confusable folding */
+  fuzzy?: true;
 }
 
 interface Match {
@@ -18,6 +20,7 @@ interface Match {
   keyword: string;
   length: number;
   priority: number;
+  fuzzy?: true;
 }
 
 /** Best match inside one field: longest keyword, then rule priority (AC2). */
@@ -26,12 +29,15 @@ export function bestMatch(fieldText: string | null | undefined): Match | null {
   let best: Match | null = null;
   for (const rule of CATEGORY_RULES) {
     for (const keyword of rule.keywords) {
-      if (!containsKeyword(fieldText, keyword)) continue;
+      const exact = containsKeyword(fieldText, keyword);
+      if (!exact && !(rule.fuzzy?.includes(keyword) && containsKeywordFuzzy(fieldText, keyword)))
+        continue;
       const m: Match = {
         category: rule.category,
         keyword,
         length: keywordLength(keyword),
         priority: rule.priority,
+        ...(exact ? {} : { fuzzy: true as const }),
       };
       if (
         !best ||
@@ -68,6 +74,7 @@ export function categorize(input: CategorizeInput): CategoryResult {
       confidence: 'high',
       field: 'payee',
       keyword: payeeMatch.keyword,
+      ...(payeeMatch.fuzzy ? { fuzzy: true as const } : {}),
     };
 
   const extraMatch = bestMatch(input.payeeExtra);
@@ -77,6 +84,7 @@ export function categorize(input: CategorizeInput): CategoryResult {
       confidence: 'high',
       field: 'payeeExtra',
       keyword: extraMatch.keyword,
+      ...(extraMatch.fuzzy ? { fuzzy: true as const } : {}),
     };
 
   const memoMatch = bestMatch(input.memo);
@@ -86,6 +94,7 @@ export function categorize(input: CategorizeInput): CategoryResult {
       confidence: 'high',
       field: 'memo',
       keyword: memoMatch.keyword,
+      ...(memoMatch.fuzzy ? { fuzzy: true as const } : {}),
     };
 
   // Person-to-person transfer: personal prefix and no merchant/bill keyword (AC5). Never for companies.
@@ -101,6 +110,7 @@ export function categorize(input: CategorizeInput): CategoryResult {
       confidence: 'medium',
       field: 'text',
       keyword: textMatch.keyword,
+      ...(textMatch.fuzzy ? { fuzzy: true as const } : {}),
     };
 
   // Weak tier (AC2/AC3): a type phrase only decides when the merchant is unknown.

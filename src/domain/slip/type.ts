@@ -1,6 +1,6 @@
 /** Transaction-type detection (OMX-006) with precedence salary → received → transfer → weak → default. */
 import type { Confidence, TxType } from '../types';
-import { containsKeyword, findKeywords } from './keywords';
+import { containsKeyword, containsKeywordFuzzy, findKeywords } from './keywords';
 
 export const SALARY_STRONG = ['สลิปเงินเดือน', 'Payslip', 'Pay slip', 'เงินได้สุทธิ', 'Net Pay'] as const;
 export const SALARY_WEAK = ['เงินเดือน', 'รายได้', 'Salary', 'รายการหัก'] as const;
@@ -69,7 +69,10 @@ export function detectType(text: string, amountFound: boolean): TypeResult {
       !(w === 'เงินเดือน' && strong.includes('สลิปเงินเดือน') && countOccurrences(text, 'เงินเดือน') <= 1),
   );
   const received = findKeywords(stripPayeeLabels(text), RECEIVED);
-  const transfer = findKeywords(text, TRANSFER_STRONG);
+  // OMX-050b AC4: Thai success headers tolerate OCR confusables ("ชําระเจินสำเร็จ").
+  const transfer = TRANSFER_STRONG.filter(
+    (k) => containsKeyword(text, k) || (/[ก-๙]/.test(k) && containsKeywordFuzzy(text, k)),
+  );
   const transferish = transfer.length > 0 || containsKeyword(text, 'โอนเข้าบัญชี');
 
   if (strong.length >= 1 || weak.length >= 2) {

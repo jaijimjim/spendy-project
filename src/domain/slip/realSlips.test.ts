@@ -55,9 +55,12 @@ const BASELINE = {
   time: 16,
   /** OMX-049: 11 exact + r08 empty (own account, AC10) */
   payee: 12,
-  /** OMX-049: r01, r02 → transfer (BUG-014); OMX-050a: r03 food, r10 other (+ pending r07/r09/r11) */
-  category: 7,
-  categoryClear: 4,
+  /**
+   * OMX-049: r01, r02 → transfer (BUG-014); OMX-050a: r03 food, r10 other; OMX-050b: r05, r16
+   * transport (+ pending r07/r09/r11). Clear 6/9 = bundle gate (050a AC10c).
+   */
+  category: 9,
+  categoryClear: 6,
 } as const;
 
 const textOf = (id: string): string => {
