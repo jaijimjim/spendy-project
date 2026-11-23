@@ -53,6 +53,11 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
   // The import queue holds at most 20 images (OMX-001 AC4) → benchmark in batches, reloading the
   // page between batches to start from an empty in-memory queue.
   const BATCH = 10;
+  // Leaving Review without saving (next batch's goto/reload) may raise the leave-guard dialog.
+  // One handler for the whole test: a per-batch `page.once` stacked up whenever a batch raised no
+  // dialog, so a later dialog hit two handlers and the second accept() threw "already handled"
+  // (flaky, reported by Dev CI). Ignore that race instead of failing the run.
+  page.on('dialog', (d) => void d.accept().catch(() => undefined));
   let totalMs = 0;
   const rows: {
     file: string;
@@ -139,8 +144,6 @@ test('Layer B real-OCR accuracy benchmark', async ({ page }) => {
         rawText,
       });
     }
-    // Leave Review without saving: the leave-guard dialog may appear — accept it.
-    page.once('dialog', (d) => void d.accept());
   }
 
   const n = rows.length;
