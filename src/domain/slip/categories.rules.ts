@@ -4,7 +4,9 @@
  * `categorize.test.ts` (table-driven). Nothing else needs to change.
  *
  * Matching (see keywords.ts): case-/space-insensitive; English keywords use word boundaries.
- * Precedence (categorize.ts): payee > memo > other text; then longest keyword; then `priority`.
+ * Precedence (categorize.ts, OMX-050a): payee > payeeExtra (2nd biller line) > memo > person >
+ * whole text (strong keywords) > weak tier `TX_PHRASES` (only when no payee was found) > other;
+ * inside one field the longest keyword wins, then `priority`.
  */
 import type { ExpenseCategoryId } from '../types';
 
@@ -24,6 +26,20 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'อาหาร',
       'ข้าว',
       'ก๋วยเตี๋ยว',
+      // OMX-050a AC10b: OCR often drops the tone mark on "เตี๋ยว"
+      'ก๋วยเตียว',
+      'ลูกชิ้น',
+      // OMX-050a AC4 (grooming): shop names are often the dish — not "ครัว" (R5)
+      'ไก่ย่าง',
+      'ไก่ทอด',
+      'หมูปิ้ง',
+      'ข้าวมันไก่',
+      'ข้าวขาหมู',
+      'ก๋วยจั๊บ',
+      'ราดหน้า',
+      'ผัดไทย',
+      'ร้านข้าว',
+      'ShopeeFood',
       'กาแฟ',
       'ชานม',
       'หมูกระทะ',
@@ -140,7 +156,6 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'credit card',
       'ประกัน',
       'insurance',
-      'จ่ายบิล',
     ],
   },
   {
@@ -223,4 +238,24 @@ export const CATEGORY_RULES: readonly CategoryRule[] = [
       'กวดวิชา',
     ],
   },
+];
+
+export interface TxPhrase {
+  phrase: string;
+  /** category when nothing stronger is known; null = only a signal, never a category */
+  category: 'bills' | null;
+}
+
+/**
+ * Weak tier (OMX-050a AC2): words that describe the TRANSACTION TYPE, not the merchant. Used only
+ * when no strong keyword matched anywhere AND the slip has no payee (a known merchant paid
+ * through a bill flow is not a bill) → `bills` with Medium confidence (AC3).
+ */
+export const TX_PHRASES: readonly TxPhrase[] = [
+  { phrase: 'จ่ายบิล', category: 'bills' },
+  { phrase: 'ชำระบิล', category: 'bills' },
+  { phrase: 'Bill Payment', category: 'bills' },
+  { phrase: 'ชำระเงิน', category: null },
+  { phrase: 'โอนเงิน', category: null },
+  { phrase: 'Payment', category: null },
 ];

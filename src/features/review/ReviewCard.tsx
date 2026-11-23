@@ -19,6 +19,7 @@ import { useUiStore } from '../../store/uiStore';
 import { validateDraft, type Draft, type DraftErrors } from '../../domain/validation';
 import { parseMoneyInput } from '../../domain/money';
 import { resetCategoryForType } from '../../domain/categories';
+import { categoryNeedsCheck } from '../../domain/slip/needsReview';
 import type { TxType } from '../../domain/types';
 import {
   AmountInput,
@@ -108,8 +109,7 @@ export function ReviewCard({
           : null;
   const dateWarn = !touched.date && p.flags.noDate ? t('review.noDate') : null;
   const typeWarn = !touched.type && p.flags.lowType ? t('review.lowTypeConfidence') : null;
-  const catWarn =
-    !touched.categoryId && p.categoryResult.confidence === 'low' ? t('review.checkField') : null;
+  const catWarn = !touched.categoryId && categoryNeedsCheck(p) ? t('review.checkField') : null;
   // OMX-049 AC6 (D1): info — not a warning — when an expense slip had no payee; gone once typed.
   const payeeInfo =
     d.type === 'expense' && p.flags.noPayee && !touched.payee && !d.payee.trim()
@@ -265,6 +265,7 @@ export function ReviewCard({
                 value={d.categoryId}
                 onChange={(categoryId) => set({ categoryId })}
                 error={err('categoryId')}
+                warning={catWarn}
               />
             </Field>
             <Field id={`${idp}-date`} label={t('form.date')} error={err('date')} warning={dateWarn}>

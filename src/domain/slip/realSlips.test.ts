@@ -55,9 +55,9 @@ const BASELINE = {
   time: 16,
   /** OMX-049: 11 exact + r08 empty (own account, AC10) */
   payee: 12,
-  /** OMX-049: r01, r02 → transfer (BUG-014) + r07/r11 (pending, proposed category) */
-  category: 4,
-  categoryClear: 2,
+  /** OMX-049: r01, r02 → transfer (BUG-014); OMX-050a: r03 food, r10 other (+ pending r07/r09/r11) */
+  category: 7,
+  categoryClear: 4,
 } as const;
 
 const textOf = (id: string): string => {

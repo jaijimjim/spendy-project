@@ -1,15 +1,15 @@
 /** Rule-based categorization (OMX-010). */
 import type { CategoryId, Confidence, TxType } from '../types';
-import { CATEGORY_RULES } from './categories.rules';
+import { CATEGORY_RULES, TX_PHRASES } from './categories.rules';
 import { containsKeyword, keywordLength } from './keywords';
 import { isCompany, looksLikePerson } from './parties';
 
-export type MatchField = 'payee' | 'memo' | 'text';
+export type MatchField = 'payee' | 'payeeExtra' | 'memo' | 'text';
 
 export interface CategoryResult {
   category: CategoryId;
   confidence: Confidence;
-  field: MatchField | 'person' | 'income' | 'default';
+  field: MatchField | 'person' | 'income' | 'weak' | 'default';
   keyword?: string;
 }
 
@@ -48,6 +48,8 @@ export interface CategorizeInput {
   type: TxType;
   isSalary: boolean;
   payee: string | null;
+  /** OMX-050a: second merchant/biller line from the arrow layout (OMX-049 AC3) */
+  payeeExtra?: string | null;
   memo: string | null;
   text: string;
 }
@@ -66,6 +68,15 @@ export function categorize(input: CategorizeInput): CategoryResult {
       confidence: 'high',
       field: 'payee',
       keyword: payeeMatch.keyword,
+    };
+
+  const extraMatch = bestMatch(input.payeeExtra);
+  if (extraMatch)
+    return {
+      category: extraMatch.category,
+      confidence: 'high',
+      field: 'payeeExtra',
+      keyword: extraMatch.keyword,
     };
 
   const memoMatch = bestMatch(input.memo);
@@ -91,6 +102,13 @@ export function categorize(input: CategorizeInput): CategoryResult {
       field: 'text',
       keyword: textMatch.keyword,
     };
+
+  // Weak tier (AC2/AC3): a type phrase only decides when the merchant is unknown.
+  if (!input.payee) {
+    const weak = TX_PHRASES.find((p) => p.category && containsKeyword(input.text, p.phrase));
+    if (weak?.category)
+      return { category: weak.category, confidence: 'medium', field: 'weak', keyword: weak.phrase };
+  }
 
   return { category: 'other', confidence: 'low', field: 'default' };
 }

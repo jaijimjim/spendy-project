@@ -11,6 +11,8 @@
 import type { CategoryId, TxType } from '../../types';
 import realR01 from '../../../../tests/fixtures/real-slips/redacted/r01.txt?raw';
 import realR02 from '../../../../tests/fixtures/real-slips/redacted/r02.txt?raw';
+import realR03 from '../../../../tests/fixtures/real-slips/redacted/r03.txt?raw';
+import realR10 from '../../../../tests/fixtures/real-slips/redacted/r10.txt?raw';
 import realR04 from '../../../../tests/fixtures/real-slips/redacted/r04.txt?raw';
 import realR05 from '../../../../tests/fixtures/real-slips/redacted/r05.txt?raw';
 
@@ -489,5 +491,34 @@ export const QA_FIXTURES: QaFixture[] = [
       time: '07:47',
     },
     knownBug: ['BUG-014 Rabbit/บางกอก สมาร์ทการ์ด → transport (OMX-050b)'],
+  },
+  // ---- OMX-050a: K PLUS bill flow to a merchant is not `bills` (REDACTED text) ----
+  {
+    id: 'real-redacted-r03',
+    text: realR03,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'food',
+      amountSatang: 6000,
+      date: '2026-11-18',
+      time: '12:50',
+      payee: 'ถุงเงิน (ก๋วยเตียวเรือธิดาสมุทร)',
+    },
+    knownBug: [],
+  },
+  {
+    id: 'real-redacted-r10',
+    text: realR10,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'other',
+      amountSatang: 3000,
+      date: '2026-11-12',
+      time: '17:06',
+      payee: 'ถุงเงิน เติมบุญ (วัดกลางเกร็ด)',
+    },
+    knownBug: [],
   },
 ];

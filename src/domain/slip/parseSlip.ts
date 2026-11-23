@@ -87,6 +87,7 @@ export function parseSlip(rawText: string, today: string): ParsedSlip {
     type: typeResult.type,
     isSalary: typeResult.isSalary,
     payee: expensePayee,
+    payeeExtra: arrow.payeeExtra,
     memo: parties.memo,
     text,
   });

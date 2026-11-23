@@ -96,3 +96,22 @@ describe('ReviewCard payee empty state (OMX-049 AC6 / D1)', () => {
     expect(screen.getByTestId('review-payee-line')).toHaveTextContent('ไม่ระบุผู้รับ');
   });
 });
+
+describe('ReviewCard category Medium highlight (OMX-050a AC6 / D2)', () => {
+  const BILL_TEXT_ONLY = 'จ่ายบิลสำเร็จ\n14 พ.ย. 69 12:00 น.\nร้านไก่ย่างทดสอบ\nจำนวน 89.00 บาท';
+
+  it('Medium from slip text → warning on the field, linked to the picker via aria-describedby', () => {
+    renderCard(BILL_TEXT_ONLY);
+    const trigger = screen.getByRole('button', { name: /Category/ });
+    const warn = screen.getByText('Check this field');
+    expect(trigger.getAttribute('aria-describedby')).toBe(warn.closest('p')!.id);
+    expect(trigger).toHaveClass('controlWarn');
+  });
+
+  it('category from the payee (High) → no highlight', () => {
+    renderCard('โอนเงินสำเร็จ\nไปยัง\nGrabFood\nจำนวน 120.00 บาท');
+    const trigger = screen.getByRole('button', { name: /Category/ });
+    expect(trigger).not.toHaveAttribute('aria-describedby');
+    expect(screen.queryByText('Check this field')).toBeNull();
+  });
+});
