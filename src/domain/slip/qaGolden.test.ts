@@ -11,7 +11,8 @@ import { QA_FIXTURES, type QaFixture } from './__fixtures__/qaGolden';
 const TODAY = '2026-11-13';
 
 function check(f: QaFixture) {
-  const r = parseSlip(f.text, TODAY);
+  const today = f.today ?? TODAY;
+  const r = parseSlip(f.text, today);
   expect({
     type: r.type,
     category: r.categoryId,
@@ -39,7 +40,7 @@ describe('QA golden OCR-text fixtures (Layer A)', () => {
     const fields = { type: 0, amount: 0, date: 0, category: 0, payee: 0 };
     let payeeN = 0;
     for (const f of QA_FIXTURES) {
-      const r = parseSlip(f.text, TODAY);
+      const r = parseSlip(f.text, f.today ?? TODAY);
       if (r.type === f.expected.type) fields.type++;
       if (r.amountSatang === f.expected.amountSatang) fields.amount++;
       if ((r.flags.noDate ? null : r.date) === f.expected.date) fields.date++;

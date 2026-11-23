@@ -9,10 +9,17 @@
  * No real personal data. today = 2026-11-13 (Asia/Bangkok).
  */
 import type { CategoryId, TxType } from '../../types';
+import realR01 from '../../../../tests/fixtures/real-slips/redacted/r01.txt?raw';
+import realR02 from '../../../../tests/fixtures/real-slips/redacted/r02.txt?raw';
+
+/** Capture day of the real-slip set (tests/fixtures/real-slips/expected.json). */
+const REAL_TODAY = '2026-11-23';
 
 export interface QaFixture {
   id: string;
   text: string;
+  /** "today" for the parse; default 2026-11-13. Real redacted slips use their capture day. */
+  today?: string;
   expected: {
     type: TxType;
     category: CategoryId;
@@ -420,6 +427,35 @@ export const QA_FIXTURES: QaFixture[] = [
       amountSatang: 1000,
       date: '2026-11-09',
       time: '21:10',
+    },
+    knownBug: [],
+  },
+  // ---- OMX-049 AC11: real slips fixed by the arrow-layout payee rule (REDACTED text, fake names) ----
+  {
+    id: 'real-redacted-r01',
+    text: realR01,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'transfer',
+      amountSatang: 18400,
+      date: '2026-11-22',
+      time: '12:18',
+      payee: 'นายชัยพร ดำเนิน',
+    },
+    knownBug: [],
+  },
+  {
+    id: 'real-redacted-r02',
+    text: realR02,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'transfer',
+      amountSatang: 1700,
+      date: '2026-11-22',
+      time: '16:44',
+      payee: 'น.ส. วิมลรัตน์ บุญมีศรีสุข',
     },
     knownBug: [],
   },

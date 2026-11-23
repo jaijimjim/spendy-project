@@ -29,6 +29,18 @@ export function toLines(normalized: string): string[] {
   return normalized.length ? normalized.split('\n') : [];
 }
 
+/** Marks a wide horizontal gap (≥ 3 spaces) in a line: OCR puts right-column noise after it. */
+export const COLUMN_GAP = '│';
+
+/**
+ * Same lines as `toLines(normalizeText(raw))` (1:1, same order) but a wide gap between two
+ * non-space characters is kept as `COLUMN_GAP`, so callers can take the left column only
+ * (OMX-049: payee under the arrow is followed by cartoon/QR garbage on the right).
+ */
+export function toColumnLines(raw: string): string[] {
+  return toLines(normalizeText(raw.replace(/(\S)[ \t\u00A0\u3000]{3,}(?=\S)/g, `$1${COLUMN_GAP}`)));
+}
+
 const HAS_THAI = /[฀-๿]/;
 export function hasThai(s: string): boolean {
   return HAS_THAI.test(s);
