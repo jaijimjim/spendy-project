@@ -45,8 +45,13 @@ export const envelopeSchema = z.object({
   settings: z.object({ language: z.enum(['th', 'en']) }),
 });
 
+/** Current backup id. Files written before the Spendy Money rename (Sprint 2) carry the legacy id. */
+export const BACKUP_APP_ID = 'spendy-money';
+export const LEGACY_BACKUP_APP_IDS = ['omnitrix-money'] as const;
+const backupAppId = z.enum([BACKUP_APP_ID, ...LEGACY_BACKUP_APP_IDS]);
+
 export const backupSchema = z.object({
-  app: z.literal('omnitrix-money'),
+  app: backupAppId,
   schemaVersion: z.number().int().positive(),
   exportedAt: z.string(),
   transactions: z.array(transactionSchema),
@@ -73,9 +78,7 @@ export function parseBackup(
   } catch {
     return { ok: false, error: 'errorNotJson' };
   }
-  const head = z
-    .object({ app: z.literal('omnitrix-money'), schemaVersion: z.number() })
-    .safeParse(json);
+  const head = z.object({ app: backupAppId, schemaVersion: z.number() }).safeParse(json);
   if (!head.success) return { ok: false, error: 'errorSchema' };
   if (head.data.schemaVersion > SCHEMA_VERSION) return { ok: false, error: 'errorVersion' };
   const full = backupSchema.safeParse(json);
@@ -85,7 +88,7 @@ export function parseBackup(
 
 export function buildBackup(transactions: readonly Transaction[], exportedAt: string): BackupFile {
   return {
-    app: 'omnitrix-money',
+    app: BACKUP_APP_ID,
     schemaVersion: SCHEMA_VERSION,
     exportedAt,
     transactions: [...transactions],

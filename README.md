@@ -1,4 +1,4 @@
-# Omnitrix Money
+# Spendy Money
 
 > **TH:** บันทึกรายรับ–รายจ่ายอัตโนมัติจากรูปสลิป — อ่านสลิปด้วย OCR **ในเบราว์เซอร์** แยกรายรับ/รายจ่าย ดึงจำนวนเงิน/วันที่ และจัดหมวดหมู่ให้ ตรวจแก้ก่อนบันทึก ข้อมูลอยู่ในเครื่องคุณเท่านั้น
 >
@@ -153,7 +153,7 @@ Try the app without real OCR: open `http://localhost:5173/?ocr=fake#/add` and up
 ## Google Photos setup
 
 **TH — ขั้นตอนสร้าง OAuth Client ID และเปิด Photos Picker API**
-1. ไปที่ [Google Cloud Console](https://console.cloud.google.com/) → สร้าง Project ใหม่ (เช่น `omnitrix-money`)
+1. ไปที่ [Google Cloud Console](https://console.cloud.google.com/) → สร้าง Project ใหม่ (เช่น `spendy-money`)
 2. **APIs & Services → Library** → ค้นหา **"Google Photos Picker API"** → **Enable**
 3. **APIs & Services → OAuth consent screen** → User type **External** → กรอกชื่อแอป/อีเมล → Scopes: เพิ่ม `https://www.googleapis.com/auth/photospicker.mediaitems.readonly` → Publishing status **Testing** แล้วเพิ่ม **Test users** (อีเมลที่จะใช้ทดสอบ)
 4. **APIs & Services → Credentials → Create credentials → OAuth client ID** → Application type **Web application**

@@ -1,4 +1,4 @@
-# Contributing to Omnitrix Money
+# Contributing to Spendy Money
 
 > ภาษา: เอกสารใช้ไทยปนศัพท์เทคนิคอังกฤษได้ · โค้ดและคอมเมนต์เป็นภาษาอังกฤษ (Working Agreement, team charter §6)
 

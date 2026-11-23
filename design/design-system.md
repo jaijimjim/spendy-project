@@ -1,4 +1,4 @@
-# Omnitrix Money — Design System v1
+# Spendy Money — Design System v1
 
 > Owner: Designer · Sprint 1 · Date: 2026-11-13 · Status: **Handed off to Dev** (D1, D2, D10)
 > Files: `design/tokens.css` (import directly) · `design/screens.md` · `design/copy-deck.json` · `design/mockups.html` / `mockups.png`

@@ -59,10 +59,10 @@ function AppBanners() {
   const online = useOnline();
   const exportJson = () =>
     downloadText(
-      `omnitrix-money-backup-${today().replace(/-/g, '')}.json`,
+      `spendy-money-backup-${today().replace(/-/g, '')}.json`,
       JSON.stringify(
         {
-          app: 'omnitrix-money',
+          app: 'spendy-money',
           schemaVersion: 1,
           exportedAt: new Date().toISOString(),
           transactions,
@@ -108,7 +108,7 @@ function AppBanners() {
             size="sm"
             onClick={() =>
               downloadText(
-                `omnitrix-money-raw-${today().replace(/-/g, '')}.json`,
+                `spendy-money-raw-${today().replace(/-/g, '')}.json`,
                 rawCorrupt() ?? '',
                 'application/json',
               )

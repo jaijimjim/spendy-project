@@ -1,7 +1,8 @@
-# 01 — Product Backlog: Omnitrix Money (MVP_0001)
+# 01 — Product Backlog: Spendy Money (MVP_0001) — เดิมชื่อ Omnitrix Money
 
 > Owner: PO/PM · Last updated: 2026-11-23 (หลัง Sprint 2 Grooming) · Version: v5
-> **v5 (2026-11-23, Sprint 2 Grooming):** estimate สุดท้าย (planning poker) · OMX-050 แตกเป็น **OMX-050a** (precedence + คำอาหารไทย, 3) / **OMX-050b** (fuzzy Lazada/Shopee, 2) · item ใหม่ **OMX-051** payee measurement enabler (2) แยกจาก OMX-049 (3) · Designer D1 → OMX-049 AC6, D2 + `aria-describedby` → OMX-050a AC6 · D3 → parked, D4 = OMX-035 คง Won't · §4 weak-tier rule ยืนยันแล้ว · OMX-045 = option A · OMX-039/047 เลื่อนไป Sprint 3 · §9 อัปเดตตาม grooming · ดู `sprints/sprint-2/01-grooming-minutes.md`
+> **v6 (2026-11-23):** FB-013 → **OMX-052** rename เป็น Spendy Money + repo `spendy-project` (public) · 1 pt · Done ในโค้ด รอ deploy · ปลด B3 ได้เมื่อผู้ใช้ตั้ง Pages Source = GitHub Actions
+> v5 (2026-11-23, Sprint 2 Grooming): estimate สุดท้าย (planning poker) · OMX-050 แตกเป็น **OMX-050a** (precedence + คำอาหารไทย, 3) / **OMX-050b** (fuzzy Lazada/Shopee, 2) · item ใหม่ **OMX-051** payee measurement enabler (2) แยกจาก OMX-049 (3) · Designer D1 → OMX-049 AC6, D2 + `aria-describedby` → OMX-050a AC6 · D3 → parked, D4 = OMX-035 คง Won't · §4 weak-tier rule ยืนยันแล้ว · OMX-045 = option A · OMX-039/047 เลื่อนไป Sprint 3 · §9 อัปเดตตาม grooming · ดู `sprints/sprint-2/01-grooming-minutes.md`
 > v4 (2026-11-23): เพิ่ม **OMX-049** (BUG-009 recipient ใต้ลูกศร ↓ บนสลิป KBank/K PLUS) และ **OMX-050** (BUG-010 category precedence + fuzzy keyword Lazada/Shopee) จาก FB-011 (สลิปจริง 3 ใบ) · OMX-028 เปลี่ยน blocker จาก B1 → **B3** (Pages ยังไม่เปิด, repo private — FB-012) · อัปเดต §6 overview และ §9 candidate list · estimate ของ item ใหม่เป็นของ PO รอทีมยืนยันใน grooming (`sprints/sprint-2/00-grooming-agenda.md`)
 > v3 (2026-11-13): หลัง Sprint 1 Review + Retrospective — OMX-040 – OMX-048, status `Accepted (pending deploy)`
 > Story points: Fibonacci 1, 2, 3, 5, 8 (ตกลงร่วมกันใน grooming ตาม estimate ของ Dev) · ดู `sprints/sprint-1/01-grooming-minutes.md`, `04-sprint-review.md`, `05-retrospective.md`
@@ -144,6 +145,7 @@
 | OMX-050a | E2 | Category precedence: merchant/biller > transaction-type phrase + Thai food keywords + Medium highlight (D2) (BUG-010a) | Must (High) | 3 | New — groomed, DoR ✗ fixtures (UQ1) | S2 candidate |
 | OMX-050b | E2 | Fuzzy keywords Lazada/Shopee tolerant to OCR noise (BUG-010b) | Must (High) | 2 | New — groomed, DoR ✗ variant/negative list (QA Day 1) | S2 candidate |
 | OMX-051 | E2 | Payee measurement in Layer A/B fixtures & benchmark (enabler) | Must | 2 | Ready | S2 candidate |
+| OMX-052 | E7 | Rename app to Spendy Money / repo spendy-project (FB-013) | Must | 1 | Accepted (pending deploy) | S2 |
 
 ¹ ต้องมี Google OAuth Client ID + consent screen test users (action A3, owner PO) ก่อนทดสอบกับ Google จริง; dev ทำงานกับ wrapper ที่ mock ได้ระหว่างรอ
 ² ต้องได้ push access + เปิด Pages source = GitHub Actions จาก repo owner (action A4) · *(v4)* push/CI ผ่านแล้ว (CI เขียวบน GitHub) เหลือ **B3** = เปิด Pages ซึ่ง repo private บน GitHub Free ทำไม่ได้ → ต้องเปลี่ยน repo เป็น public หรือใช้ plan ที่รองรับ Pages สำหรับ private repo (FB-012)
@@ -680,6 +682,16 @@
 > **Fixture source (UQ1):** (A) ผู้ใช้คัดลอก OCR text จากหน้า Review (raw text, OMX-012b) แล้วปิดข้อมูลเองก่อนส่ง หรือ (B) fallback ถ้าไม่ได้ภายใน **Sprint 2 Day 2**: QA สร้าง synthetic จากคำบรรยาย FB-011 + seed S1–S4 จาก spike ของ Dev (ความมั่นใจต่ำกว่า). Dev เริ่มจาก seed ได้ แล้วสลับเป็น fixture จริงเมื่อมา
 >
 > **Joint dependency (spike Dev S2/S4):** สลิป "จ่ายบิล" + ไก่ย่าง แก้ได้ก็ต่อเมื่อมีทั้ง **OMX-049 และ OMX-050a** → ทั้งสอง (และ 050b) commit เป็นชุดเดียว ห้ามตัดตัวใดตัวหนึ่งออกตอน scope cut · ลำดับทำ **051 → 049 → 050a → 050b** (051 ขนานได้ตั้งแต่ Day 1)
+
+#### OMX-052 — Rename app to Spendy Money *(new v6, FB-013)*
+
+**Priority:** Must · **Pts:** 1 · **Status:** Accepted (pending deploy) · **Sprint:** S2 (chore, ทำก่อน Planning ตามคำขอผู้ใช้)
+
+- **AC1** — Given the production build, When opened, Then `<title>`, meta description, sidebar brand และ copy deck TH/EN แสดง "Spendy Money"
+- **AC2** — Given an export, Then filenames are `spendy-money-*.json|csv` and backup `app` = `spendy-money`
+- **AC3 (backward compatible)** — Given a backup made before the rename (`app: "omnitrix-money"`), When imported, Then it imports normally; other `app` ids are still rejected (`errorSchema`)
+- **AC4** — Storage key `omx.v1`, CSS token prefix `--omx-*` และ test hook `__OMX_TEST__` คงเดิม (internal, เปลี่ยนแล้วข้อมูลผู้ใช้หาย)
+- **AC5** — Build/preview/e2e default base = `/spendy-project/`; deploy ใช้ `/<repo-name>/`
 
 #### OMX-051 — Payee measurement in fixtures & benchmark (enabler) *(new v5, from grooming)*
 **Priority:** Must (enabler ของ 049) · **Pts:** 2 · **Status:** Ready · **Sprint:** S2 candidate · **Owner:** QA (Dev pairs) · **Source:** Dev benchmark gap + QA estimate (grooming 2026-11-23)

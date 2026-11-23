@@ -1,4 +1,4 @@
-# Omnitrix Money — Screen Specs v1 (Sprint 1)
+# Spendy Money — Screen Specs v1 (Sprint 1)
 
 > Owner: Designer · 2026-11-13 · Handoff for D2, D4, D5, D6, D8, D9, D10
 > Read with: `design-system.md` (components §6, a11y §7), `tokens.css`, `copy-deck.json` (keys in `code`), `mockups.html` / `mockups.png` (visual reference)

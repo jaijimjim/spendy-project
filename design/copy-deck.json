@@ -1,9 +1,9 @@
 {
   "th": {
     "app": {
-      "name": "Omnitrix Money",
+      "name": "Spendy Money",
       "tagline": "บันทึกรายรับรายจ่ายจากสลิป อัตโนมัติ",
-      "titleTemplate": "{{screen}} · Omnitrix Money",
+      "titleTemplate": "{{screen}} · Spendy Money",
       "skipToContent": "ข้ามไปเนื้อหา",
       "loading": "กำลังโหลด…",
       "currency": "บาท",
@@ -339,7 +339,7 @@
       "imported_one": "นำเข้า {{count}} รายการ",
       "imported_other": "นำเข้า {{count}} รายการ",
       "errorNotJson": "ไฟล์นี้ไม่ใช่ JSON",
-      "errorSchema": "ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ Omnitrix Money",
+      "errorSchema": "ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ Spendy Money",
       "errorVersion": "ไฟล์มาจากแอปเวอร์ชันใหม่กว่า กรุณาอัปเดตหน้าเว็บ",
       "errorSize": "ไฟล์ใหญ่เกิน 5 MB",
       "nothingChanged": "ข้อมูลของคุณไม่ถูกเปลี่ยนแปลง"
@@ -416,9 +416,9 @@
   },
   "en": {
     "app": {
-      "name": "Omnitrix Money",
+      "name": "Spendy Money",
       "tagline": "Turn slips into records, automatically",
-      "titleTemplate": "{{screen}} · Omnitrix Money",
+      "titleTemplate": "{{screen}} · Spendy Money",
       "skipToContent": "Skip to content",
       "loading": "Loading…",
       "currency": "THB",
@@ -754,7 +754,7 @@
       "imported_one": "Imported {{count}} transaction",
       "imported_other": "Imported {{count}} transactions",
       "errorNotJson": "This file isn’t JSON",
-      "errorSchema": "This file isn’t an Omnitrix Money backup",
+      "errorSchema": "This file isn’t an Spendy Money backup",
       "errorVersion": "This backup is from a newer version. Refresh the app and try again.",
       "errorSize": "The file is larger than 5 MB",
       "nothingChanged": "Your data was not changed"

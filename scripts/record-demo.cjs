@@ -1,4 +1,4 @@
-// Records the Sprint 1 demo of Omnitrix Money (real OCR, production build) to webm + a timing log.
+// Records the Sprint 1 demo of Spendy Money (real OCR, production build) to webm + a timing log.
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
@@ -124,7 +124,7 @@ const OVERLAY = () => {
   // 1) Title card
   await page.setContent(`<html><body style="margin:0;height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#4433c4,#2a1f86);font-family:'IBM Plex Sans Thai',sans-serif;color:#fff">
   <div style="text-align:center"><div style="font-size:20px;letter-spacing:.2em;opacity:.8">SPRINT 1 · DEMO</div>
-  <div style="font-size:64px;font-weight:700;margin:10px 0">Omnitrix Money</div>
+  <div style="font-size:64px;font-weight:700;margin:10px 0">Spendy Money</div>
   <div style="font-size:28px">MVP_0001 · คำนวณรายรับรายจ่ายอัตโนมัติจากสลิป</div>
   <div style="font-size:18px;opacity:.75;margin-top:28px">PO/PM · Designer · Developer · QA — 13 พ.ย. 2569</div></div></body></html>`);
   mark('title');

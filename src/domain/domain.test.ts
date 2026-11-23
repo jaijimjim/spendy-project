@@ -268,7 +268,12 @@ describe('schema / backup (OMX-021, 022, 031)', () => {
     expect(parseBackup(good, good.length)).toEqual({ ok: true, transactions: [t] });
     expect(parseBackup('nope', 4)).toEqual({ ok: false, error: 'errorNotJson' });
     expect(parseBackup('{"a":1}', 7)).toEqual({ ok: false, error: 'errorSchema' });
-    expect(parseBackup('{"app":"omnitrix-money","schemaVersion":9}', 40)).toEqual({
+    expect(buildBackup([t], 'x').app).toBe('spendy-money');
+    const legacy = JSON.stringify({ ...buildBackup([t], 'x'), app: 'omnitrix-money' });
+    expect(parseBackup(legacy, legacy.length)).toEqual({ ok: true, transactions: [t] });
+    const foreign = JSON.stringify({ ...buildBackup([t], 'x'), app: 'other-app' });
+    expect(parseBackup(foreign, foreign.length)).toEqual({ ok: false, error: 'errorSchema' });
+    expect(parseBackup('{"app":"spendy-money","schemaVersion":9}', 40)).toEqual({
       ok: false,
       error: 'errorVersion',
     });

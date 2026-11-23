@@ -47,14 +47,14 @@ function ExportDialog({ open, onClose }: { open: boolean; onClose: () => void })
   const download = () => {
     let filename: string;
     if (format === 'json') {
-      filename = `omnitrix-money-backup-${stamp}.json`;
+      filename = `spendy-money-backup-${stamp}.json`;
       downloadText(
         filename,
         JSON.stringify(buildBackup(transactions, nowIso()), null, 2),
         'application/json',
       );
     } else {
-      filename = `omnitrix-money-${scope === 'month' ? ym : 'all'}-${stamp}.csv`;
+      filename = `spendy-money-${scope === 'month' ? ym : 'all'}-${stamp}.csv`;
       downloadText(
         filename,
         toCsv(csvRows, (id) => t(`categories.${id}`)),

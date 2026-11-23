@@ -1,6 +1,8 @@
-# HANDOFF — Omnitrix Money (MVP_0001) · หลัง Sprint 2 Grooming
+# HANDOFF — Spendy Money (MVP_0001, เดิม Omnitrix Money) · หลัง Sprint 2 Grooming
 
 อัปเดต: 23 พ.ย. 2569 · Repo: github.com/jaijimjim/spendy-project (**public** · เปลี่ยนชื่อจาก omnitrix-project เมื่อ 23 พ.ย. 69) · Live (เป้าหมาย): https://jaijimjim.github.io/spendy-project/ — **ยังตอบ 404 (B3)**
+
+> **อัปเดตล่าสุด (23 พ.ย. 69, หลัง grooming):** ผู้ใช้เปลี่ยน repo เป็น public + ชื่อ `spendy-project` และเปลี่ยนชื่อแอปเป็น **Spendy Money** (FB-013 → OMX-052, ทำแล้ว) · CI บน `spendy-project` เขียวทุก job แต่ deploy ยังล้มที่ `configure-pages` เพราะ Pages Source ยังไม่ได้ตั้งเป็น GitHub Actions (`has_pages: false`) → B3 ยังเปิด · ตรวจประวัติ git ก่อนเปิด public แล้ว: ไม่มีรูปสลิปจริง, gitleaks full history = 1 false positive (`omx.v1.corrupt.42` ใน storage.test.ts)
 
 ## ทีมและวิธีทำงาน
 - ทีม agent 4 บทบาท: **PO/PM, Designer, Dev, QA** ทำงานแบบ Scrum ตาม ceremony ครบ (Grooming → Planning → Daily → Demo → Retro)

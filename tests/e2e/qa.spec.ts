@@ -210,6 +210,7 @@ test.describe('QA — data (OMX-021/022/030)', () => {
     await setup(page, {}, 'en');
     await page.goto('./#/settings');
     const backup = JSON.stringify({
+      // Legacy id from before the Spendy Money rename — old backups must keep importing.
       app: 'omnitrix-money',
       schemaVersion: 1,
       exportedAt: '2026-11-13T03:00:00.000Z',
@@ -304,7 +305,7 @@ test.describe('QA — more coverage', () => {
       page.waitForEvent('download'),
       page.getByRole('button', { name: 'Download' }).click(),
     ]);
-    expect(download.suggestedFilename()).toBe('omnitrix-money-backup-20261113.json');
+    expect(download.suggestedFilename()).toBe('spendy-money-backup-20261113.json');
     const json = JSON.parse(
       await (
         await download.createReadStream()

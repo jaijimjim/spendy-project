@@ -1,9 +1,9 @@
 {
-  "name": "omnitrix-money",
+  "name": "spendy-money",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Omnitrix Money — record income & expenses automatically from slip images (in-browser OCR, TH/EN).",
+  "description": "Spendy Money — record income & expenses automatically from slip images (in-browser OCR, TH/EN).",
   "engines": {
     "node": ">=20.19"
   },
