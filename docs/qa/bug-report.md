@@ -1,6 +1,6 @@
 # Bug Report — Omnitrix Money MVP_0001 (Sprint 1)
 
-> Owner: QA · อัปเดตล่าสุด 2026-11-23 (**Sprint 2 Day 1** — เพิ่ม BUG-011 … BUG-015 และขยาย scope BUG-009/010 จาก OMX-042 สลิปจริง n = 16; B3 ปิดแล้ว) · Build: `main` @ `6ebe779` (deploy run `45208481550`) · Layer C = redacted OCR text ใน `tests/fixtures/real-slips/redacted/` (ไม่มีรูป/ชื่อจริงใน repo)
+> Owner: QA · อัปเดตล่าสุด 2026-11-23 (**Sprint 2 Day 1 ค่ำ** — QA verify PR #3 `feat/s2-parser-fixes` @ `d53f573`: BUG-009/010/011/013 Fixed (local + CI), BUG-014 บางส่วน, เพิ่ม BUG-016) · *ก่อนหน้า: Sprint 2 Day 1 — เพิ่ม BUG-011 … BUG-015 และขยาย scope BUG-009/010 จาก OMX-042 สลิปจริง n = 16; B3 ปิดแล้ว) · Build: `main` @ `6ebe779` (deploy run `45208481550`) · Layer C = redacted OCR text ใน `tests/fixtures/real-slips/redacted/` (ไม่มีรูป/ชื่อจริงใน repo)
 > *(ก่อนหน้า: 2026-11-23 Sprint 2 Day 0 — BUG-009/010 จาก FB-011, impediment B3, O6 · Build เดิม local `main` + `vite preview` (Chromium 1243) · CI run `43827185503`)*
 > Severity ตาม grooming §2.3 — **Critical** data loss/leak/XSS · **High** flow หลักใช้ไม่ได้/ยอดรวมผิด · **Medium** extraction ผิดบางรูปแบบ, UI ผิดบางขนาดจอ, AC ไม่ครบแต่มี workaround · **Low** cosmetic
 > Regression: ทุก bug มี automated test — ตัวที่ยัง Open รันเป็น `test.fail()` / `it.fails` (CI เขียว, จะแดงเมื่อแก้แล้ว → ลบ marker)
@@ -17,15 +17,18 @@
 | BUG-006 | Medium | OMX-010 | OCR noise หน้าคำนำหน้าชื่อ ("แนายข", "นแนายข") → โอนให้บุคคลกลายเป็น "อื่น ๆ" | **Closed** (Dev `3ece298`) — QA re-test Pass 2026-11-13 | Dev |
 | BUG-007 | Low | OMX-007 | ยอดเงินเลขไทย (๓๕๒.๕๐) ถูก Tesseract อ่านเพี้ยน → amount ว่าง | **Open → Dev (backlog)** | Dev |
 | BUG-008 | Low | OMX-015 / 025 | Placeholder ช่องค้นหา EN ถูกตัดที่ 375px ("…or amour") | **Closed** (Dev `1852bed`) — QA re-test Pass 2026-11-13 | Dev |
-| BUG-009 | High | OMX-009 / 010 → **OMX-049** | สลิป KBank / K PLUS: ชื่อผู้รับอยู่ใต้ลูกศร "↓" ไม่มีป้าย "ไปยัง/ถึง" → payee ว่าง (0/3) | **Open → Sprint 2 grooming** (ผู้ใช้เลือกไม่ทำ hotfix) | Dev |
-| BUG-010 | High | OMX-010 → **OMX-050a/b** | Category ผิดบนสลิปจริง: "จ่ายบิล" ชนะชื่อร้าน/biller อาหาร (→ Bills) และ "บลูเพย-ลาชาดาเพย" → Other (1/3 ถูก) · *scope update Day 1:* n = 16 → หมวดถูก **0/9** ใบที่หมวดชัดเจน | **Open → Sprint 2 (OMX-050a/b)** | Dev |
-| BUG-011 | High | OMX-007 | ยอดเงิน **ผิดแบบไม่ว่าง** (1.00 แทน 1,200.00 / 200.00) เมื่อบรรทัดถัดจาก "จำนวน" เป็นขยะที่มีตัวเลข หรือ "บาท" ถูก OCR เป็น "vn"/แยกบรรทัด (make 2/9) | **Open → PO** (ticket ใหม่หรือรวม) | Dev |
+| BUG-009 | High | OMX-009 / 010 → **OMX-049** | สลิป KBank / K PLUS: ชื่อผู้รับอยู่ใต้ลูกศร "↓" ไม่มีป้าย "ไปยัง/ถึง" → payee ว่าง (0/3) | **Fixed in PR #3, verified locally; re-verify on live after deploy** (OMX-049, `10e2593`) — payee real n = 16: 0 → **12/16**, ชื่อผู้โอน 0/16 · เหลือ r05/r09/r15/r16 = OCR เพี้ยนในชื่อร้าน (S3) | Dev |
+| BUG-010 | High | OMX-010 → **OMX-050a/b** | Category ผิดบนสลิปจริง: "จ่ายบิล" ชนะชื่อร้าน/biller อาหาร (→ Bills) และ "บลูเพย-ลาชาดาเพย" → Other (1/3 ถูก) · *scope update Day 1:* n = 16 → หมวดถูก **0/9** ใบที่หมวดชัดเจน | **Fixed in PR #3, verified locally; re-verify on live after deploy** (OMX-050a `874e141` + 050b `a9625c5`) — category ใบชัด 0 → **6/9**, K PLUS จ่ายบิล → bills 4/4 → 0/4 · เหลือ r15 (ชื่อร้าน OCR เพี้ยน) | Dev |
+| BUG-011 | High | OMX-007 | ยอดเงิน **ผิดแบบไม่ว่าง** (1.00 แทน 1,200.00 / 200.00) เมื่อบรรทัดถัดจาก "จำนวน" เป็นขยะที่มีตัวเลข หรือ "บาท" ถูก OCR เป็น "vn"/แยกบรรทัด (make 2/9) | **Fixed in PR #3, verified locally; re-verify on live after deploy** (OMX-053, `aaa662b`) — ยอดผิดแบบเงียบ 2 → **0/16**, amount 13 → 15/16 | Dev |
 | BUG-012 | Low | OMX-007 | ยอดเงินถูก OCR แตกเป็นหลายบรรทัด ("21" / "3 .00 บาท") → amount ว่าง (1/16) | **Open → PO** | Dev |
-| BUG-013 | Medium | OMX-008 | เดือน "พ.ย." ถูก OCR เป็น "w.g." (ละติน) → วันที่ตกเป็นวันนี้ (make 3/9) | **Open → PO** | Dev |
-| BUG-014 | Medium | OMX-010 | Category keyword/rule gaps นอก scope 050a/b: Rabbit top-up → Other, โอนให้บุคคล/บัญชีตัวเองไม่ได้ `transfer` เพราะไม่มี payee, memo "ค่า…" ไม่ถูกใช้ | **Open → PO** (บางส่วนพึ่ง BUG-009/015) | Dev |
+| BUG-013 | Medium | OMX-008 | เดือน "พ.ย." ถูก OCR เป็น "w.g." (ละติน) → วันที่ตกเป็นวันนี้ (make 3/9) | **Fixed in PR #3, verified locally; re-verify on live after deploy** (OMX-054, `9bfbf68`) — date 13 → **16/16** | Dev |
+| BUG-014 | ~~Medium~~ **Low** | OMX-010 | Category keyword/rule gaps นอก scope 050a/b: Rabbit top-up → Other, โอนให้บุคคล/บัญชีตัวเองไม่ได้ `transfer` เพราะไม่มี payee, memo "ค่า…" ไม่ถูกใช้ | **Partially fixed in PR #3, verified locally; re-verify on live after deploy** — ✓ r01/r02 → transfer (049) · ✓ r05/r16 Rabbit → transport (050b) · ✗ r08 โอนเข้าบัญชีตัวเอง (→ OMX-039) · ✗ r12 memo (→ OMX-056/BUG-015) → **Medium → Low** | Dev |
 | BUG-015 | Low | OMX-006 / 009 | Secondary fields บนสลิปจริง: memo ของ make ไม่ถูกอ่าน (ไม่มี label) และ disclaimer "หมายเหตุ:" ถูกอ่านเป็น memo · bank = null บน make 6/9 + Krungthai · type confidence Low 5/16 | **Open → PO** | Dev |
+| BUG-016 | Low | OMX-012a / 025 | Review card ที่ 320px: ปุ่ม X (ปิด/ยุบการ์ด) มุมขวาบนทับคำว่า "รายจ่าย" ข้างยอดเงิน | **Open → Designer/Dev (backlog)** — cosmetic, ไม่กระทบ AC ของ PR #3 | Dev |
 
-**Totals (2026-11-23, Sprint 2 Day 1):** 15 bugs · Critical 0 · **High 4** · Medium 7 · Low 4 · **Closed 7** · **Open 8: BUG-009, 010, 011 (High) · BUG-013, 014 (Medium) · BUG-007, 012, 015 (Low)** · ⚠️ **3 High open** — ทั้งหมดพบจากสลิปจริง (OMX-042 Layer C, n = 16) ไม่ใช่ regression ของ build: Layer A/B synthetic ยัง 100% · BUG-011 … 015 **ยังไม่มี OMX ticket** — PO ตัดสินว่าจะเพิ่ม OMX ใหม่หรือรวมเข้า 049/050a/050b (ข้อเสนอ QA ดู [`test-summary-report.md` §9.6](test-summary-report.md#96-ข้อเสนอต่อ-po--ticket-และคำถามถึงผู้ใช้))
+**Totals (2026-11-23, Sprint 2 Day 1 ค่ำ — PR #3 verification):** 16 bugs · Critical 0 · High 4 (BUG-002 Fixed ตั้งแต่ S1 · 009/010/011 Fixed in PR #3) · Medium 6 · Low 6 · **Closed 7** · **Fixed in PR #3 — verified locally, รอ re-verify บน live 4: BUG-009, 010, 011 (High), BUG-013 (Medium)** · **Partially fixed 1: BUG-014 (Medium → Low)** · **Open 4: BUG-007, 012, 015, 016 (Low)** · ⚠️ **High ที่ยังไม่แก้ = 0** หลัง PR #3 merge + deploy (DoD #6) — ปิดเป็น Closed เมื่อ re-verify บน Pages ผ่าน (`realSlips.test.ts` ใน CI + live smoke) · BUG-012 → OMX-055 (S3), BUG-015 → OMX-056
+
+> *Totals Day 1 (ก่อน PR #3):* 15 bugs · Critical 0 · **High 4** · Medium 7 · Low 4 · **Closed 7** · **Open 8: BUG-009, 010, 011 (High) · BUG-013, 014 (Medium) · BUG-007, 012, 015 (Low)** · ⚠️ **3 High open** — ทั้งหมดพบจากสลิปจริง (OMX-042 Layer C, n = 16) ไม่ใช่ regression ของ build: Layer A/B synthetic ยัง 100% · BUG-011 … 015 **ยังไม่มี OMX ticket** — PO ตัดสินว่าจะเพิ่ม OMX ใหม่หรือรวมเข้า 049/050a/050b (ข้อเสนอ QA ดู [`test-summary-report.md` §9.6](test-summary-report.md#96-ข้อเสนอต่อ-po--ticket-และคำถามถึงผู้ใช้))
 >
 > *Totals เดิม (Day 0):* 10 bugs · Critical 0 · High 3 · Medium 5 · Low 2 · **Closed 7** (QA-fixed: 001, 002, 004, 005 · Dev-fixed: 003, 006, 008 — all re-tested) · **Open 3: BUG-009 (High), BUG-010 (High) → Sprint 2 (OMX-049/050) · BUG-007 (Low, backlog / known limitation)** · ⚠️ **2 High open** (พบจากสลิปจริง ไม่ใช่ regression ของ build — synthetic Layer A/B ยังผ่าน 100%)
 
@@ -183,6 +186,25 @@
 - **(d) type confidence Low 5/16** (r04, r05, r12, r13, r15) → `flags.lowType` = แสดง "ไม่แน่ใจว่าเป็นรายรับหรือรายจ่าย" ทั้งที่ type ถูก 16/16 — สาเหตุ: "ชําระเจิน" (known noise), "เติมเงินสําเร็จ"/"เติมเงินสําเร็อ" ไม่อยู่ใน rule แบบ strong
 - **Evidence (redacted, r12 make):** `ค่าธรรมเนียม … 0.00 บาท` → `เลขที่รายการ: 046379353jbldpx88JfE` → `รหัสร้านคํา: KB000026372581` → `ณ๑` → `ค่ากางเกง                                            ก  A`
 - **Suggestion:** memo make = บรรทัดสุดท้ายหลัง "รหัสธุรกรรม/เลขที่รายการ" ที่เป็นข้อความไทยล้วน (ตัด junk โลโก้ `ก  A`) · ตัด `หมายเหตุ: ธนาคาร…` ออกจาก memo · bank: "make" / "by KBank" → `kplus`, "กรงไทย" → `ktb` · "เติมเงินสำเร็จ" → expense rule strong
+
+## BUG-016 — Review card at 320px: close button overlaps the type label
+- **Severity:** Low (cosmetic; ปุ่มยังกดได้ ข้อความยังอ่านได้บางส่วน) · **Story:** OMX-012a / OMX-025 · **Found by:** QA ad-hoc 320px (TC-174, PR #3 verification) · **Status:** Open → backlog
+- **Steps:** viewport 320×700, TH, fake OCR 2 ใบ → Review → ดูหัวการ์ด
+- **Actual:** ปุ่ม X มุมขวาบนของการ์ดวางทับคำว่า "รายจ่าย" ที่อยู่ข้าง "−100.00" · ชื่อหมวดในหัวการ์ดถูกตัด ("ค่าบิลและสาธารเ…") ซึ่งยอมรับได้
+- **Expected:** ปุ่มกับข้อความไม่ทับกันที่ 320px (OMX-025 AC1 ดู overflow แนวนอนเท่านั้น จึงไม่จับเคสนี้ — `scrollWidth` = 320)
+- **Note:** ไม่ได้เทียบกับ `main` — น่าจะมีอยู่ก่อน PR #3 (PR นี้เพิ่มเฉพาะบรรทัด payee ใต้วันที่ ไม่ได้แก้หัวการ์ด) · หลักฐาน: screenshot local `/tmp/qa/d1d2-th.png` (ไม่ commit)
+
+## QA verification of PR #3 (2026-11-23, Sprint 2 Day 1 ค่ำ)
+
+> Build: `feat/s2-parser-fixes` @ `d53f573` · CI run `45223158558` (pull_request) ✓ ทุก job · local `npm run ci` ✓ · สลิปจริง: redacted (CI) **และ** OCR ดิบที่มีชื่อจริง (local-only, test ชั่วคราวลบแล้ว) เทียบ `expected.local.json` — ผลเท่ากันทุก field · รายละเอียด [`test-summary-report.md` §11](test-summary-report.md#11-sprint-2--pr-3-verification-2026-11-23)
+
+| Bug | Evidence | Result |
+|---|---|---|
+| BUG-009 | TC-172/173: payee 12/16 (make 7/9 · K PLUS 4/6 · KTB 1/1) · r08 ว่าง = ผ่านตาม 049 AC10 (รอ PO) · ชื่อเจ้าของบัญชีจริงเป็น payee **0/16** (ตรวจบน raw) · Layer B b01/b08/b12/d15 ยัง transfer | Fixed in PR #3, verified locally; re-verify on live after deploy |
+| BUG-010 | TC-177/179/180: K PLUS จ่ายบิล 0/4 bills · r03 food · r10 other · r05/r16 transport · ใบชัด 6/9 · fuzzy negatives 25 ตัว 0 FP | Fixed in PR #3, verified locally; re-verify on live after deploy |
+| BUG-011 | TC-181: r04 = 1,200.00 · r05 = 200.00 · ยอดผิดแบบเงียบ 0/16 · Layer B amount 26/27 | Fixed in PR #3, verified locally; re-verify on live after deploy |
+| BUG-013 | TC-182: r08/r14/r15 = 16/03/03 พ.ย. 2569 · negatives ไม่ถูกแปลง | Fixed in PR #3, verified locally; re-verify on live after deploy |
+| BUG-014 | r01/r02 → transfer ✓ · r05/r16 → transport ✓ · r08 (บัญชีตัวเอง) → `other` ✗ (OMX-039) · r12 → `other` ✗ (memo, OMX-056) | Partially fixed → Low |
 
 ## Dev code review of QA fixes (Day 4)
 | Bug | Commit | Review |

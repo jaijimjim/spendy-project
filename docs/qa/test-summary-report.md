@@ -7,6 +7,8 @@
 
 > **อัปเดต 2026-11-23 (Sprint 2 Day 1):** live verification บน Pages → [§8](#8-sprint-2-day-1--live-verification-2026-11-23) (**Pass 121 / Fail 2 / Blocked 8 / Not run 1**; OMX-028 ผ่าน AC2–AC5, AC1 รอหลักฐาน failing PR · OMX-048 **ยังไม่ผ่าน** AC1–AC3) · OMX-042 สลิปจริง n = 16 → [§9](#9-omx-042--real-slip-accuracy-n16) (category 0/9 ใบที่หมวดชัดเจน, payee 0/16, BUG-011 … 015) · recommendation ยัง **NOT READY for UAT**
 
+> **อัปเดต 2026-11-23 (Sprint 2 Day 1 ค่ำ — PR #3 verification):** → [§11](#11-sprint-2--pr-3-verification-2026-11-23) (**Pass 135 / Fail 3 / Blocked 8 / Not run 1**, 147 TC) · CI PR #3 ✅ · สลิปจริง raw = redacted = ที่ Dev รายงาน (payee 12/16, ชื่อผู้โอน 0/16, category ใบชัด 6/9, amount 15/16, ยอดผิดแบบเงียบ 0, date 16/16) · QA pass: OMX-051, 053, 054, **028** · ไม่ผ่าน: 049/050a/050b (Layer B template ภาพใหม่ + promote fixture ตาม AC) · OMX-048 รอ merge PR #2 + dispatch
+
 ## 1. Recommendation
 
 ### ✅ GO for UAT — **conditional**
@@ -375,3 +377,93 @@ UAT readiness จะประเมินใหม่เมื่อ #1, #2, #4 
 | Layer B 27 ใบ (`tests/fixtures/slips/expected.json`) | `expected.payee` ครบ 27 ใบ (expense = ชื่อผู้รับ, income รับโอน = ผู้โอน, เงินเดือน = นายจ้าง; ชื่อสมมติ) · re-parse OCR text ที่บันทึกใน `benchmark-results.json` → `src/domain/slip/layerBRecorded.test.ts` (CI ทุก PR) · benchmark real-OCR รายงาน `summary.payee` (exact % + mean CER) **report only** | **17/27 (63.0%) · mean CER 0.322** | ✗: bill 3 + 1 degraded (b05, b06, b16, d22 — payee ว่าง), received 3 + 1 (b07, b15, d23 ได้ชื่อเจ้าของบัญชี; b08 OCR prefix "นแนายข"), b09 OCR "แมนชั้น", b12 OCR "แนาขกถก" |
 
 **ใช้ใน OMX-049 AC7:** `BASELINE_PAYEE = 17` ใน `layerBRecorded.test.ts` (ratchet) — 049 ต้องไม่ต่ำกว่านี้ · `layerBRecorded.test.ts` ยัง gate type/category/date 100% + amount ≥ 26/27 บน OCR text ที่บันทึกไว้ (regression guard ที่รันใน CI โดยไม่ต้องใช้ browser) · AC4: ผล type/amount/date/category ของ Layer A/B ไม่เปลี่ยน
+
+## 11. Sprint 2 — PR #3 verification (2026-11-23)
+
+> Owner: QA · PR #3 `feat/s2-parser-fixes` @ `d53f573` (+ QA commit แก้ benchmark flake) · OMX-051, 049, 053, 050a, 050b, 054 · PR #2 `ci/omx-028-048` @ `2046e55` (OMX-048 `post-deploy.yml`, OMX-028 guard) · **ยังไม่ merge — DoD #1/#3/#9 รอ merge + deploy**
+
+### 11.1 CI / regression
+
+| Check | ผล |
+|---|---|
+| CI ของ PR #3 — run `45223158558` (`pull_request`) + `45223121221` (push) | ✅ ทุก job: Secret scan · Lint·typecheck·unit (413 + 1 skipped = เคส raw-only) · Build without/with-google · E2E mobile + desktop + real-ocr **91 passed**, ไม่มี retry/flaky · Layer B benchmark: type 100 / amount 96.3 / category 100 / date 100 / time 100 · payee 17/27 (63.0%), CER 0.322 = baseline OMX-051 |
+| Local `npm run ci` (typecheck, lint, i18n, Vitest + coverage, build, size) | ✅ Vitest **414/414** (18 files) · coverage lines 98.69% · initial JS 172.8 KB gz ≤ 300 |
+| Local e2e (system Chrome `/usr/bin/google-chrome` ผ่าน `PW_CHROMIUM_PATH` — ไม่แก้ config) | ✅ mobile + desktop **89 passed / 5 skipped** (by design) · real-ocr **2 passed** (benchmark 27 ภาพ ผลเท่า CI) |
+| Layer A `qaGolden` / Layer B recorded (`layerBRecorded.test.ts`) | ✅ type/amount/date/category 100% · payee Layer A 10/10 · Layer B recorded ไม่ลด |
+| Benchmark flake (`dialog.accept` ซ้อนข้าม batch, Dev CI รายงาน) | ไม่เกิดใน run นี้ แต่ root cause ยังอยู่: `page.once('dialog')` ถูกเพิ่มทุก batch และค้างเมื่อ batch นั้นไม่มี dialog → dialog ถัดไปโดน 2 handler, `accept()` ตัวที่สอง throw · **QA แก้ใน test:** handler เดียว `page.on('dialog', d => d.accept().catch(() => undefined))` ก่อน loop · รันซ้ำ local ผ่าน · ไม่แก้ `benchmark-results.json` (คงค่าที่ CI บันทึก) |
+
+### 11.2 สลิปจริง n = 16 — OCR ดิบ (มีชื่อจริง) เทียบ redacted
+
+วิธี: test ชั่วคราวใน `src/` อ่าน `ocr-raw.local.json` → `parseSlip` ของ branch นี้ → เทียบ `expected.local.json` (ชื่อจริง) แล้วลบทิ้ง · ไม่มีชื่อจริงในเอกสารนี้หรือใน repo · เคส "redaction is neutral" ใน `realSlips.test.ts` ก็ผ่าน local (raw กับ redacted ได้ type/amount/date/time/category/bank/payee-found เท่ากันทุกใบ)
+
+| Field | Dev รายงาน (redacted) | QA — redacted (CI + local) | QA — **raw** (local) | ตรงกัน |
+|---|---|---|---|---|
+| type | 16/16 | 16/16 | 16/16 | ✅ |
+| amount | 15/16 | 15/16 | 15/16 (r14 ว่าง = BUG-012) | ✅ |
+| ยอดผิดแบบเงียบ | 0 | 0/16 | 0/16 | ✅ |
+| date | 16/16 | 16/16 | 16/16 | ✅ |
+| time | 16/16 | 16/16 | 16/16 | ✅ |
+| payee | 12/16 | 12/16 | 12/16 = exact 8 + OCR variant ที่ยอมรับ (`payeeAlt`) 3 (r03, r07, r13) + r08 ว่าง | ✅ |
+| **ชื่อผู้โอน (เจ้าของบัญชี) เป็น payee** | 0/16 | 0/16 | **0/16** (ตรวจด้วยชื่อจริง + รูปแบบ OCR เพี้ยน) | ✅ |
+| category ใบชัด | 6/9 | 6/9 | 6/9 (r01, r02, r03, r05, r10, r16) | ✅ |
+| category ทุกใบ (เทียบหมวดที่เสนอ) | — | 9/16 | 9/16 | ✅ |
+
+- payee ✗ 4 ใบ: r05, r16 (OCR "ซิสแทม" / "ซัส เทม" ≠ "ซิสเทม") · r09 (โลโก้ SCB → "5008") · r15 ("ลูกช์แปลา") — ได้ชื่อร้าน**ที่ถูกบรรทัด**แต่ OCR เพี้ยน ไม่ใช่หยิบผิดบรรทัด → re-OCR/fuzzy compare (S3)
+- ไม่มีใบไหนที่ payee เป็นชื่อผู้โอน, ชื่อธนาคาร, บรรทัด masked account หรือ Biller ID
+- category ✗ ใบชัด: r08 (บัญชีตัวเอง → OMX-039) · r12 (memo ไม่มี label → OMX-056) · r15 (ชื่อร้าน OCR เพี้ยน)
+
+### 11.3 UI (D1 / D2) — ad-hoc Playwright ที่ 320px TH/EN (system Chrome, ไม่ commit)
+
+- **D1 (049 AC6):** expense ไม่มี payee → helper "ไม่พบชื่อผู้รับในสลิป — แตะเพื่อกรอก" / "No recipient found on the slip — tap to add" + placeholder · `aria-describedby` → `…-payee-msg` · พิมพ์แล้ว helper หาย (`aria-describedby` = null) · หัวการ์ด "ไม่ระบุผู้รับ / No payee" · Save ไม่ถูก block
+- **D2 (050a AC6):** "จ่ายบิล" ไม่มี biller → bills Medium → `controlWarn` + "ตรวจสอบช่องนี้ / Check this field" ผูก `aria-describedby` บน `CategoryPicker`
+- `scrollWidth` = 320 (ไม่มี horizontal scroll) · พบ **BUG-016 (Low)**: ปุ่ม X หัวการ์ดทับคำว่า "รายจ่าย" ที่ 320px (น่าจะมีมาก่อน PR นี้)
+
+### 11.4 ผลต่อ ticket
+
+| Ticket | AC ที่ผ่าน | AC ที่ไม่ผ่าน / ค้าง | QA |
+|---|---|---|---|
+| **OMX-051** | AC1–AC4 (TC-170, 171) | — | ✅ **Pass** |
+| **OMX-049** | AC1–AC6, AC9, AC10 (TC-172–174, 183) | **AC7** Layer B arrow template ×2 ไม่มี (TC-175) · **AC11** promote เข้า qaGolden แค่ 6 ใบ ขาด r06, r07, r08, r11–r16 (TC-176) · AC8 (ผู้ใช้ re-test 3 ใบบนเครื่องตัวเอง) รอหลัง deploy — ไม่ block merge ตาม AC | ❌ **Fail → progress** |
+| **OMX-050a** | AC1–AC6, AC9, AC10 (TC-177, 178, 180) | **AC7** restaurant bill template "…FOOD" ไม่มี (TC-175) · AC8 = เหมือน 049 AC8 | ❌ **Fail → progress** |
+| **OMX-050b** | AC1–AC5, AC7, AC8 (TC-179, 180) | **AC6** marketplace e-wallet template ไม่มี (TC-175) | ❌ **Fail → progress** |
+| **OMX-053** | AC1–AC5 (TC-181) | — | ✅ **Pass** |
+| **OMX-054** | AC1–AC3 (TC-182) | — | ✅ **Pass** |
+
+ส่วน functional (parser + UI) ของ 049/050a/050b ผ่านครบและเกิน gate · ที่ไม่ผ่านคือ **test asset ที่ AC ระบุไว้** (Layer B template ภาพใหม่ 4 ใบ + promote fixture) · Dev บอกว่า gen ภาพในเครื่องไม่ได้ แต่ **QA ยืนยันว่าในเครื่องนี้ Playwright รันกับ system Chrome ได้แล้ว** → `PW_CHROMIUM_PATH=/usr/bin/google-chrome node tests/fixtures/slips/generate.mjs` (generator รองรับ env นี้อยู่แล้ว) แล้วให้ CI benchmark บันทึก `benchmark-results.json` ใหม่ · ทางเลือก: PO waive/ย้าย 3 AC นี้ไป S3 ตาม Change Coordination §8 แล้ว QA เปลี่ยนเป็น Pass ได้ทันที · **ทั้ง 6 ticket อยู่ใน PR เดียว → แนะนำไม่ merge PR #3 จนกว่าจะเลือกทางใดทางหนึ่ง**
+
+### 11.5 r08 (โอนเข้าบัญชีตัวเอง) — ความเห็น QA
+
+- **QA เห็นด้วยกับการนับ payee ว่าง = ผ่าน** สำหรับ r08: AC10 ของ OMX-049 (v8) เขียนไว้แล้วว่า "r08 … passes with payee empty (AC4)" — ไม่ใช่การตีความใหม่ของ Dev · ผู้รับ = เจ้าของบัญชีเอง ถ้า parser คืนชื่อนั้นจะชน sender guard (AC4) ซึ่งเป็นกฎความปลอดภัยที่สำคัญกว่า (ป้องกันการเดาชื่อผู้โอนเป็นผู้รับบนสลิปอื่นทั้งหมด) · ผล UX: Review แสดง helper D1 ให้กรอกเอง = พฤติกรรมที่ถูก "ไม่เดา"
+- ข้อสังเกต: gate ≥ 12/16 **ผ่านเพราะกฎนี้พอดี** (strict = 11/16) → PO ควรยืนยันเป็นลายลักษณ์อักษรใน Review และรายงานทั้งสองตัวเลข · category r08 = `other` (ควร `transfer`) ยังเป็น gap → OMX-039 AC5 (S3) · เมื่อ OMX-039 รู้ชื่อเจ้าของบัญชี ควรเปลี่ยน r08 เป็น "payee = ชื่อตัวเอง / ป้าย 'บัญชีตัวเอง'" และนับแบบ strict
+
+### 11.6 PR #2 — OMX-048 `post-deploy.yml` review + OMX-028
+
+| ประเด็น | ผล |
+|---|---|
+| Trigger | `workflow_run` ของ "Deploy to GitHub Pages" `types: [completed]`, `branches: [main]` + job-level `if` conclusion == success · `workflow_dispatch` (input `base_url`) ✅ · deploy.yml ไม่มี `pull_request` → fork ไม่สามารถทำให้ workflow นี้รัน ✅ |
+| Permissions / secrets | `contents: read` ระดับ workflow · ไม่มี secret ใหม่ · `persist-credentials: false` ✅ |
+| Injection | `inputs.base_url` ส่งผ่าน `env` แล้วใช้ `"$BASE_URL"` ใน shell (ไม่ inline `${{ }}` ใน script) + ตรวจรูปแบบ `https://…/` ✅ |
+| Pinned actions | checkout `11d5960…` = v4.4.0 · setup-node `49933ea…` = v4.4.0 · upload-artifact `ea165f8…` = v4.6.2 — **QA ตรวจกับ tag จริงด้วย `git ls-remote` ตรงทั้ง 3** ✅ · `@lhci/cli@0.16.1` pin version ✅ |
+| Live project / spec | job `e2e-live` = mobile + desktop + real-ocr, `--grep-invert "Google Photos\|Layer B"` (ตรง 048 AC1 "non-Google") · project `live` แยก (`testIgnore` เพิ่ม `live-` ใน mobile/desktop) · HAR ใช้สลิปสังเคราะห์ b02/b05 เท่านั้น ✅ |
+| `lighthouserc.json` | 3 runs, mobile preset default · a11y median ≥ 0.90 = **error** · LCP median ≤ 2.5 s = warn (048 AC2 แค่ "recorded" → เหมาะสม) · `lhci-summary.mjs` ใช้แค่ node builtins (job นี้ไม่ `npm ci`) ✅ |
+| HAR check | allowlist = origin เดียว · Tesseract worker/core/lang มาจาก origin เรา · visit 2 ไม่โหลดซ้ำ (HTTP cache/304/IndexedDB) · upload HAR (content omit) + summary.json ✅ |
+| Main-only guard (`deploy.yml`) | `Build for Pages` มี `if: github.ref == 'refs/heads/main'`, `needs: ci` คง implicit `success()` · `Deploy` needs build → skip ตาม ✅ |
+| `.gitleaksignore` | fingerprint เดียว (backup key ใน `storage.test.ts`) — false positive จริง ✅ |
+| ข้อสังเกต (ไม่ block) | `concurrency: cancel-in-progress: true` — dispatch ระหว่างที่ workflow_run กำลังรันจะยกเลิกตัวแรก (ยอมรับได้) · `deploy.yml` ยังใช้ `actions/*@v4` แบบไม่ pin (tech debt เดิม) · CI ของ PR #2 (`45220797909`) ✅ |
+
+**OMX-028 — QA: ✅ Pass (ทุก AC)** · AC1: draft PR #1 (closed, merged = false) + `workflow_dispatch` run **`45218667703`** บน `ci/omx-028-failing-proof` → `ci / Lint·typecheck·unit` = failure (test:coverage), `ci / Secret scan` = failure, Build ×2 / E2E / **Build for Pages / Deploy = skipped** (TC-184) · AC2–AC5 ✓ จาก §8.3 · ใน run นั้น skip เพราะ `needs: ci` แดง (ยังไม่มี guard ของ PR #2) — guard เป็นชั้นป้องกันเพิ่มสำหรับ dispatch บน branch อื่นที่ ci เขียว · รอ PO accept
+
+**OMX-048 — ยังยืนยันไม่ได้ (คง progress)** · checklist หลัง merge PR #2:
+1. Merge PR #2 → deploy run บน `main` เขียว → ตรวจว่า "Post-deploy verification" ถูก trigger อัตโนมัติ (`workflow_run`) — ถ้าไม่ trigger ในรอบแรก ให้ *Actions → Post-deploy verification → Run workflow* บน `main`
+2. `live-ready` ✅ (title "Spendy Money", Tesseract worker + `tha`/`eng` ตอบ 200)
+3. `e2e-live-report`: ทุก journey ที่ไม่ใช่ Google ผ่าน (AC1) — ดู skipped ว่ามีแค่ by design
+4. `lighthouse-live`: median a11y ≥ 0.90 ทั้ง `/` และ `#/add` + บันทึก median LCP ลง §8 / TC-139 (AC2, OMX-029 AC1)
+5. `har-live`: `summary.json` — ไม่มี request นอก origin, Tesseract จาก origin เรา, visit 2 ไม่ดาวน์โหลดซ้ำ (AC3, OMX-030 AC1) + เปิด HAR ตรวจสุ่ม
+6. ถ้าทั้งหมดผ่าน → PO ทำ AC4 (ย้าย "Accepted (pending deploy)" → Done + tag `v0.1.0-uat`) · ถ้าแดง → QA เปิด bug
+7. หลัง merge PR #3 + deploy: re-verify BUG-009/010/011/013/014 บน live (workflow นี้ + ผู้ใช้ re-test สลิปจริงบนเครื่องตัวเอง = 049/050a AC8)
+
+### 11.7 Recommendation
+
+- **PR #2:** ✅ พร้อม merge จากมุม QA (merge ก่อน PR #3 เพื่อให้ post-deploy ตรวจ deploy ของ PR #3 ได้)
+- **PR #3:** ⚠️ **ยังไม่ merge** — parser/UI ผ่านและผลบนสลิปจริง (raw + redacted) ตรงกับที่ Dev รายงานทุก field, ไม่มีชื่อผู้โอนหลุด, CI เขียว · ขาด Layer B template 4 ใบ + promote fixture (049 AC7/AC11, 050a AC7, 050b AC6) → Dev เพิ่ม (gen ได้ด้วย system Chrome) **หรือ** PO waive/ย้าย S3 · 051/053/054 QA pass
+- Bugs ใหม่: **BUG-016 (Low)** เท่านั้น · High ที่ยังไม่แก้หลัง PR #3 = 0
