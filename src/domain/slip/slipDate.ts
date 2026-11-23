@@ -99,6 +99,13 @@ export function findDates(text: string, thaiContext: boolean): DateCandidate[] {
     if (month) push(m.index!, resolveYear(m[3]!, true), month, Number(m[1]));
   }
 
+  // OMX-054 (BUG-013): make by KBank OCR reads "พ.ย." as Latin "w.g." — accepted ONLY in the full
+  // slip header "dd w.g. 25xx|xx hh:mm" (round 1: this month only; others need a real fixture).
+  const latinLookAlike =
+    /(?<![\dA-Za-z])(\d{1,2})\s+[wW]\s?\.\s?[gG]\.?\s+(25\d{2}|\d{2})\s+(?:-\s*)?\d{1,2}:\d{2}(?!\d)/g;
+  for (const m of text.matchAll(latinLookAlike))
+    push(m.index!, resolveYear(m[2]!, true), 11, Number(m[1]));
+
   const enDmy = new RegExp(
     `(?<!\\d)(\\d{1,2})\\s+${EN_MONTH_RE}\\.?,?\\s+(\\d{4}|\\d{2})(?!\\d)`,
     'gi',

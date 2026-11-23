@@ -51,7 +51,8 @@ const BASELINE = {
   amount: 15,
   /** wrong non-null amounts (worse than empty, BUG-011) — OMX-053 AC1: must stay 0 */
   amountWrong: 0,
-  date: 13,
+  /** OMX-054: r08, r14, r15 "w.g." → พ.ย. */
+  date: 16,
   time: 16,
   /** OMX-049: 11 exact + r08 empty (own account, AC10) */
   payee: 12,
