@@ -61,7 +61,16 @@ interface Token {
   index: number;
   hasCurrency: boolean;
   hasTwoDecimals: boolean;
+  /** right after a "." — the tail of an amount split by OCR (".00 บาท"), never an amount itself */
+  afterDot: boolean;
 }
+
+/**
+ * OMX-053 AC3: "บาท" as Tesseract reads it on make by KBank slips ("vn", "um", "vm", "unm").
+ * Counted as currency only right after a number and as a whole word (conservative).
+ */
+const BAHT_OCR = '(?:vn|um|vm|unm)(?![A-Za-z])';
+const CURRENCY_AFTER = new RegExp(`^\\s*(?:฿|THB|บาท|บ\\.|${BAHT_OCR})`, 'i');
 
 const CURRENCY_RE = /฿|THB|บาท|บ\./gi;
 
@@ -79,14 +88,15 @@ export function tokensIn(line: string): Token[] {
     if (/[A-Za-z]/.test(before) || /[A-Za-z]/.test(after)) continue;
     if (/[:/\-xX*]/.test(before) || /[:/\-xX*]/.test(after)) continue;
     const trimmed = raw.replace(/[ ,]$/, '');
-    const rest = line.slice(index + raw.length, index + raw.length + 6);
+    const rest = line.slice(index + raw.length, index + raw.length + 8);
     const prev = line.slice(Math.max(0, index - 5), index);
     out.push({
       raw: trimmed,
       value: parseAmountToken(trimmed),
       index,
-      hasCurrency: /^\s*(฿|THB|บาท|บ\.)/i.test(rest) || /(฿|THB)\s*$/i.test(prev),
+      hasCurrency: CURRENCY_AFTER.test(rest) || /(฿|THB)\s*$/i.test(prev),
       hasTwoDecimals: /[.]\S{2}$/.test(trimmed),
+      afterDot: before === '.',
     });
   }
   return out;
@@ -131,6 +141,48 @@ function valueNear(lines: string[], i: number, labelEnd: number): AmountResult |
   return { satang: first.value, source: 'label' };
 }
 
+/** A real amount candidate: positive, not a split fragment. */
+const usable = (t: Token) => t.value !== null && t.value > 0 && !t.afterDot;
+/** Money-like: 2 decimals or a currency next to it, or the number is the whole line ("120"). */
+const moneyLike = (t: Token, line: string) =>
+  t.hasTwoDecimals || t.hasCurrency || line.trim() === t.raw;
+
+const LABEL_LOOKAHEAD = 3;
+
+/**
+ * OMX-053: value for a transfer-slip amount label. Same line first (as before); else the next
+ * ≤ 3 lines, skipping lines without a money-like token (OCR junk such as "[ต1ขะ5ต]") instead of
+ * taking their first digit; never crossing into an excluded (fee/balance/ref) line.
+ * Within the chosen line a 2-decimal token beats a currency-marked one; two different 2-decimal
+ * values there cannot be ranked → source 'fallback' so Review highlights the amount (AC4).
+ */
+function valueAfterLabel(lines: string[], i: number, labelEnd: number): AmountResult | null {
+  const sameLine = tokensIn((lines[i] ?? '').slice(labelEnd));
+  if (sameLine.length) {
+    const first = sameLine[0]!;
+    return first.value === null
+      ? { satang: null, source: 'none', rejected: true }
+      : { satang: first.value, source: 'label' };
+  }
+  for (let k = i + 1; k <= i + LABEL_LOOKAHEAD && k < lines.length; k++) {
+    const line = lines[k]!;
+    if (isExcludedLine(line)) return null;
+    const tokens = tokensIn(line);
+    const money = tokens.filter((t) => moneyLike(t, line));
+    if (!money.length) continue;
+    // A malformed labelled value right under the label stays empty (OMX-007 AC5).
+    if (k === i + 1 && money[0]!.value === null)
+      return { satang: null, source: 'none', rejected: true };
+    const ok = money.filter(usable);
+    if (!ok.length) continue;
+    const twoDec = ok.filter((t) => t.hasTwoDecimals);
+    const pick = twoDec[0] ?? ok.find((t) => t.hasCurrency) ?? ok[0]!;
+    const conflict = new Set(twoDec.map((t) => t.value)).size > 1;
+    return { satang: pick.value, source: conflict ? 'fallback' : 'label' };
+  }
+  return null;
+}
+
 export function extractAmount(lines: string[], isSalary: boolean): AmountResult {
   if (isSalary) {
     for (const label of NET_PAY_LABELS) {
@@ -157,17 +209,22 @@ export function extractAmount(lines: string[], isSalary: boolean): AmountResult 
     if (isExcludedLine(line)) continue;
     const hit = firstLabelIndex(line, AMOUNT_LABELS);
     if (!hit) continue;
-    const r = valueNear(lines, i, hit.end);
+    const r = valueAfterLabel(lines, i, hit.end);
     if (r) return r;
   }
 
   // Fallback: money-looking tokens on non-excluded lines.
   const pool: Token[] = [];
-  for (const line of lines) {
-    if (isExcludedLine(line) || GROSS_LINE.test(line)) continue;
-    for (const t of tokensIn(line))
-      if (t.value !== null && t.value > 0 && (t.hasCurrency || t.hasTwoDecimals)) pool.push(t);
-  }
+  lines.forEach((line, k) => {
+    if (isExcludedLine(line) || GROSS_LINE.test(line)) return;
+    // OMX-053 AC3: "๑ บาท" at line start under a 2-decimal amount = OCR split of "… บาท", not 1.
+    const loneDigitBaht =
+      /^\d\s*(บาท|฿)/.test(line) && tokensIn(lines[k - 1] ?? '').some((t) => t.hasTwoDecimals);
+    for (const t of tokensIn(line)) {
+      if (loneDigitBaht && t.index === 0) continue;
+      if (usable(t) && (t.hasCurrency || t.hasTwoDecimals)) pool.push(t);
+    }
+  });
   const withCurrency = pool.find((t) => t.hasCurrency);
   const pick = withCurrency ?? pool.sort((a, b) => (b.value ?? 0) - (a.value ?? 0))[0];
   return pick ? { satang: pick.value, source: 'fallback' } : { satang: null, source: 'none' };

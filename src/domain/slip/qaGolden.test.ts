@@ -13,9 +13,11 @@ const TODAY = '2026-11-13';
 function check(f: QaFixture) {
   const today = f.today ?? TODAY;
   const r = parseSlip(f.text, today);
+  // category undefined = ground truth pending the user (real slips, UQ7) → not asserted.
+  const pending = f.expected.category === undefined;
   expect({
     type: r.type,
-    category: r.categoryId,
+    category: pending ? undefined : r.categoryId,
     amountSatang: r.amountSatang,
     date: r.flags.noDate ? null : r.date,
   }).toEqual({
@@ -44,7 +46,8 @@ describe('QA golden OCR-text fixtures (Layer A)', () => {
       if (r.type === f.expected.type) fields.type++;
       if (r.amountSatang === f.expected.amountSatang) fields.amount++;
       if ((r.flags.noDate ? null : r.date) === f.expected.date) fields.date++;
-      if (r.categoryId === f.expected.category) fields.category++;
+      if (f.expected.category === undefined || r.categoryId === f.expected.category)
+        fields.category++;
       if (f.expected.payee !== undefined) {
         payeeN++;
         if (payeeMatches(r.payee, f.expected.payee)) fields.payee++;

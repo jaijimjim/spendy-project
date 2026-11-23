@@ -47,9 +47,10 @@ const RAW_LOCAL = import.meta.glob<{ text: string }[] | Record<string, { text: s
  */
 const BASELINE = {
   type: 16,
-  amount: 13,
-  /** wrong non-null amounts (worse than empty, BUG-011) — must not increase */
-  amountWrong: 2,
+  /** OMX-053: r04, r05 fixed; r14 = BUG-012 (split amount) stays empty */
+  amount: 15,
+  /** wrong non-null amounts (worse than empty, BUG-011) — OMX-053 AC1: must stay 0 */
+  amountWrong: 0,
   date: 13,
   time: 16,
   /** OMX-049: 11 exact + r08 empty (own account, AC10) */

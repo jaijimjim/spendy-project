@@ -88,3 +88,67 @@ describe('isUnusualAmount', () => {
     expect(isUnusualAmount(100)).toBe(false);
   });
 });
+
+// OMX-053 (BUG-011): never a silent wrong amount. Synthetic text modelled on make by KBank OCR.
+describe('extractAmount — junk after the label, "บาท" OCR variants (OMX-053)', () => {
+  it('AC2: skips a junk line under the label instead of taking its first digit (r04 pattern)', () => {
+    const t = lines(
+      'จำนวน      .    m\n[ต1ขะ5ต]\n1,200.00 vn          ig yer an\nค่าธรรมเนียม\n0.00 บาท',
+    );
+    expect(extractAmount(t, false)).toEqual({ satang: 120000, source: 'label' });
+  });
+
+  it('AC2: "200.00" then "๑ บาท" on the next line is 200, not 1 (r05 pattern)', () => {
+    const t = lines(
+      'จำนวน      .\n[w]e [ต]\n200.00        = i\n๑        บาท       (เล ไช 7\nค่าธรรมเนียม\n0.00 บาท',
+    );
+    expect(extractAmount(t, false)).toEqual({ satang: 20000, source: 'label' });
+  });
+
+  it('AC2: looks ahead at most 3 lines', () => {
+    expect(extractAmount(lines('จำนวน\nก\nข\nค\n50.00 บาท'), false).source).toBe('fallback');
+    expect(extractAmount(lines('จำนวน\nก\nข\n50.00 บาท'), false)).toEqual({
+      satang: 5000,
+      source: 'label',
+    });
+  });
+
+  it('AC2: a plain number alone on the next line is still the amount', () => {
+    expect(extractAmount(lines('จำนวนเงิน\n120'), false)).toEqual({
+      satang: 12000,
+      source: 'label',
+    });
+  });
+
+  it('AC2: never crosses into the fee line', () => {
+    const t = lines('จำนวน\nxx\nค่าธรรมเนียม 5.00 บาท\n');
+    expect(extractAmount(t, false).satang).toBeNull();
+  });
+
+  it('a split amount fragment (".00 บาท" → 0) is not an amount (BUG-012 stays empty)', () => {
+    const t = lines(
+      'จำนวน      .\n[=]? rid [=]\n21       Hd,\n3     .00 บาท    oh Pity\nค่าธรรมเนียม\n0.00 บาท',
+    );
+    expect(extractAmount(t, false).satang).toBeNull();
+  });
+
+  it.each(['vn', 'um', 'vm', 'unm'])('AC3: "%s" after a number counts as บาท', (v) => {
+    const [tok] = tokensIn(`250 ${v}`);
+    expect(tok?.hasCurrency).toBe(true);
+    expect(tokensIn(`250 ${v}x`)[0]?.hasCurrency).toBe(false);
+  });
+
+  it('AC3: fallback ignores a lone digit before บาท when the line above has a 2-decimal amount', () => {
+    expect(extractAmount(lines('ชำระเงินสำเร็จ\n85.00\n๑ บาท'), false)).toEqual({
+      satang: 8500,
+      source: 'fallback',
+    });
+  });
+
+  it('AC4: two different 2-decimal amounts on the first money line → flagged as fallback', () => {
+    expect(extractAmount(lines('จำนวน\n[x]\n120.00 340.00'), false)).toEqual({
+      satang: 12000,
+      source: 'fallback',
+    });
+  });
+});

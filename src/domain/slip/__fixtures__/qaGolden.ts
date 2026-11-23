@@ -11,6 +11,8 @@
 import type { CategoryId, TxType } from '../../types';
 import realR01 from '../../../../tests/fixtures/real-slips/redacted/r01.txt?raw';
 import realR02 from '../../../../tests/fixtures/real-slips/redacted/r02.txt?raw';
+import realR04 from '../../../../tests/fixtures/real-slips/redacted/r04.txt?raw';
+import realR05 from '../../../../tests/fixtures/real-slips/redacted/r05.txt?raw';
 
 /** Capture day of the real-slip set (tests/fixtures/real-slips/expected.json). */
 const REAL_TODAY = '2026-11-23';
@@ -22,7 +24,8 @@ export interface QaFixture {
   today?: string;
   expected: {
     type: TxType;
-    category: CategoryId;
+    /** undefined ⇒ category pending user confirmation (real slips, UQ7) — not asserted */
+    category?: CategoryId;
     amountSatang: number | null;
     /** null ⇒ no acceptable date on the slip (parser falls back to today + flags.noDate) */
     date: string | null;
@@ -458,5 +461,33 @@ export const QA_FIXTURES: QaFixture[] = [
       payee: 'น.ส. วิมลรัตน์ บุญมีศรีสุข',
     },
     knownBug: [],
+  },
+  // ---- OMX-053 AC5: amount junk under the label / "บาท" OCR variants (REDACTED text) ----
+  {
+    id: 'real-redacted-r04',
+    text: realR04,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      // category pending UQ7 (air-con cleaning) — not asserted, rules not tuned to it
+      amountSatang: 120000,
+      date: '2026-11-18',
+      time: '14:01',
+      payee: 'ฮิปโป เซอร์วิส เซ็นเตอร์',
+    },
+    knownBug: [],
+  },
+  {
+    id: 'real-redacted-r05',
+    text: realR05,
+    today: REAL_TODAY,
+    expected: {
+      type: 'expense',
+      category: 'transport',
+      amountSatang: 20000,
+      date: '2026-11-19',
+      time: '07:47',
+    },
+    knownBug: ['BUG-014 Rabbit/บางกอก สมาร์ทการ์ด → transport (OMX-050b)'],
   },
 ];
