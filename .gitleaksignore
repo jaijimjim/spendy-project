@@ -1,0 +1,3 @@
+# gitleaks false positives (fingerprint = commit:file:rule:line). Review every entry in PR.
+# localStorage backup key name in a unit test, not a secret (OMX-021 AC4 test, commit b7863f7).
+b7863f7e611a3e23b8f5ad5abbb72a1c722aff32:src/services/storage.test.ts:generic-api-key:29

@@ -17,3 +17,7 @@ public/tesseract/
 # Real customer slips (PII) — local-only, never commit (OMX-030, OMX-042 AC4)
 tests/fixtures/real-slips/images/
 tests/fixtures/real-slips/*.local.json
+
+# Lighthouse CI output (OMX-048 post-deploy.yml)
+.lighthouseci/
+lhci-report/

@@ -83,6 +83,7 @@ Key decisions are recorded as ADRs in [`docs/adr/`](docs/adr):
 ```
 spendy-project/
 ├─ .github/workflows/      ci.yml (lint, typecheck, unit, build ×2, e2e, gitleaks) · deploy.yml (Pages)
+│                          · post-deploy.yml (live e2e, Lighthouse ×3, HAR — after each deploy)
 ├─ design/                 Designer hand-off: tokens.css (imported), copy-deck.json (i18n resources), mockups
 ├─ docs/
 │  ├─ adr/                 Architecture decision records
@@ -91,7 +92,8 @@ spendy-project/
 ├─ scripts/
 │  ├─ copy-tesseract-assets.mjs   copies worker/core/lang data from pinned npm packages
 │  ├─ check-i18n-keys.mjs         TH/EN key parity + unknown key usage
-│  └─ check-bundle-size.mjs       initial JS ≤ 300 KB gz
+│  ├─ check-bundle-size.mjs       initial JS ≤ 300 KB gz
+│  └─ lhci-summary.mjs            Lighthouse CI median LCP / a11y → job summary (post-deploy)
 ├─ src/
 │  ├─ app/                 App router (HashRouter), shell, nav, banners, error boundary
 │  ├─ components/          Button, Modal/Sheet/Confirm (<dialog>), form controls, rows, feedback
@@ -183,12 +185,33 @@ Try the app without real OCR: open `http://localhost:5173/?ocr=fake#/add` and up
 2. (ถ้าใช้ Google Photos) ตั้ง repository variable `VITE_GOOGLE_CLIENT_ID`
 3. Push/merge เข้า `main` → workflow **Deploy to GitHub Pages** รัน CI ครบ (lint, typecheck, unit, build ทั้งมี/ไม่มี Client ID, e2e, secret scan) แล้ว build + deploy ด้วย `actions/upload-pages-artifact` + `actions/deploy-pages`; ขั้นใดล้มเหลว = ไม่ deploy
 4. เปิด `https://jaijimjim.github.io/spendy-project/`
+5. กด **Run workflow** ของ *Deploy to GitHub Pages* ได้ทุก branch แต่ `Build for Pages`/`Deploy` รันเฉพาะ `main` (`if: github.ref == 'refs/heads/main'`) — branch อื่นรันแค่ CI · หลักฐาน OMX-028 AC1 (CI แดง ⇒ build/deploy = skipped): run [`45218667703`](https://github.com/jaijimjim/spendy-project/actions/runs/45218667703) จาก draft PR #1 (ปิดแล้ว ไม่ merge)
 
 **EN**
 1. *Settings → Pages → Source: GitHub Actions*.
 2. Optionally set the repository variable `VITE_GOOGLE_CLIENT_ID`.
 3. Push to `main`. `deploy.yml` reuses `ci.yml` as a gate, then builds with `VITE_BASE=/<repo>/` and deploys. Any failed step blocks the deploy.
 4. Routing uses `HashRouter` (`#/transactions`) so refresh/deep links never 404 on Pages. Tesseract files are served from `/spendy-project/tesseract/` and cached by the browser (language data in IndexedDB after the first run, ~8 MB).
+5. *Run workflow* (`workflow_dispatch`) works on any branch, but only `main` builds and deploys; other branches run CI only. On `workflow_dispatch` gitleaks scans the full history — reviewed false positives live in `.gitleaksignore`.
+
+### Post-deploy verification (OMX-048)
+
+**TH:** หลัง *Deploy to GitHub Pages* บน `main` สำเร็จ workflow **Post-deploy verification** (`.github/workflows/post-deploy.yml`) รันอัตโนมัติ (`workflow_run`) หรือกด *Run workflow* พร้อมระบุ `base_url` ได้ · ไม่ block deploy (site ขึ้นแล้ว) — ถ้าแดง QA เปิด bug, PO ตัดสินภายในวัน · ใช้ **สลิปสังเคราะห์เท่านั้น** (`tests/fixtures/slips/images`) · หมายเหตุ: `workflow_run` อ่าน workflow จาก default branch จึงทำงานหลัง merge เข้า `main` แล้วเท่านั้น
+
+| Job | ทำอะไร | AC | Artifact |
+|---|---|---|---|
+| `live-ready` | รอ Pages ตอบ 200, ตรวจ `<title>` + Tesseract worker/lang บน base path | 028 AC2 | — |
+| `e2e-live` | `E2E_BASE_URL=<Pages> npx playwright test --project=mobile --project=desktop --project=real-ocr --grep-invert "Google Photos\|Layer B"` | 048 AC1 | `e2e-live-report` |
+| `lighthouse-live` | Lighthouse CI (`@lhci/cli` pinned) mobile preset ×3 บน `/` และ `#/add` · assert a11y ≥ 0.90 (error), LCP ≤ 2.5 s (warn) · median LCP/a11y ใน job summary | 048 AC2, 029 AC1 | `lighthouse-live` |
+| `har-live` | Playwright project `live` (`tests/e2e/live-har.spec.ts`): upload b02 → real OCR → save → reload → upload b05 · assert ทุก request อยู่ใน origin เดียว, Tesseract มาจาก origin เรา, visit 2 ไม่ดาวน์โหลด Tesseract ซ้ำ (HTTP cache / IndexedDB) | 048 AC3, 030 AC1 | `har-live` (HAR + `summary.json`) |
+
+**EN:** After a successful deploy on `main`, `post-deploy.yml` runs the e2e suite, Lighthouse CI (mobile ×3) and a HAR capture against the live URL and uploads the reports as artifacts plus a job summary. Re-run it any time via *Actions → Post-deploy verification → Run workflow*. To run the same checks from a machine that can reach Pages:
+
+```bash
+E2E_BASE_URL=https://jaijimjim.github.io/spendy-project/ npx playwright test --project=mobile --project=desktop --project=real-ocr --grep-invert "Google Photos|Layer B"
+E2E_BASE_URL=https://jaijimjim.github.io/spendy-project/ npx playwright test --project=live   # HAR → test-results/live-har/
+npx --yes @lhci/cli@0.16.1 collect --url=https://jaijimjim.github.io/spendy-project/ && npx --yes @lhci/cli@0.16.1 upload && node scripts/lhci-summary.mjs && npx --yes @lhci/cli@0.16.1 assert
+```
 
 ## Testing
 
@@ -197,6 +220,7 @@ Try the app without real OCR: open `http://localhost:5173/?ocr=fake#/add` and up
 | Unit | Vitest + Testing Library (jsdom) | `src/domain` is pure and table-tested against Layer A OCR-text fixtures (`src/domain/slip/__fixtures__/ocrText.ts`); coverage ≈ 98% lines |
 | E2E | Playwright + `@axe-core/playwright` | Runs on the production build (`vite preview`, base path) with **fake OCR**; mobile 375 + desktop 1280 |
 | Real OCR | Playwright project `real-ocr` | Renders a Thai slip (HTML → PNG) and reads it with self-hosted Tesseract; asserts all assets come from our origin |
+| Live (post-deploy) | Playwright project `live` + Lighthouse CI | HAR of upload → real OCR → save on Pages with synthetic slips; see [Post-deploy verification](#post-deploy-verification-omx-048) |
 
 Test hooks for QA (set via `page.addInitScript`): `window.__OMX_TEST__ = { now, ocr: 'fake', fakeOcr: { 'name.png': 'text' }, storage: 'memory' | 'broken' | 'unavailable', googlePhotos: stub }`. Also `?ocr=fake` in the URL.
 
