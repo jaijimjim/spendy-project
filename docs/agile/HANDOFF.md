@@ -1,6 +1,6 @@
 # HANDOFF — Omnitrix Money (MVP_0001) · หลัง Sprint 2 Grooming
 
-อัปเดต: 23 พ.ย. 2569 · Repo: github.com/jaijimjim/omnitrix-project (**private**) · Live (เป้าหมาย): https://jaijimjim.github.io/omnitrix-project/ — **ยังตอบ 404 (B3)**
+อัปเดต: 23 พ.ย. 2569 · Repo: github.com/jaijimjim/spendy-project (**public** · เปลี่ยนชื่อจาก omnitrix-project เมื่อ 23 พ.ย. 69) · Live (เป้าหมาย): https://jaijimjim.github.io/spendy-project/ — **ยังตอบ 404 (B3)**
 
 ## ทีมและวิธีทำงาน
 - ทีม agent 4 บทบาท: **PO/PM, Designer, Dev, QA** ทำงานแบบ Scrum ตาม ceremony ครบ (Grooming → Planning → Daily → Demo → Retro)
@@ -47,8 +47,8 @@
 - `docs/qa/` (test plan, test cases, bug report, summary §7) · `design/` · `docs/adr/`
 
 ## หมายเหตุทางเทคนิค
-- React 18.3.1 + TS 5.9 + Vite, HashRouter, base `/omnitrix-project/`, Tesseract.js self-host (copy จาก npm ตอน build)
-- รันในเครื่อง: `npm ci && npm run dev` (เติม `?ocr=fake` เพื่อข้าม OCR จริง) · ตรวจทั้งหมด: `npm run ci` · e2e: `npm run build && npm run e2e` · e2e บน Pages: `E2E_BASE_URL=https://jaijimjim.github.io/omnitrix-project/`
+- React 18.3.1 + TS 5.9 + Vite, HashRouter, base `/spendy-project/` (deploy ใช้ `/<repo-name>/` อัตโนมัติ), Tesseract.js self-host (copy จาก npm ตอน build)
+- รันในเครื่อง: `npm ci && npm run dev` (เติม `?ocr=fake` เพื่อข้าม OCR จริง) · ตรวจทั้งหมด: `npm run ci` · e2e: `npm run build && npm run e2e` · e2e บน Pages: `E2E_BASE_URL=https://jaijimjim.github.io/spendy-project/`
 - Test hook: `window.__OMX_TEST__ = { now, ocr: 'fake'|'real', storage }` · storage key `omx.v1`
 - Parser อยู่ที่ `src/domain/slip/*` (`parties.ts` = payee, `categorize.ts` + `categories.rules.ts` = หมวดหมู่, `keywords.ts` = matcher)
 - วิดีโอ demo อัดใหม่ได้ด้วย `scripts/record-demo.cjs` (ต้องเปิด `vite preview` ที่ port 4173 ก่อน)

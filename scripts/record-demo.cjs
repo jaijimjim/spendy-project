@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const OUT = __dirname;
 const IMG = path.join(__dirname, '..', 'tests', 'fixtures', 'slips', 'images') + path.sep;
-const BASE = 'http://localhost:4173/omnitrix-project/';
+const BASE = 'http://localhost:4173/spendy-project/';
 const W = 1280,
   H = 720;
 

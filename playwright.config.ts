@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
  * - `real-ocr` runs real Tesseract on a generated slip image to prove self-hosted assets load
  * Set PW_CHROMIUM_PATH to use a pre-installed Chromium (offline sandboxes).
  */
-const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4173/omnitrix-project/';
+const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4173/spendy-project/';
 const executablePath = process.env.PW_CHROMIUM_PATH || undefined;
 const launchOptions = executablePath ? { executablePath } : {};
 

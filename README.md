@@ -4,7 +4,7 @@
 >
 > **EN:** Record income and expenses automatically from slip images. Slips are read with OCR **inside your browser**; type, amount, date and category are detected for you to review before saving. Your data never leaves your device.
 
-**Live:** https://jaijimjim.github.io/omnitrix-project/ · MVP_0001 · Sprint 1
+**Live:** https://jaijimjim.github.io/spendy-project/ · MVP_0001 · Sprint 1
 
 ---
 
@@ -81,7 +81,7 @@ Key decisions are recorded as ADRs in [`docs/adr/`](docs/adr):
 ## Folder structure
 
 ```
-omnitrix-project/
+spendy-project/
 ├─ .github/workflows/      ci.yml (lint, typecheck, unit, build ×2, e2e, gitleaks) · deploy.yml (Pages)
 ├─ design/                 Designer hand-off: tokens.css (imported), copy-deck.json (i18n resources), mockups
 ├─ docs/
@@ -115,8 +115,8 @@ omnitrix-project/
 **EN:** Requires Node.js 22 (see `.nvmrc`) and npm 10+.
 
 ```bash
-git clone https://github.com/jaijimjim/omnitrix-project.git
-cd omnitrix-project
+git clone https://github.com/jaijimjim/spendy-project.git
+cd spendy-project
 npm ci                     # installs deps (Tesseract data comes from pinned npm packages)
 cp .env.example .env.local # optional: set VITE_GOOGLE_CLIENT_ID
 npm run dev                # http://localhost:5173  (predev copies Tesseract assets)
@@ -129,8 +129,8 @@ Try the app without real OCR: open `http://localhost:5173/?ocr=fake#/add` and up
 | Script | What it does |
 |---|---|
 | `npm run dev` | Vite dev server (copies Tesseract assets first) |
-| `npm run build` | Production build to `dist/` with base `/omnitrix-project/` |
-| `npm run preview` | Serve `dist/` at `http://localhost:4173/omnitrix-project/` |
+| `npm run build` | Production build to `dist/` with base `/spendy-project/` |
+| `npm run preview` | Serve `dist/` at `http://localhost:4173/spendy-project/` |
 | `npm run typecheck` | `tsc -b` (strict) |
 | `npm run lint` | ESLint (incl. `react/no-danger`, jsx-a11y) — zero warnings |
 | `npm run format` / `format:check` | Prettier |
@@ -146,7 +146,7 @@ Try the app without real OCR: open `http://localhost:5173/?ocr=fake#/add` and up
 | Variable | Where | Purpose |
 |---|---|---|
 | `VITE_GOOGLE_CLIENT_ID` | `.env.local` locally; GitHub **repository variable** (or secret) in CI | OAuth 2.0 Web Client ID for Google Photos import. Empty ⇒ the UI shows "ยังไม่ได้ตั้งค่า Google Photos / Google Photos not configured" and everything else works. |
-| `VITE_BASE` | optional | Base path. Defaults to `/omnitrix-project/` for build/preview and `/` for dev. The deploy workflow sets it to `/<repo-name>/`. |
+| `VITE_BASE` | optional | Base path. Defaults to `/spendy-project/` for build/preview and `/` for dev. The deploy workflow sets it to `/<repo-name>/`. |
 
 > A Client ID is **not** a secret (it is embedded in the JS bundle). Never create or commit a client *secret* — the app uses the browser token flow only.
 
@@ -182,13 +182,13 @@ Try the app without real OCR: open `http://localhost:5173/?ocr=fake#/add` and up
 1. Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**
 2. (ถ้าใช้ Google Photos) ตั้ง repository variable `VITE_GOOGLE_CLIENT_ID`
 3. Push/merge เข้า `main` → workflow **Deploy to GitHub Pages** รัน CI ครบ (lint, typecheck, unit, build ทั้งมี/ไม่มี Client ID, e2e, secret scan) แล้ว build + deploy ด้วย `actions/upload-pages-artifact` + `actions/deploy-pages`; ขั้นใดล้มเหลว = ไม่ deploy
-4. เปิด `https://jaijimjim.github.io/omnitrix-project/`
+4. เปิด `https://jaijimjim.github.io/spendy-project/`
 
 **EN**
 1. *Settings → Pages → Source: GitHub Actions*.
 2. Optionally set the repository variable `VITE_GOOGLE_CLIENT_ID`.
 3. Push to `main`. `deploy.yml` reuses `ci.yml` as a gate, then builds with `VITE_BASE=/<repo>/` and deploys. Any failed step blocks the deploy.
-4. Routing uses `HashRouter` (`#/transactions`) so refresh/deep links never 404 on Pages. Tesseract files are served from `/omnitrix-project/tesseract/` and cached by the browser (language data in IndexedDB after the first run, ~8 MB).
+4. Routing uses `HashRouter` (`#/transactions`) so refresh/deep links never 404 on Pages. Tesseract files are served from `/spendy-project/tesseract/` and cached by the browser (language data in IndexedDB after the first run, ~8 MB).
 
 ## Testing
 
