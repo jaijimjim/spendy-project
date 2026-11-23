@@ -5,6 +5,8 @@
 
 > **อัปเดต 2026-11-23 (Sprint 2 Day 0):** re-run 12 TC ที่ Blocked → ดู [§7](#7-sprint-2-day-0--blocked-re-run-2026-11-23) — ตัวเลขล่าสุด **Pass 120 / Fail 2 / Blocked 9 / Not run 1**; recommendation เปลี่ยนเป็น **NOT READY for UAT** (BUG-009/010 High + B3). §1–§6 ด้านล่างคงไว้เป็นผล Sprint 1 (2026-11-13)
 
+> **อัปเดต 2026-11-23 (Sprint 2 Day 1):** live verification บน Pages → [§8](#8-sprint-2-day-1--live-verification-2026-11-23) (**Pass 121 / Fail 2 / Blocked 8 / Not run 1**; OMX-028 ผ่าน AC2–AC5, AC1 รอหลักฐาน failing PR · OMX-048 **ยังไม่ผ่าน** AC1–AC3) · OMX-042 สลิปจริง n = 16 → [§9](#9-omx-042--real-slip-accuracy-n16) (category 0/9 ใบที่หมวดชัดเจน, payee 0/16, BUG-011 … 015) · recommendation ยัง **NOT READY for UAT**
+
 ## 1. Recommendation
 
 ### ✅ GO for UAT — **conditional**
@@ -216,3 +218,149 @@ Defects: 10 (Critical 0 · High 3 · Medium 5 · Low 2) · **Open 3** — BUG-00
 | 6 | Smoke บนมือถือจริง Android Chrome + iOS Safari (picker, OCR time, SR) | QA + ผู้ใช้ | TC-008, 141, 135 |
 
 UAT readiness จะประเมินใหม่เมื่อ #1, #2, #4 เสร็จ (และ #3 หรือ PO decision "Not configured")
+
+## 8. Sprint 2 Day 1 — live verification (2026-11-23)
+
+> Owner: QA · URL: `https://jaijimjim.github.io/spendy-project/` · Build: commit `6ebe779` (OMX-052 rename) · หลักฐาน: GitHub Actions run **`45208481550`** + การตรวจบนเบราว์เซอร์จริงโดย orchestrator (sandbox ของ QA เข้า `github.io` ไม่ได้เพราะ proxy — QA ไม่ได้เปิด URL เอง จึงบันทึกเป็นหลักฐานบุคคลที่สาม)
+
+### 8.1 Evidence
+
+| Check | ผล |
+|---|---|
+| GitHub Actions run `45208481550` (push `main`, commit `6ebe779`) | ✅ Secret scan (gitleaks) · ✅ Lint·typecheck·unit · ✅ Build without-google · ✅ Build with-google · ✅ E2E (Playwright, mobile + desktop + real-ocr) · ✅ Build for Pages · ✅ Deploy → **B3 ปิด** |
+| หน้าแรก | HTTP 200 · `<title>` = "Home · Spendy Money" (OMX-052 AC1 บางส่วน) |
+| Deep link (HashRouter) | `#/transactions`, `#/transactions/new`, `#/settings` โหลดได้ title ถูก · route ไม่รู้จัก `#/dashboard` → redirect Home |
+| Assets / privacy | JS, CSS, ฟอนต์ IBM Plex Sans Thai, Tesseract worker + core + lang `tha` (896,631 B) / `eng` (2,952,873 B) มาจาก **origin เดียว** · **ไม่มี third-party request** · CSP `<meta>` อยู่ · localStorage ว่างก่อนใช้งาน |
+| LCP | **2,208 ms** (FCP 2,208 ms) — `PerformanceObserver` บนเบราว์เซอร์จริง, **desktop, ไม่ throttle, 1 ครั้ง** (ไม่ใช่ Lighthouse mobile lab) |
+| Console | ไม่มี error ของแอป — 404 ที่พบมาจาก HEAD probe ที่ผู้ตรวจยิงผิด path เอง |
+| **ยังไม่ได้ทำ** | e2e suite ด้วย `E2E_BASE_URL` บน Pages · Lighthouse mobile ×3 (perf + a11y) · HAR ของ upload → OCR → save + cache รอบสอง · OCR จริงบน live (ทดสอบ Tesseract.js ตัวเดียวกันใน Node แล้วใน §9 แต่ไม่ใช่ใน browser บน Pages) |
+
+### 8.2 TC ที่เปลี่ยน
+
+| TC | เดิม (Day 0) | ใหม่ (Day 1) | เหตุผล |
+|---|---|---|---|
+| TC-137 Deploy + post-deploy smoke | Blocked (B3) | **Pass** | deploy เขียว + URL 200 + deep link + asset same-origin |
+| TC-126 Deep link | Pass (local; Pages Blocked) | **Pass (local + Pages)** | 3 route + redirect route ไม่รู้จัก |
+| TC-139 LCP Lighthouse mobile บน Pages | Blocked (B3) | **Partial** (นับ Blocked) | ได้ค่าจริงบน Pages 2,208 ms แต่เป็น desktop ไม่ throttle 1 ครั้ง ≠ วิธีใน AC · ซื่อตรง: ไม่นับ Pass |
+| TC-149 gitleaks + storage | Pass | **Pass** (หลักฐานใหม่) | gitleaks ✓ ใน run `45208481550` (repo public แล้ว) + localStorage ว่างบน live |
+| TC-008, TC-135 | Blocked (DEV + B3) | Blocked (DEV) | B3 ปิด เหลือเฉพาะอุปกรณ์จริง / Lighthouse บน Pages (→ OMX-043 / OMX-048) |
+| TC-163 Layer C | Fail (n = 3) | **Fail (n = 16)** | ดู §9 |
+
+⚠️ **ความเสี่ยง LCP:** local Lighthouse mobile (Slow 4G + CPU ×4) = 755 ms แต่ Pages จริงบน desktop **ไม่ throttle** = 2,208 ms (LCP = FCP → ติดที่ network/โหลด asset ไม่ใช่ render) → latency จริงของ Pages/CDN เป็นตัวหลัก · มีโอกาสสูงที่ Lighthouse mobile บน Pages จะ **เกิน 2.5 s** → ต้องวัดตาม AC ก่อนสรุป OMX-029 AC1 / OMX-048 AC2; ถ้าเกิน Dev ควรดู preload ฟอนต์ไทย/critical CSS และขนาด initial JS
+
+### 8.3 OMX-028 — Deploy to GitHub Pages: QA verdict
+
+| AC | ผล | หลักฐาน |
+|---|---|---|
+| AC1 pipeline + failed step blocks deploy | ◐ **Partial** | run `45208481550` รัน npm ci → typecheck → lint → format → i18n check → unit (coverage) → build ×2 → e2e → deploy ✓ · `deploy.yml`: `build` `needs: ci`, `deploy` `needs: build` (โครงสร้างบล็อกจริง) · **ยังไม่มี "intentionally failing PR"** ตามที่ AC กำหนด |
+| AC2 live URL, base path, assets, hash routes, Tesseract files | ✅ Pass | §8.1 |
+| AC3 build ทั้งมี/ไม่มี `VITE_GOOGLE_CLIENT_ID` | ✅ Pass | job Build ×2 ✓ |
+| AC4 Tesseract จาก npm, ไม่ commit, ไม่มี CDN | ✅ Pass | CI step "Tesseract assets are bundled from npm (no CDN)" ✓ · `public/tesseract/` git-ignored · live: worker/core/lang จาก origin เดียว |
+| AC5 README live URL + dev + deploy notes | ✅ Pass | `README.md` บรรทัด "**Live:** https://jaijimjim.github.io/spendy-project/" + ส่วน local dev / deploy / Google config |
+
+**Verdict: ยังไม่ส่ง `qa`** — 4/5 AC ผ่าน, AC1 ขาดหลักฐาน failing PR (ขั้นตอนที่ AC เขียนไว้ชัด). ทางเลือกให้ PO: (a) Dev เปิด draft PR ที่ test พังโดยตั้งใจ 1 ครั้ง (≈ 15 นาที, ยืนยัน TC-138 แบบ PR trigger ไปด้วย) แล้ว QA ส่ง `qa` ทันที หรือ (b) PO ยอมรับหลักฐานเชิงโครงสร้าง (`needs:` chain) เป็นลายลักษณ์อักษร · Board: คง `progress` + note
+
+### 8.4 OMX-048 — Post-deploy verification: QA verdict
+
+| AC | ผล | หมายเหตุ |
+|---|---|---|
+| AC1 e2e suite บน Pages (`E2E_BASE_URL`) | ⛔ Not run | sandbox เข้า github.io ไม่ได้; CI e2e เขียวบน build เดียวกัน (local preview) ≠ บน Pages |
+| AC2 Lighthouse mobile median ×3 (a11y ≥ 90, LCP บันทึก) | ⛔ Not run | มีแค่ LCP desktop ไม่ throttle 2,208 ms (§8.2) |
+| AC3 HAR upload → OCR → save, allowlist, Tesseract cache รอบสอง | ◐ Partial | page-load: ไม่มี third-party, Tesseract จาก origin เดียว ✅ · flow upload → OCR → save และ cache รอบสอง **ยังไม่ได้ทำ** |
+| AC4 PO ย้าย Accepted (pending deploy) → Done + tag `v0.1.0-uat` | — | รอ AC1–AC3 |
+
+**Verdict: ไม่ผ่าน AC (ยังไม่ครบ) — ไม่ส่ง `qa`** · live smoke ผ่าน ไม่พบ defect บน Pages · สิ่งที่ต้องทำต่อ (ต้องใช้เครื่องที่เข้า github.io ได้ เช่นเครื่องของ orchestrator/ผู้ใช้ หรือ GitHub Actions job ที่รัน e2e/Lighthouse กับ URL live): `E2E_BASE_URL=https://jaijimjim.github.io/spendy-project/ npx playwright test --project=mobile --project=desktop` · `npx lighthouse <url> --preset=perf --form-factor=mobile` ×3 (+ a11y) · HAR ของ upload สลิปสังเคราะห์ → OCR → save แล้ว reload ดู cache · ข้อเสนอ: Dev เพิ่ม workflow `post-deploy.yml` (`workflow_run` หลัง Deploy) ให้รันทั้งสามอย่างบน runner ของ GitHub — ปิดข้อจำกัด proxy ถาวร
+
+## 9. OMX-042 — Real-slip accuracy, n=16
+
+> Owner: QA · 2026-11-23 · สลิปจริง 16 ใบของผู้ใช้ (UQ4 — ยินยอมให้ QA เก็บไว้ทดสอบ) · OCR = Tesseract.js `tha+eng` ตัวเดียวกับแอป + preprocess เหมือน `src/services/ocr/preprocess.ts` (≤ 2000 px, grayscale, contrast ×1.25 รอบ 128) รันใน Node · Parser = `parseSlip(text, '2026-11-23')` บน `main` @ `6ebe779` · fixture ที่ commit = **OCR text ที่ redact แล้ว** [`tests/fixtures/real-slips/redacted/`](../../tests/fixtures/real-slips/README.md) + `expected.json` (ชื่อสมมติ) · รูปจริง / OCR ดิบ / ground truth ชื่อจริง = git-ignored เท่านั้น · วัดซ้ำได้ด้วย `npx vitest run src/domain/slip/realSlips.test.ts` · ยืนยันแล้วว่า redaction **ไม่เปลี่ยนผล parser** (type/amount/date/time/category/bank/payee-found เท่ากันทั้ง 16 ใบ)
+
+### 9.1 Per field vs MVP metrics
+
+| Field | ผล (n = 16) | MVP metric | Status |
+|---|---|---|---|
+| Type | **16/16 (100%)** | ≥ 90% | ✅ (แต่ confidence Low 5/16 → BUG-015) |
+| Amount | **13/16 (81.3%)** | ≥ 80% | ✅ **margin 1 ใบ** · ผิดแบบไม่ว่าง **2/16** (r04, r05 → BUG-011 High) · ว่าง 1/16 (r14 → BUG-012) |
+| Date | 13/16 (81.3%) | report only | ❌ 3 ใบตกเป็นวันนี้ ("w.g." → BUG-013) |
+| Time | 16/16 (100%) | report only | ✅ |
+| Category (ทุกใบ เทียบหมวดที่เสนอ) | **2/16 (12.5%)** | ≥ 60% | ❌ |
+| Category (เฉพาะใบที่หมวดชัดเจน) | **0/9 (0%)** | ≥ 60% | ❌ → BUG-010 / BUG-014 |
+| Category (ใบที่รอผู้ใช้ยืนยัน) | 2/7 | — | รอคำตอบ §9.6 |
+| Payee | **0/16 (0%)** | report only (OMX-009 AC6) | ❌ → BUG-009 (scope ขยาย) |
+
+### 9.2 Per app
+
+| App | n | Type | Amount | Date | Time | Payee | Category (all) | Category (clear) |
+|---|---|---|---|---|---|---|---|---|
+| make by KBank | 9 | 9 | **6** | **6** | 9 | 0 | 2 | 0/5 |
+| K PLUS | 6 | 6 | 6 | 6 | 6 | 0 | 0 | 0/4 |
+| Krungthai | 1 | 1 | 1 | 1 | 1 | 0 | 0 | — (pending) |
+
+ข้อสังเกต: ปัญหา amount/date ทั้งหมดอยู่บน **make** (พื้นหลังการ์ตูนสีอ่อน → OCR junk + "พ.ย." เป็นละติน) · K PLUS อ่านยอด/วันที่ได้ครบ แต่ "จ่ายบิล" 4/4 กลายเป็น `bills`
+
+### 9.3 Per slip
+
+| Slip | App | หัวสลิป | Amount (ถูก → ได้) | Date | Time | Payee | Category (คาด → ได้) |
+|---|---|---|---|---|---|---|---|
+| r01 | make | โอนเงิน (PromptPay → บุคคล) | 184.00 ✅ | ✅ | ✅ | ❌ | transfer → other ❌ |
+| r02 | K PLUS | โอนเงิน → บุคคล | 17.00 ✅ | ✅ | ✅ | ❌ | transfer → other ❌ |
+| r03 | K PLUS | จ่ายบิล ร้านก๋วยเตี๋ยว | 60.00 ✅ | ✅ | ✅ | ❌ | food → bills ❌ |
+| r04 | make | ชำระเงิน (ล้างแอร์) | 1,200.00 → **1.00** ❌ | ✅ | ✅ | ❌ | housing *(pending)* → other ❌ |
+| r05 | make | เติมเงิน Rabbit | 200.00 → **1.00** ❌ | ✅ | ✅ | ❌ | transport → other ❌ |
+| r06 | K PLUS | จ่ายบิล TrueMoney Shop | 50.00 ✅ | ✅ | ✅ | ❌ | food *(pending)* → bills ❌ |
+| r07 | make | ชำระเงิน QR ร้านชื่อบุคคล | 140.00 ✅ | ✅ | ✅ | ❌ | other *(pending)* → other ✅ |
+| r08 | make | โอนเงิน → บัญชีตัวเอง | 1,500.00 ✅ | ❌ today | ✅ | ❌ | transfer → other ❌ |
+| r09 | K PLUS | จ่ายบิล SCB มณี SHOP | 225.00 ✅ | ✅ | ✅ | ❌ | other *(pending)* → bills ❌ |
+| r10 | K PLUS | จ่ายบิล บริจาควัด | 30.00 ✅ | ✅ | ✅ | ❌ | other → bills ❌ |
+| r11 | make | ชำระเงิน Siam Paragon online | 30.00 ✅ | ✅ | ✅ | ❌ | shopping *(pending)* → shopping ✅ |
+| r12 | make | ชำระเงิน ร้านเสื้อผ้า (memo ค่ากางเกง) | 300.00 ✅ | ✅ | ✅ | ❌ | shopping → other ❌ |
+| r13 | Krungthai | เติมเงิน G-Wallet | 100.00 ✅ | ✅ | ✅ | ❌ | transfer *(pending)* → other ❌ |
+| r14 | make | โอนเงิน → วิสาหกิจชุมชน | 321.00 → ∅ ❌ | ❌ today | ✅ | ❌ | entertainment *(pending)* → other ❌ |
+| r15 | make | ชำระเงิน ร้านลูกชิ้นปลา | 85.00 ✅ | ❌ today | ✅ | ❌ | food → other ❌ |
+| r16 | K PLUS | เติมเงิน Rabbit | 200.00 ✅ | ✅ | ✅ | ❌ | transport → other ❌ |
+
+### 9.4 OMX-042 AC status
+
+| AC | ผล | หมายเหตุ |
+|---|---|---|
+| AC1 ≥ 11 redacted real slips, เก็บแบบ private, report ต่อธนาคาร/รูปแบบไม่มีข้อมูลส่วนตัว | ◐ **Partial** | n = 16 ✅ · รูป/OCR ดิบไม่เข้า git ✅ · report ไม่มีชื่อจริง ✅ · **bank mix ไม่ครบ**: ไม่มี SCB EASY, PromptPay app อื่น, สลิปเงินเดือน 3 แบบ, รายรับ; Krungthai มี 1 ใบ (AC ขอ ≥ 2) → ต้องขอสลิปเพิ่มหรือ PO ยอมรับ scope |
+| AC2 เทียบ MVP metrics + log gap พร้อมข้อเสนอ rule/fixture | ◐ | gap ทั้งหมด log เป็น BUG-011 … 015 + scope update BUG-009/010 พร้อม suggestion (§9.5) · การเปิด FB item / ticket = PO (§9.6) |
+| AC3 OCR text ของทุกใบที่ fail (redacted) เป็น Layer A fixture | ✅ | `tests/fixtures/real-slips/redacted/r01–r16.txt` + `realSlips.test.ts` (report + ratchet) รันใน CI ทุกครั้ง · เมื่อ Dev แก้แต่ละ bug ให้ย้ายใบนั้นเข้า `qaGolden.ts` เป็น `real-redacted-rNN` |
+| AC4 UAT correction rate (นับบนเครื่องผู้เข้าร่วม) | ⛔ Not started | UAT ยังไม่เริ่ม (NOT READY) |
+
+**Ratchet baseline** (`realSlips.test.ts` → `BASELINE`): type 16 · amount 13 · amountWrong ≤ 2 · date 13 · time 16 · payee 0 · category 2 · categoryClear 0 — CI แดงเฉพาะเมื่อแย่ลง · **Dev ต้องยก `BASELINE` ใน PR ที่แก้** (OMX-049 → payee; 050a/b → category; BUG-011/013 → amount/date)
+
+### 9.5 Gap analysis → bugs
+
+| Gap | Slips | Bug (severity) | แก้ใน |
+|---|---|---|---|
+| Payee ว่างทุกใบ ทุกแอป รวมร้านค้า/biller | 16/16 | BUG-009 scope ขยาย (High) | OMX-049 (ต้องขยายให้ครอบคลุม make + Krungthai + merchant สองบรรทัด) |
+| "จ่ายบิล" ชนะชื่อร้าน; คำอาหารไทย (ก๋วยเตี๋ยว, ลูกชิ้นปลา) | r03, r10, r15 (+r06, r09 pending) | BUG-010 (High) | OMX-050a |
+| ยอดผิดแบบไม่ว่าง (junk หลัง label, "บาท"→`vn`/แยกบรรทัด) | r04, r05 | **BUG-011 (High)** | ticket ใหม่ (เสนอ) |
+| ยอดแตกหลายบรรทัด → ว่าง | r14 | BUG-012 (Low) | known limitation / spike |
+| "พ.ย." → `w.g.` → วันนี้ | r08, r14, r15 | **BUG-013 (Medium)** | ticket ใหม่ หรือรวมกับ BUG-011 เป็น "make OCR robustness" |
+| Rabbit → transport, โอนบุคคล/บัญชีตัวเอง, memo เสื้อผ้า | r05, r16, r01, r02, r08, r12 | BUG-014 (Medium) | r01/r02/r08 หายเมื่อ 049 เสร็จ · Rabbit/memo = ticket ใหม่หรือเพิ่ม AC ใน 050a/050b |
+| memo make, disclaimer เป็น memo, bank null, type confidence Low | r04, r08, r10, r12, r13, r14 … | BUG-015 (Low) | backlog |
+
+**Projection (QA estimate, ไม่ใช่ผลวัด):** ถ้า OMX-049 + 050a ทำได้ตาม AC → category ใบชัดเจนคาดว่าได้ ~5/9 (r01, r02, r03, r10, r15) = **56% ยังต่ำกว่า 60%** · ต้องมี Rabbit keyword (BUG-014) เพิ่มอีก 2 ใบ → ~7/9 (78%) · amount จะเหลือ margin ติดลบถ้าเจอสลิป make แบบ r04/r05 เพิ่ม → BUG-011 ควรอยู่ใน Sprint 2
+
+### 9.6 ข้อเสนอต่อ PO — ticket และคำถามถึงผู้ใช้
+
+**Ticket (PO ตัดสิน — QA ไม่ได้ `add` บน board):**
+1. **BUG-011 (High)** → เสนอ OMX ใหม่ "Amount robustness on make slips" (≈ 2 pts) ใน Sprint 2 — ยอดผิดแบบเงียบกระทบความเชื่อถือมากที่สุด · รวม BUG-013 (date `w.g.`) ได้ถ้าต้องการ ticket เดียว (≈ 3 pts)
+2. **BUG-009 scope** → เพิ่ม AC ใน OMX-049: ครอบคลุม make + Krungthai + merchant/biller สองบรรทัด, AC8 วัดบน `realSlips.test.ts` (16 ใบ) แทน/นอกเหนือจาก 3 ใบ FB-011 · ⚠️ Dev re-estimate trigger (planning §6.2): layout หลายแอป → 049 อาจเป็น 5
+3. **BUG-014** → Rabbit/BTS keyword เพิ่มเป็น AC ใน OMX-050b (fuzzy keyword) หรือ ticket Could ใหม่ · memo "ค่า…" รอ BUG-015
+4. **BUG-012, BUG-015** → backlog (Low)
+5. OMX-042 AC1 bank mix: ขอผู้ใช้/ทีมเพิ่ม SCB EASY ≥ 2, Krungthai +1, สลิปเงินเดือน, สลิปรับเงิน — หรือ PO ยอมรับ scope "3 แอปที่ผู้ใช้ใช้จริง"
+
+**คำถามยืนยันหมวดถึงผู้ใช้ (ผ่าน PO)** — ใบที่ QA ไม่เดา:
+| Slip | รายการ | หมวดที่เสนอ | คำถาม |
+|---|---|---|---|
+| r04 | ฮิปโป เซอร์วิส เซ็นเตอร์ · memo "ล้างแอร์" · 1,200 | `housing` | ค่าล้างแอร์ให้นับเป็น "ที่อยู่อาศัย" ใช่ไหม |
+| r06 | TrueMoney Shop (นัวสะเด็ด) · 50 | `food` | "นัวสะเด็ด" เป็นร้านอาหารใช่ไหม |
+| r07 | TTB(ร้านชื่อบุคคล) QR · 140 | `other` | ซื้ออะไร (อาหาร/ของใช้/อื่น ๆ) |
+| r09 | SCB มณี SHOP (โจนมุมตึก) · 225 | `other` | ร้านประเภทไหน |
+| r11 | KSHER_SIAM PARAGON ONLINE · 30 | `shopping` | ใช่การช้อปปิ้งไหม (หรือค่าที่จอดรถ/อาหาร) |
+| r13 | เติมเงิน G-Wallet (เป๋าตัง) · 100 | `transfer` | เติมเป๋าตังให้นับเป็น "โอน" หรือหมวดอื่น |
+| r14 | วิสาหกิจชุมชนท่องเที่ยว · memo "โกรกอีดก" · 321 | `entertainment` | เป็นค่าเที่ยว/กิจกรรมใช่ไหม |
+| r10 | บริจาควัด (ถุงเงิน เติมบุญ) · 30 | `other` | โอเคกับ "อื่น ๆ" หรืออยากได้หมวด "บริจาค" (ลดหย่อนภาษี) — ถ้าอยากได้ = story ใหม่ |
