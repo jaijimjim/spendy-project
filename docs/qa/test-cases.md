@@ -1,6 +1,7 @@
 # Test Cases — Omnitrix Money MVP_0001 (Sprint 1)
 
-> Owner: QA · Version 1.1 · Execution run: **2026-11-13** (Sprint 1 Day 4) + re-test หลัง Dev fix BUG-003/006/008 (`a1249eb..8c779d0`) บน local `vite preview` + Chromium 1243, TZ Asia/Bangkok
+> Owner: QA · Version 1.2 · Execution run: **2026-11-13** (Sprint 1 Day 4) + re-test หลัง Dev fix BUG-003/006/008 (`a1249eb..8c779d0`) บน local `vite preview` + Chromium 1243, TZ Asia/Bangkok
+> **v1.2 (2026-11-23, Sprint 2 Day 0):** re-run 12 TC ที่ Blocked — หลักฐาน: GitHub Actions run `43827185503` (commit `e17c62e`), URL live (404), Lighthouse **local interim** บน `vite preview` (Lighthouse 13.6.0, HeadlessChrome 153), ผลสลิปจริง 3 ใบของผู้ใช้ (FB-011, 14 พ.ย.) · สรุปใน [`test-summary-report.md` §7](test-summary-report.md#7-sprint-2-day-0--blocked-re-run-2026-11-23)
 > ครอบคลุม: ทุก **Must** story + **Should** ที่ Dev ทำเสร็จ (002, 009, 011, 015, 019, 020, 022, 023, 029 บางส่วน, 031)
 > Test plan: [`test-plan.md`](test-plan.md) · Bugs: [`bug-report.md`](bug-report.md) · Summary: [`test-summary-report.md`](test-summary-report.md)
 
@@ -8,7 +9,8 @@
 
 **Type:** unit · component · e2e · manual (manual = รันด้วย Playwright script แบบ exploratory หรือ checklist มือ)
 **Priority:** P1 (Must AC / data / money) · P2 (Should หรือ edge) · P3 (cosmetic)
-**Result:** Pass · Fail (→ BUG) · Blocked (→ B1 push/Pages, B2 Google Client ID, DEV = ต้องใช้อุปกรณ์จริง) · Not run
+**Result:** Pass · Fail (→ BUG) · Blocked (→ B1 push/Pages, B2 Google Client ID, B3 Pages ยังไม่เปิด, DEV = ต้องใช้อุปกรณ์จริง) · Not run
+**Blocker IDs (สถานะ 2026-11-23):** **B1** push access / CI บน GitHub — *ปิดแล้ว* (CI รันบน GitHub ครบทุก job) · **B2** Google Client ID — ผู้ใช้สร้าง OAuth Client แล้ว แต่ยังไม่ได้ยืนยัน repo variable `VITE_GOOGLE_CLIENT_ID` / Photos Picker API / test users และ origin `https://jaijimjim.github.io` ยังไม่ live (ดู B3) · **B3** GitHub Pages ยังไม่เปิด (repo private, Pages Source ≠ GitHub Actions → `configure-pages` ล้ม, URL ตอบ 404) — impediment ด้าน config ที่ repo owner ต้องแก้ ไม่ใช่ product bug (FB-012) · **DEV** อุปกรณ์จริง/เครื่องมือที่ sandbox ไม่มี
 
 **Automated spec (link codes):**
 | Code | File |
@@ -37,13 +39,13 @@
 | TC-005 | OMX-001 | Queue limit 20 | — | อัปโหลด 21 รูป | รับ 20, รูปที่ 21 ถูก skip และแจ้ง | P1 | e2e | Q TC-005 | Pass | 2026-11-13 |
 | TC-006 | OMX-001 | สรุปไฟล์ที่ข้ามเป็นข้อความเดียว | — | อัปโหลดไฟล์ผิดหลายแบบพร้อมกัน | แสดง summary message เดียว (ไม่ใช่ toast หลายอัน) | P2 | e2e | Q TC-002/003/004/006 | Pass | 2026-11-13 |
 | TC-007 | OMX-001, 011 | รูปซ้ำใน batch เดียวกัน | — | อัปโหลดรูปเดียวกัน 2 ครั้งใน batch | รูปที่สองถูก skip + summary | P2 | e2e | A "duplicate image in same batch" | Pass | 2026-11-13 |
-| TC-008 | OMX-001 | Native picker/กล้องบนมือถือจริง (AC5) | Android Chrome / iOS Safari | เปิด picker จากมือถือ เลือกจาก gallery/กล้อง | เลือกได้หลายรูป, accept image types | P2 | manual | — | Blocked (DEV, B1) | — |
+| TC-008 | OMX-001 | Native picker/กล้องบนมือถือจริง (AC5) | Android Chrome / iOS Safari | เปิด picker จากมือถือ เลือกจาก gallery/กล้อง | เลือกได้หลายรูป, accept image types | P2 | manual | — | Blocked (DEV + B3 — ต้องมีมือถือจริง Android Chrome/iOS Safari และ URL Pages ที่ live) | 2026-11-23 |
 | TC-010 | OMX-002 | Drag & drop รูปลง dropzone | `#/add` desktop | Drop 1 PNG + 1 .txt | PNG เข้าคิว, .txt ถูก skip | P2 | manual | M (DataTransfer drop) | Pass | 2026-11-13 |
 | TC-013 | OMX-004 | Google Photos "not configured" | ไม่มี `VITE_GOOGLE_CLIENT_ID` | เปิด `#/add` | ปุ่ม disabled + ข้อความ "ยังไม่ได้ตั้งค่า Google Photos — ใช้การอัปโหลดแทน" | P1 | e2e | A "Google Photos shows not configured" | Pass | 2026-11-13 |
 | TC-014 | OMX-003a/b | Google Photos flow ผ่าน stub wrapper: consent → picker → download → queue | stub wrapper | กดนำเข้า → เลือกรูป | รูปที่เลือกเข้าคิวและ OCR | P1 | e2e | A "Google Photos import via stubbed wrapper" | Pass | 2026-11-13 |
-| TC-015 | OMX-003a | Real Google OAuth + Picker (Testing mode) | Client ID + test user | Sign-in → เลือกรูปจริง | Picker เปิด, scope ขั้นต่ำ | P1 | manual | — | Blocked (B2) | — |
-| TC-016 | OMX-003b | Download failure ของรูปจาก Google → แจ้งเป็นรายรูป + Retry | Client ID | ทำให้ download ล้ม | แสดง Failed + Retry (K1: ตอนนี้นับรวม) | P2 | manual | — | Blocked (B2) | — |
-| TC-017 | OMX-004 | Auth error / user cancel consent | Client ID | Cancel ที่ consent | ข้อความ error ที่เข้าใจได้, กลับสู่สถานะเดิม | P1 | manual | — | Blocked (B2) | — |
+| TC-015 | OMX-003a | Real Google OAuth + Picker (Testing mode) | Client ID + test user | Sign-in → เลือกรูปจริง | Picker เปิด, scope ขั้นต่ำ | P1 | manual | — | Blocked (B2 — ยังไม่ยืนยัน `VITE_GOOGLE_CLIENT_ID` + Picker API + test users; รอ B3 สำหรับ origin Pages; ทดสอบผ่าน localhost:4173 ได้ทันทีเมื่อได้ Client ID) | 2026-11-23 |
+| TC-016 | OMX-003b | Download failure ของรูปจาก Google → แจ้งเป็นรายรูป + Retry | Client ID | ทำให้ download ล้ม | แสดง Failed + Retry (K1: ตอนนี้นับรวม) | P2 | manual | — | Blocked (B2) — คาดว่าเมื่อปลด B2 จะ Fail ตาม K1 จนกว่า OMX-041 (per-item Retry) เสร็จ | 2026-11-23 |
+| TC-017 | OMX-004 | Auth error / user cancel consent | Client ID | Cancel ที่ consent | ข้อความ error ที่เข้าใจได้, กลับสู่สถานะเดิม | P1 | manual | — | Blocked (B2 — เหมือน TC-015) | 2026-11-23 |
 
 ## E2 — OCR & Smart Extraction
 
@@ -148,7 +150,7 @@
 | TC-114 | OMX-023 | CSV: category เป็นชื่อตามภาษา UI | TH UI | Export CSV | `อาหารและเครื่องดื่ม` | P2 | e2e | Q TC-114 | Pass (after BUG-004 fix) | 2026-11-13 |
 | TC-116 | OMX-023 | CSV: BOM, header, RFC 4180 escape | — | Export | BOM + `date,time,type,category,amount,payee,note,source` | P2 | unit + e2e | D csv, A "CSV export" | Pass | 2026-11-13 |
 | TC-117 | OMX-023 | **CSV formula injection** (`=`, `+`, `-`, `@`) | payee `@evil`, `=1+1` | Export | prefixed `'` | P1 | unit + e2e | D, A "CSV export escapes formulas" | Pass | 2026-11-13 |
-| TC-118 | OMX-023 | เปิด CSV ใน Excel / Google Sheets ภาษาไทยถูก (AC5) | — | เปิดไฟล์ | ไทยไม่เพี้ยน | P3 | manual | — | Blocked (DEV — ไม่มี Excel ใน sandbox) | — |
+| TC-118 | OMX-023 | เปิด CSV ใน Excel / Google Sheets ภาษาไทยถูก (AC5) | — | เปิดไฟล์ | ไทยไม่เพี้ยน | P3 | manual | D "writes BOM, header and rows", A "CSV export escapes formulas and has BOM" | Partial: UTF-8 BOM Pass (`src/domain/csv.ts` prepend U+FEFF; e2e อ่านไฟล์ที่ download จริงแล้ว byte แรก = 0xFEFF, Blob `text/csv;charset=utf-8`; ผ่านใน CI run `43827185503`) · เปิดใน Excel/Google Sheets จริง Blocked (DEV — ไม่มี Excel ใน sandbox) | 2026-11-23 |
 
 ## E7 — Platform, i18n & UX Quality
 
@@ -160,7 +162,7 @@
 | TC-120 | OMX-025 | ไม่มี horizontal scroll ที่ **320px** | 320×640 | `#/transactions`, `#/transactions/new` | scrollWidth ≤ 320 | P2 | e2e | Q TC-120 | Pass (after BUG-003 fix, re-test) | 2026-11-13 |
 | TC-124 | OMX-025 | ไม่มี horizontal scroll ที่ 375 / 1280 ทุกหน้า (TH/EN, light/dark) | — | X matrix | ผ่านทุกหน้า | P1 | e2e | X | Pass | 2026-11-13 |
 | TC-125 | OMX-025 | Bottom nav (mobile) / side nav (≥1024) + Add action sheet | — | ดู 375 / 1280 | ลำดับ Home·Transactions·Add·Settings, sheet 3 ตัวเลือก | P1 | e2e + manual | screens, X, M | Pass | 2026-11-13 |
-| TC-126 | OMX-025 | HashRouter deep link ทุกหน้า | — | เปิด URL ตรง | โหลดได้ ไม่ 404 | P1 | e2e | A, X | Pass (local; Pages = Blocked B1) | 2026-11-13 |
+| TC-126 | OMX-025 | HashRouter deep link ทุกหน้า | — | เปิด URL ตรง | โหลดได้ ไม่ 404 | P1 | e2e | A, X | Pass (local; Pages = Blocked B3) | 2026-11-13 |
 | TC-127 | OMX-025 | Font self-hosted, ไม่มี request Google Fonts | — | network allowlist | same-origin only | P1 | e2e | A "network allowlist" | Pass | 2026-11-13 |
 | TC-128 | OMX-026 | Empty state first-use (Dashboard, Transactions) | no data | เปิดหน้า | "เริ่มจากสลิปแรก" + Upload / Add manually | P1 | manual | M | Pass | 2026-11-13 |
 | TC-129 | OMX-026 | ErrorBoundary แสดงหน้า error แทนจอขาว | — | component test | fallback UI | P1 | component | `src/app/ErrorBoundary.test.tsx` | Pass | 2026-11-13 |
@@ -169,17 +171,17 @@
 | TC-132 | OMX-027 | Touch target ปุ่ม TH/EN ≥ 44×44 | — | วัด box + hit area | ≥ 44 | P2 | e2e | Q TC-132 | Pass (after BUG-005 fix) | 2026-11-13 |
 | TC-133 | OMX-027 | Skip link + focus ไป heading เมื่อเปลี่ยน route; Esc ปิด sheet แล้ว focus กลับ | — | keyboard | ตามที่คาด | P1 | e2e + manual | A "skip link and focus", M | Pass | 2026-11-13 |
 | TC-134 | OMX-027 | `prefers-reduced-motion` ปิด animation | reduce | ดู transition | 0s | P2 | manual | M | Pass | 2026-11-13 |
-| TC-135 | OMX-027 | Screen reader (NVDA/VoiceOver/TalkBack), Lighthouse a11y ≥ 90, 200% zoom | อุปกรณ์จริง / Pages | ตาม AC3/AC5/AC6 | ใช้งานได้ | P1 | manual | — | Blocked (DEV, B1) | — |
+| TC-135 | OMX-027 | Screen reader (NVDA/VoiceOver/TalkBack), Lighthouse a11y ≥ 90, 200% zoom | อุปกรณ์จริง / Pages | ตาม AC3/AC5/AC6 | ใช้งานได้ | P1 | manual | — | Blocked (DEV, B3) — **local interim:** Lighthouse a11y **100 / 100 / 100** (mobile ×3, `vite preview`) ≥ 90 ✅ · screen reader จริง + 200% zoom บนอุปกรณ์ + Lighthouse บน Pages ยังไม่ได้ทำ | 2026-11-23 |
 | TC-136 | OMX-028 | Production build + bundle budget | — | `npm run build && npm run size:check` | สำเร็จ; initial JS 170 KB gz ≤ 300 | P1 | e2e (CI step) | `scripts/check-bundle-size.mjs` | Pass | 2026-11-13 |
-| TC-137 | OMX-028 | Deploy GitHub Pages ผ่าน Actions + post-deploy smoke | push access | push `main` | URL ใช้งานได้ | P1 | manual | `.github/workflows/deploy.yml` | Blocked (B1) | — |
-| TC-138 | OMX-028 | CI (`ci.yml`) เขียวบน PR | push access | เปิด PR | ทุก job ผ่าน | P1 | manual | `.github/workflows/ci.yml` | Blocked (B1) — local `npm run ci` steps ผ่าน | 2026-11-13 |
+| TC-137 | OMX-028 | Deploy GitHub Pages ผ่าน Actions + post-deploy smoke | push access | push `main` | URL ใช้งานได้ | P1 | manual | `.github/workflows/deploy.yml` | Blocked (B3) — run `43827185503`: job `ci` ทุกตัว ✓ แต่ "Build for Pages" ล้มที่ `actions/configure-pages@v5` ("Get Pages site failed … Not Found") → Deploy skip; URL live ตอบ 404 · สาเหตุ = Pages ยังไม่เปิดบน repo private (config) ไม่ใช่ข้อบกพร่องของโค้ด/workflow จึงไม่นับเป็น Fail ตาม convention (Fail = product defect → BUG) | 2026-11-23 |
+| TC-138 | OMX-028 | CI (`ci.yml`) เขียวบน PR | push access | เปิด PR | ทุก job ผ่าน | P1 | manual | `.github/workflows/ci.yml` | Pass (on push) — run `43827185503` (commit `e17c62e`, "Deploy to GitHub Pages" → `workflow_call` ci.yml): Secret scan (gitleaks) ✓ · Lint·typecheck·unit ✓ · Build without-google ✓ · Build with-google ✓ · E2E (Playwright) ✓ · *Note:* trigger เป็น push `main` ไม่ใช่ PR — `ci.yml` มี `on: pull_request` และ job graph เดียวกันทุก trigger จึงยอมรับเป็นหลักฐาน; จะยืนยัน trigger PR ใน PR แรกของ Sprint 2 | 2026-11-23 |
 
 ## E8 — Non-functional
 
 | ID | Story | Title | Preconditions | Steps | Expected | Prio | Type | Automated | Result | Run date |
 |---|---|---|---|---|---|---|---|---|---|---|
-| TC-139 | OMX-029 | LCP ≤ 2.5 s (Lighthouse mobile, Pages) | Pages URL | Lighthouse × 3 | median ≤ 2.5 s | P2 | manual | — | Blocked (B1) | — |
-| TC-141 | OMX-029 | OCR ≤ 15 s/รูปบน reference devices | อุปกรณ์จริง | 5 รูป 1080×2400 | median ≤ 15 s | P2 | manual | — | Blocked (DEV) | — |
+| TC-139 | OMX-029 | LCP ≤ 2.5 s (Lighthouse mobile, Pages) | Pages URL | Lighthouse × 3 | median ≤ 2.5 s | P2 | manual | — | Blocked (B3) — **local interim:** LCP **752 / 774 / 755 ms → median 755 ms** ≤ 2.5 s ✅ (Lighthouse 13.6.0 mobile, simulated Slow 4G + CPU ×4, `vite preview` localhost — ไม่มี latency/CDN จริงของ Pages) · ต้องวัดซ้ำบน Pages URL | 2026-11-23 |
+| TC-141 | OMX-029 | OCR ≤ 15 s/รูปบน reference devices | อุปกรณ์จริง | 5 รูป 1080×2400 | median ≤ 15 s | P2 | manual | — | Blocked (DEV — ต้องมี reference device จริง; ยังไม่มีอุปกรณ์/ผลจากผู้ใช้) | 2026-11-23 |
 | TC-142 | OMX-029 | 1,000 รายการ render ≤ 1 s | อุปกรณ์จริง | seed 1,000 | ≤ 1 s | P2 | manual | — | Not run (K4: ไม่มี virtualization) | — |
 | TC-140 | OMX-030 | Delete all data ลบ `omx.v1` + `omx.v1.corrupt.*` + queue | data + backups | Settings → Delete all (default focus Cancel) | storage ว่าง | P1 | e2e | A "delete all data", Q TC-140 | Pass | 2026-11-13 |
 | TC-143 | OMX-030 | Network allowlist: same-origin เท่านั้นระหว่าง slip flow | — | upload → OCR → save | 0 request ไป origin อื่น | P1 | e2e | A "network allowlist", RO | Pass | 2026-11-13 |
@@ -188,7 +190,7 @@
 | TC-146 | OMX-030 | Trust message + ลิงก์ Privacy บนหน้า Add (TH/EN) | — | เปิด `#/add` | "รูปของคุณไม่ถูกส่งออกจากเครื่อง" + ลิงก์ | P1 | manual | M, X screenshot | Pass | 2026-11-13 |
 | TC-147 | OMX-031 | XSS ใน OCR text / payee / backup JSON ไม่ทำงาน | `slip-xss`, b12 | import + render | text only | P1 | e2e | A, BM b12 | Pass | 2026-11-13 |
 | TC-148 | OMX-031 | ESLint `react/no-danger` = error; lint ผ่าน | — | `npm run lint` | 0 warnings | P2 | unit | eslint | Pass | 2026-11-13 |
-| TC-149 | OMX-031 | gitleaks ใน CI; ไม่มี token ใน storage | — | CI / ตรวจ storage | 0 secret; storage keys = `omx.v1` เท่านั้น | P2 | manual | M (storage) | Partial: storage Pass, gitleaks Blocked (B1) | 2026-11-13 |
+| TC-149 | OMX-031 | gitleaks ใน CI; ไม่มี token ใน storage | — | CI / ตรวจ storage | 0 secret; storage keys = `omx.v1` เท่านั้น | P2 | manual | M (storage), CI job "Secret scan (gitleaks)" | Pass — gitleaks ✓ ใน run `43827185503` (commit `e17c62e`) + storage Pass (2026-11-13) | 2026-11-23 |
 
 ## Exploratory matrix & OCR benchmark
 
@@ -201,18 +203,30 @@
 | TC-160 | 006–010 | Layer A golden OCR-text (32 fixtures) | — | `npm test` | type/amount ≥ 95% | P1 | unit | G | Pass (35 fixtures: type/amount/date/category 100%) | 2026-11-13 |
 | TC-161 | 006–010 | Layer B real-OCR benchmark (27 images: 18 base + 9 degraded) | built app | BM | type ≥ 90, amount ≥ 80, category ≥ 60 | P1 | e2e | BM | Pass (type 100 / amount 96.3 / category 100; date 100) | 2026-11-13 |
 | TC-162 | 006–010 | Robustness: JPEG q35–55 low-res, blur, rotate 2°, dark theme | — | BM d13–d24 | ผลเท่ากับ base | P2 | e2e | BM | Pass (9/9 all fields) | 2026-11-13 |
-| TC-163 | 006–010 | Real-world accuracy (Layer C / customer slips) | สลิปจริง | วัด accuracy | ตาม MVP metrics | P1 | manual | — | Blocked (ยังไม่ได้รับสลิป A5; UAT exit #3) | — |
+| TC-163 | 006–010 | Real-world accuracy (Layer C / customer slips) | สลิปจริง | วัด accuracy | ตาม MVP metrics | P1 | manual | — (manual, ผู้ใช้รันบนเครื่องตัวเอง) | **Fail (interim, n = 3) → BUG-010, BUG-009** — สลิปจริง 3 ใบ (KBank "make by KBank" / K PLUS, FB-011): type **3/3 (100%)** ✅ ≥ 90 · amount **3/3 (100%)** ✅ ≥ 80 · date 3/3 · time 3/3 · category **1/3 (33%)** ❌ < 60 → BUG-010 · payee **0/3 (0%)** (report only, OMX-009 AC6) → BUG-009 · ⚠️ sample เล็กมาก + ธนาคารเดียว — ไม่มีนัยทางสถิติ; OMX-042 ยังต้องการ ≥ 11 สลิป | 2026-11-23 |
 
 ---
 
-## Execution totals (2026-11-13)
+## Execution totals (2026-11-23 — Sprint 2 Day 0 re-run)
+
+| Result | Count | Δ จาก 2026-11-13 |
+|---|---|---|
+| Pass | 120 (รวม 7 เคสที่ Pass หลังแก้ BUG-001/002/003/004/005/006/008 และ re-test) | +2 — TC-138 (CI on push), TC-149 (gitleaks) |
+| Fail | 2 — TC-045 (BUG-007 Low, backlog / known limitation) · TC-163 (Layer C interim n = 3 → BUG-010 High / BUG-009 High) | +1 — TC-163 |
+| Blocked | 9 — B3 (Pages ยังไม่เปิด): TC-137, 139 *(มีผล local interim)* · B2 (Google Client ID): TC-015, 016, 017 · อุปกรณ์จริง/เครื่องมือ: TC-008 (+B3), 135 (+B3, มีผล local interim), 141 · partial: TC-118 (BOM Pass / Excel จริง Blocked) | −3 |
+| Not run | 1 — TC-142 (1,000 rows perf, ต้องอุปกรณ์อ้างอิง) | 0 |
+| **Total** | **132** | |
+
+> นับตามแถวในตาราง (TC ที่ "Pass (after fix)" = Pass หลัง re-test; "Partial" ที่ยังมีส่วน Blocked นับเป็น Blocked ตาม convention เดิมของ TC-149). Automated run counts (re-test 2026-11-13): Vitest 209/209 · Playwright 93 passed / 5 skipped (by design) / 0 failed · CI บน GitHub (run `43827185503`, 2026-11-23): ทุก job ของ `ci.yml` ✓
+
+<details><summary>Execution totals เดิม (2026-11-13)</summary>
 
 | Result | Count |
 |---|---|
-| Pass | 118 (รวม 7 เคสที่ Pass หลังแก้ BUG-001/002/003/004/005/006/008 และ re-test) |
-| Fail | 1 — TC-045 (BUG-007 Low, backlog / known limitation) |
-| Blocked | 12 — B1 (push/Pages): TC-137, 138, 139 · B2 (Google Client ID): TC-015, 016, 017 · อุปกรณ์จริง/เครื่องมือ: TC-008, 118, 135, 141 · data (Layer C): TC-163 · partial: TC-149 (gitleaks) |
-| Not run | 1 — TC-142 (1,000 rows perf, ต้องอุปกรณ์อ้างอิง) |
+| Pass | 118 |
+| Fail | 1 — TC-045 |
+| Blocked | 12 — B1: TC-137, 138, 139 · B2: TC-015, 016, 017 · อุปกรณ์จริง/เครื่องมือ: TC-008, 118, 135, 141 · data (Layer C): TC-163 · partial: TC-149 |
+| Not run | 1 — TC-142 |
 | **Total** | **132** |
 
-> นับตามแถวในตาราง (TC ที่ "Pass (after fix)" = Pass หลัง re-test). Automated run counts (re-test): Vitest 209/209 · Playwright 93 passed / 5 skipped (by design) / 0 failed (mobile+desktop+screens+explore+real-ocr)
+</details>

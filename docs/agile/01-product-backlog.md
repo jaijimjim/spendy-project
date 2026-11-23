@@ -1,6 +1,9 @@
 # 01 — Product Backlog: Omnitrix Money (MVP_0001)
 
-> Owner: PO/PM · Last updated: 2026-11-13 (หลัง Sprint 1 Review + Retrospective) · Version: v3
+> Owner: PO/PM · Last updated: 2026-11-23 (หลัง Sprint 2 Grooming) · Version: v5
+> **v5 (2026-11-23, Sprint 2 Grooming):** estimate สุดท้าย (planning poker) · OMX-050 แตกเป็น **OMX-050a** (precedence + คำอาหารไทย, 3) / **OMX-050b** (fuzzy Lazada/Shopee, 2) · item ใหม่ **OMX-051** payee measurement enabler (2) แยกจาก OMX-049 (3) · Designer D1 → OMX-049 AC6, D2 + `aria-describedby` → OMX-050a AC6 · D3 → parked, D4 = OMX-035 คง Won't · §4 weak-tier rule ยืนยันแล้ว · OMX-045 = option A · OMX-039/047 เลื่อนไป Sprint 3 · §9 อัปเดตตาม grooming · ดู `sprints/sprint-2/01-grooming-minutes.md`
+> v4 (2026-11-23): เพิ่ม **OMX-049** (BUG-009 recipient ใต้ลูกศร ↓ บนสลิป KBank/K PLUS) และ **OMX-050** (BUG-010 category precedence + fuzzy keyword Lazada/Shopee) จาก FB-011 (สลิปจริง 3 ใบ) · OMX-028 เปลี่ยน blocker จาก B1 → **B3** (Pages ยังไม่เปิด, repo private — FB-012) · อัปเดต §6 overview และ §9 candidate list · estimate ของ item ใหม่เป็นของ PO รอทีมยืนยันใน grooming (`sprints/sprint-2/00-grooming-agenda.md`)
+> v3 (2026-11-13): หลัง Sprint 1 Review + Retrospective — OMX-040 – OMX-048, status `Accepted (pending deploy)`
 > Story points: Fibonacci 1, 2, 3, 5, 8 (ตกลงร่วมกันใน grooming ตาม estimate ของ Dev) · ดู `sprints/sprint-1/01-grooming-minutes.md`, `04-sprint-review.md`, `05-retrospective.md`
 > Status values: `New` · `Ready` · `In Progress` · `In Review` · `In QA` · `Accepted (pending deploy)` · `Done` · `Blocked` · `Deferred`
 > `Accepted (pending deploy)` = PO accepted at Sprint Review, all AC verified on the local production build. The only open DoD items are merge on GitHub, QA on the Pages build and final PO acceptance there. The item moves to `Done` after the post-deploy smoke passes (charter §6)
@@ -64,6 +67,9 @@
 | `other` | อื่น ๆ | Other | Expense | default เมื่อไม่ match หมวดใด |
 
 > Conflict resolution (ตกลงแล้ว): "longest keyword match wins" ภายใน field เดียวกัน → `GrabFood` ชนะ `Grab`, `Café Amazon` ชนะ `PTT`, `Central Food Hall` ชนะ `Central`
+>
+> *(v5 — **confirmed** ใน Sprint 2 grooming, implement ใน OMX-050a)* **คำบอกประเภทธุรกรรม** (transaction-type phrase) เช่น "จ่ายบิล", "ชำระบิล", "ชำระเงิน", "โอนเงิน", "Bill Payment" อยู่ใน **weak tier** แยก — ใช้ได้ก็ต่อเมื่อไม่มี keyword ร้านค้า/biller/แบรนด์ match ที่ใดเลย · ชื่อร้าน/biller มีน้ำหนักกว่าเสมอ ("จ่ายบิล" + "ไก่ย่าง" → `food`) · "จ่ายบิล" เดี่ยว ๆ = `bills` confidence **Medium** · precedence: payee → payeeExtra → memo → person → text (strong) → weak tier → `other`
+> *(v5)* **Fuzzy keyword** (OMX-050b): เฉพาะ keyword ที่ flag `fuzzy: true` และยาว ≥ 5 ตัวหลัง fold; folding ทำใน matcher เท่านั้น ไม่เปลี่ยนข้อความที่เก็บ
 
 ## 5. Epics
 
@@ -112,7 +118,7 @@
 | OMX-025 | E7 | Mobile-first responsive layout & navigation | Must | 3 | Accepted (pending deploy) | S1 |
 | OMX-026 | E7 | Empty states & error handling | Must | 3 | Accepted (pending deploy) | S1 |
 | OMX-027 | E7 | Accessibility (WCAG 2.1 AA) | Must | 3 | Accepted (pending deploy) | S1 |
-| OMX-028 | E7 | Deploy to GitHub Pages via GitHub Actions | Must | 3 | Blocked (B1) — carry-over | S1 → S2 |
+| OMX-028 | E7 | Deploy to GitHub Pages via GitHub Actions | Must | 3 | Blocked (B3: Pages ยังไม่เปิด / repo private) — carry-over | S1 → S2 |
 | OMX-029 | E8 | NFR — Performance budget | Should | 3 | In Progress (partial) — carry-over | S1 → S2 |
 | OMX-030 | E8 | NFR — Privacy: images stay in the browser | Must | 2 | Accepted (pending deploy) | S1 |
 | OMX-031 | E8 | NFR — Security & configuration hygiene | Should | 2 | Accepted (pending deploy) | S1-stretch #10 |
@@ -123,23 +129,30 @@
 | OMX-036 | E9 | Recurring transactions | Won't | — | Deferred | — |
 | OMX-037 | E9 | Installable PWA / offline mode | Won't | — | Deferred | — |
 | OMX-038 | E9 | HEIC/HEIF image support | Won't | — | Deferred | — |
-| OMX-039 | E2 | Detect received transfers via owner name/account (Settings) | Could | 3 | New | S2 candidate |
+| OMX-039 | E2 | Detect received transfers via owner name/account (Settings) | Could | 3 | New — deferred (needs Designer spec M + 049/050b) | S3 candidate |
 | OMX-040 | E2 | Robust Thai-digit amount extraction (BUG-007) | Could | 2 | New | S2 candidate |
 | OMX-041 | E1 | Google Photos per-item Failed row + Retry (K1) | Must | 2 | New | S2 candidate |
 | OMX-042 | E2 | Real-slip accuracy measurement (Layer C + UAT) | Must | 3 | New | S2 candidate |
 | OMX-043 | E8 | Real-device & assistive-tech verification (Tier 1) | Must | 3 | New | S2 candidate |
 | OMX-044 | E4 | Transaction list virtualization (large months) | Should | 3 | New | S2 candidate |
-| OMX-045 | E2 | Salary slip date rule when pay-period end is in the future (O2) | Could | 1 | New — needs PO decision | S2 candidate |
+| OMX-045 | E2 | Salary slip date rule when pay-period end is in the future (O2) | Could | 1 | Ready — PO decided option A | S2 candidate |
 | OMX-046 | E7 | Search placeholder fits at 320px (O5) | Could | 1 | New | S2 candidate |
-| OMX-047 | E7 | Manual light/dark theme switch | Could | 2 | New | S2 candidate |
-| OMX-048 | E7 | Post-deploy verification on GitHub Pages (DoD closure) | Must | 2 | New | S2 candidate |
+| OMX-047 | E7 | Manual light/dark theme switch | Could | 2 | New — deferred (not needed for Sprint 2 Goal) | S3 candidate |
+| OMX-048 | E7 | Post-deploy verification on GitHub Pages (DoD closure) | Must | 2 | New — blocked by 028 (B3) | S2 candidate |
+| OMX-049 | E2 | Recipient extraction for KBank/K PLUS arrow (↓) layout (BUG-009) + payee empty state (D1) | Must (High) | 3 | New — groomed, DoR ✗ fixtures (UQ1) | S2 candidate |
+| ~~OMX-050~~ | E2 | *Split in v5 → OMX-050a + OMX-050b* | — | ~~5~~ | Split | — |
+| OMX-050a | E2 | Category precedence: merchant/biller > transaction-type phrase + Thai food keywords + Medium highlight (D2) (BUG-010a) | Must (High) | 3 | New — groomed, DoR ✗ fixtures (UQ1) | S2 candidate |
+| OMX-050b | E2 | Fuzzy keywords Lazada/Shopee tolerant to OCR noise (BUG-010b) | Must (High) | 2 | New — groomed, DoR ✗ variant/negative list (QA Day 1) | S2 candidate |
+| OMX-051 | E2 | Payee measurement in Layer A/B fixtures & benchmark (enabler) | Must | 2 | Ready | S2 candidate |
 
 ¹ ต้องมี Google OAuth Client ID + consent screen test users (action A3, owner PO) ก่อนทดสอบกับ Google จริง; dev ทำงานกับ wrapper ที่ mock ได้ระหว่างรอ
-² ต้องได้ push access + เปิด Pages source = GitHub Actions จาก repo owner (action A4)
+² ต้องได้ push access + เปิด Pages source = GitHub Actions จาก repo owner (action A4) · *(v4)* push/CI ผ่านแล้ว (CI เขียวบน GitHub) เหลือ **B3** = เปิด Pages ซึ่ง repo private บน GitHub Free ทำไม่ได้ → ต้องเปลี่ยน repo เป็น public หรือใช้ plan ที่รองรับ Pages สำหรับ private repo (FB-012)
 
 **Totals (Sprint 1 scope):** Must = **77 pts** (23 items, committed S1) · Should = **29 pts** (10 items, stretch) · Could = 3 pts · Won't = not estimated
 **Sprint 1 outcome:** dev-complete Must 77/77 · stretch 26/29 · Accepted (pending deploy) = 66 Must + 26 Should = 92 pts · formally Done = 0 (B1) · carry-over: 028, 003a, 003b, 029
 **New in v3 (from Sprint 1 Review/Retro):** OMX-040 – OMX-048 = 19 pts
+**New in v4 (from FB-011, real slips):** OMX-049 – OMX-050 = 8 pts (PO estimate)
+**v5 (Sprint 2 Grooming):** OMX-049 (3) + OMX-050a (3) + OMX-050b (2) + OMX-051 (2) = **10 pts** (planning poker)
 
 ---
 
@@ -516,7 +529,9 @@
 - **AC8** — Given interactive elements, When measured, Then touch targets are ≥ 44×44 px (moved here from OMX-025). *(v2)*
 
 #### OMX-028 — Deploy to GitHub Pages via GitHub Actions
-**Priority:** Must · **Pts:** 3 · **Status:** Blocked (B1) — carry-over · **Sprint:** S1 → S2
+**Priority:** Must · **Pts:** 3 · **Status:** Blocked (B3) — carry-over · **Sprint:** S1 → S2
+> *(v4, 2026-11-23)* B1 ส่วน push/CI ปิดแล้ว — ทุก job ใน `ci.yml` เขียวบน GitHub แต่ `deploy.yml` ล้มที่ `configure-pages` เพราะ repo เป็น private และยังไม่เปิด Pages → live URL ตอบ 404 (FB-012). Blocker ใหม่ **B3** owner = repo owner (ผู้ใช้), PO ติดตาม. AC1, AC3, AC4 คาดว่าผ่านแล้วจาก CI run แต่ยืนยันพร้อม AC2 หลัง deploy สำเร็จครั้งแรก
+> *(v5, grooming)* Remaining ≈ 1 pt: Dev ยืนยันว่า **ไม่ต้องแก้ workflow** · task ใน 028 (ไม่เพิ่ม pts): step ตรวจ Pages ก่อน `configure-pages` ที่พิมพ์ error อ่านง่าย ("Pages is not enabled… private repos need a paid plan") · ถ้า repo ต้องเปลี่ยนเป็น public (UQ2): รัน gitleaks full history + ยืนยันว่าไม่มีรูปสลิปจริงใน `git log --all` ก่อนเปลี่ยน · การอัปเกรด actions Node 20 → 24 = tech debt (parked)
 **Story:** As the customer, I want the app hosted on a public URL so that anyone can access it from outside without installing anything.
 
 **Acceptance Criteria**
@@ -565,7 +580,7 @@
 ### E9 — Future
 
 #### OMX-039 — Detect received transfers via owner name/account *(new v2, from Dev grooming input)*
-**Priority:** Could · **Pts:** 3 · **Status:** New · **Sprint:** — · **Depends on:** OMX-009
+**Priority:** Could · **Pts:** 3 · **Status:** New — deferred to Sprint 3 (v5) · **Sprint:** S3 candidate · **Depends on:** OMX-009, OMX-049 (payee ถูกต้อง), OMX-050b (`fold()` สำหรับเทียบชื่อ), Designer spec Settings "ชื่อของฉัน" (M)
 **Story:** As a user who receives transfer slips from other people, I want the app to recognise slips where I am the recipient so that they are recorded as income automatically.
 
 **Acceptance Criteria (draft — refine in next grooming)**
@@ -626,7 +641,7 @@
 - **AC4** — Given virtualization, When measured, Then the initial JS budget (≤ 300 KB gz) still holds.
 
 #### OMX-045 — Salary slip date rule when the pay-period end is in the future (O2)
-**Priority:** Could · **Pts:** 1 · **Status:** New: needs PO decision in grooming · **Source:** QA O2
+**Priority:** Could · **Pts:** 1 · **Status:** Ready — **PO decision (Sprint 2 grooming): option A** (date = today ถ้าวันนี้อยู่ใน pay period; ไม่ยกเว้น R3 future-date rule) · **Source:** QA O2
 **Story:** As a salaried user, I want a salary slip without a pay date to be dated sensibly so that it lands in the right month.
 
 **Acceptance Criteria (draft, depends on the decision)**
@@ -639,7 +654,7 @@
 - **AC1** — Given 320px width, TH and EN, When Transactions renders, Then the search placeholder is not truncated (shorter copy or responsive placeholder approved by the Designer); the 375px behaviour is unchanged.
 
 #### OMX-047 — Manual light/dark theme switch
-**Priority:** Could · **Pts:** 2 · **Status:** New · **Source:** Designer retro (dark mode ships automatic only)
+**Priority:** Could · **Pts:** 2 · **Status:** New — deferred to Sprint 3 (v5, Designer: auto theme ใช้ได้แล้ว ไม่ช่วย Sprint Goal) · **Source:** Designer retro (dark mode ships automatic only)
 **Story:** As a user, I want to choose light, dark or system theme so that the app suits my preference regardless of device setting.
 - **AC1** — Given Settings → Theme (ระบบ/System · สว่าง/Light · มืด/Dark), When I choose an option, Then `<html data-theme>` updates immediately and the choice persists in `settings`.
 - **AC2** — Given either theme, When checked, Then contrast stays at WCAG AA (existing token tables) and axe reports 0 critical/serious.
@@ -654,6 +669,79 @@
 - **AC3** — Given a HAR capture of upload → OCR → save on Pages, When reviewed, Then no request leaves the allowlist (OMX-030), and Tesseract assets load from our origin and are cached on the second visit.
 - **AC4** — Given AC1–AC3 pass, When the PO reviews, Then all stories in status "Accepted (pending deploy)" move to **Done** and the build is tagged `v0.1.0-uat`.
 
+### New items from real-slip feedback (v4 → groomed v5)
+
+> ที่มา: **FB-011** — ผู้ใช้ทดสอบสลิปจริงของตัวเอง 3 ใบ (14 พ.ย. 69): ยอด/วันที่/เวลา/ประเภท 3/3 · หมวดหมู่ 1/3 · ผู้รับ 0/3 (QA: TC-163 Fail interim n = 3) · ผู้ใช้เลือก **ไม่ทำ hotfix** → Sprint 2 · groomed 2026-11-23 (`sprints/sprint-2/01-grooming-minutes.md`)
+>
+> **Privacy rule (ใช้กับ OMX-049, 050a, 050b, 051):** **ห้าม commit รูปสลิปจริง** (repo ปัจจุบันเป็น **private** แต่กฎนี้ใช้เสมอ ไม่ว่า repo จะ private หรือ public — และอาจต้องเปลี่ยนเป็น public เพื่อเปิด Pages, UQ2) และห้าม commit OCR text ที่ยังมีข้อมูลส่วนตัว. Fixture = **OCR text ที่ปิดข้อมูลแล้วเท่านั้น** ตาม redaction guideline ของ QA (`grooming/sprint-2-qa.md` §2): ชื่อบุคคล → ชื่อสมมติความยาวใกล้เคียง คงคำนำหน้า, เลขบัญชี → **คง pattern masked** (`XXX-X-X0000-X`) เปลี่ยนตัวเลข, Ref/Biller ID/QR payload → ค่าปลอมความยาวเท่าเดิม, ชื่อร้าน → คง keyword ที่ตัดสิน category ("ไก่ย่าง", "FOOD", "ลาชาดาเพย") แต่เปลี่ยนส่วนที่ระบุตัวร้าน, **คง OCR noise เดิมทุกตัว**. QA ตรวจ redaction ก่อน merge; สงสัยว่าปิดไม่หมด → ไม่ commit (R7, OMX-042 AC3). fixture id `real-redacted-*`
+>
+> **OCR noise ที่พบในสลิปจริง (ต้องอยู่ใน fixture):** "พ.ย." → "พ.ุย." (date parser รองรับแล้วจาก BUG-001 — ใช้เป็น regression guard) · "ชำระเงิน" → "ชําระเจิน" (ทำให้ type ตกไป rule weak → confidence Medium) · ตัวอักษรขยะจากรูปการ์ตูน/QR code · ลูกศร "↓" หายหรือเป็นขยะ (`V`, `J`, `|`, `+`)
+>
+> **Fixture source (UQ1):** (A) ผู้ใช้คัดลอก OCR text จากหน้า Review (raw text, OMX-012b) แล้วปิดข้อมูลเองก่อนส่ง หรือ (B) fallback ถ้าไม่ได้ภายใน **Sprint 2 Day 2**: QA สร้าง synthetic จากคำบรรยาย FB-011 + seed S1–S4 จาก spike ของ Dev (ความมั่นใจต่ำกว่า). Dev เริ่มจาก seed ได้ แล้วสลับเป็น fixture จริงเมื่อมา
+>
+> **Joint dependency (spike Dev S2/S4):** สลิป "จ่ายบิล" + ไก่ย่าง แก้ได้ก็ต่อเมื่อมีทั้ง **OMX-049 และ OMX-050a** → ทั้งสอง (และ 050b) commit เป็นชุดเดียว ห้ามตัดตัวใดตัวหนึ่งออกตอน scope cut · ลำดับทำ **051 → 049 → 050a → 050b** (051 ขนานได้ตั้งแต่ Day 1)
+
+#### OMX-051 — Payee measurement in fixtures & benchmark (enabler) *(new v5, from grooming)*
+**Priority:** Must (enabler ของ 049) · **Pts:** 2 · **Status:** Ready · **Sprint:** S2 candidate · **Owner:** QA (Dev pairs) · **Source:** Dev benchmark gap + QA estimate (grooming 2026-11-23)
+**Story:** As the team, we want payee to be measured in Layer A and Layer B so that a payee fix (OMX-049) and any regression can be proven with numbers instead of eyeballing.
+
+**Acceptance Criteria**
+- **AC1 (Layer A schema)** — Given `QaFixture.expected`, When extended with optional `payee?: string`, Then `qaGolden.test.ts` compares it after `normalizePayee()` and existing fixtures without `payee` still pass unchanged.
+- **AC2 (Layer B expected)** — Given `tests/fixtures/slips/expected.json`, When `payee` is added for all 27 synthetic slips (fake names), Then the real-OCR benchmark reports payee exact-match % and CER in `benchmark-results.json` — **report only, no gate** (OMX-009 AC6).
+- **AC3 (baseline)** — Given the current `main` (before OMX-049), When the benchmark runs, Then the payee baseline is recorded in `docs/qa/test-summary-report.md` and used by OMX-049 AC7.
+- **AC4 (no regression)** — Given the change, When CI runs, Then type/amount/date/category results on Layer A and the 27 Layer B slips are identical to before (test-infra change only).
+
+#### OMX-049 — Recipient extraction for KBank / K PLUS arrow (↓) layout (BUG-009)
+**Priority:** Must · **Severity:** High · **Pts:** **3** *(planning poker round 2 — ดู minutes §3.1)* · **Status:** New — DoR ✗ (fixtures UQ1) · **Sprint:** S2 candidate · **Source:** FB-011 / BUG-009
+**Depends on:** OMX-051 (AC7) · fixtures (UQ1 A/B) · extends OMX-009 AC1 · feeds OMX-010 / OMX-050a (`payee`, `payeeExtra`) · joint acceptance with 050a/050b on real slips
+**Story:** As a K PLUS / KBank user, I want the app to read who I paid even when the slip shows the recipient under an arrow without a "ไปยัง/To" label, so that I can recognise each transaction later and the category is based on the right payee.
+
+**Layout ที่พบ (make by KBank / K PLUS):** ชื่อผู้โอน → ธนาคาร/เลขบัญชีผู้โอนแบบ masked `XXX-X-X####-X` → ลูกศร "↓" (อาจหาย/เป็นขยะ) → **ชื่อผู้รับ / ร้าน** → (biller name บรรทัดสอง) → เลขบัญชีผู้รับ / PromptPay / Biller ID. ไม่มีป้าย "ไปยัง / ถึง / To"
+**Scope decision (grooming):** fallback ใช้กับ **ทุกธนาคาร** ที่มี masked-account anchor แต่ **เฉพาะ type = expense** (ไม่ใช้กับสลิปรับเงิน/เงินเดือน — Dev R2); ถ้า Layer A ธนาคารอื่นพัง → จำกัดเฉพาะ K PLUS/KBank
+
+**Acceptance Criteria**
+- **AC1 (arrow layout)** — Given a redacted OCR fixture of a KBank/K PLUS expense slip with no recipient label, When extracted, Then payee = the first *name-like* line after the sender's masked account line and before the next account/ID line, equal to the expected redacted name after normalization (R4), and `payeeSource = 'arrow'`.
+- **AC2 (noise tolerance)** — Given the arrow line is missing or OCR'd as junk (`↓`, `V`, `J`, `|`, `+`, a line of ≤ 2 non-name characters, cartoon/QR garbage), When extracted, Then up to 3 junk lines are skipped and AC1 still holds; Given the masked account is OCR'd with `x`/`X`/`×`/`*`, spaces around the dash or `–`/`—`, Then the anchor still matches.
+- **AC3 (bill / merchant)** — Given a "จ่ายบิลสำเร็จ" or "ชำระเงินสำเร็จ" slip in the same layout, When extracted, Then payee = the merchant line (e.g. redacted "ร้านไก่ย่าง…", "บลูเพย-ลาชาดาเพย") shown **as OCR'd, not normalized** (Designer Q3); a second biller-name line (e.g. "… FOOD") is kept as `payeeExtra` for the categorizer and is not appended to the displayed payee; the Biller ID / reference line is never the payee.
+- **AC4 (no sender confusion / no guess)** — Given the slip, When extracted, Then the sender's name is never returned as payee (sender-equality guard); Given no label and no anchor, or a received/salary slip, Then payee stays empty — same as Sprint 1.
+- **AC5 (labeled layout unchanged)** — Given slips with a "ไปยัง / ถึง / To" label, When extracted, Then the label rule runs first and wins; all existing Layer A fixtures pass unchanged; Layer B b01, b08, b12, d15 keep category `transfer` and b08 keeps its type.
+- **AC6 (payee empty state — Designer D1)** *(v5)* — Given an expense slip (not salary/income) where no payee was found, When Review renders, Then the payee field shows the info helper `review.noPayee` ("ไม่พบชื่อผู้รับในสลิป — แตะเพื่อกรอก" / "No recipient found on the slip — tap to add") with an `Info` icon and the `form.payeePlaceholder` placeholder, linked via `aria-describedby`; the helper disappears once the user types; the collapsed card shows the payee line, or "ไม่ระบุผู้รับ / No payee" (`transactions.noPayee`, muted) when empty; payee stays **optional** (no Save block) and the overall confidence badge is **not** lowered; TH/EN keys come from `design/copy-deck.json`.
+- **AC7 (measured, no regression)** — Given OMX-051, When the benchmark runs on the original 27 Layer B slips, Then type 100%, amount ≥ 96.3% (26/27, b16 = BUG-007), category 100%, date 100%, and payee exact-match % / CER is not worse than the OMX-051 baseline; Layer B gains 2 arrow-layout templates (1 base + 1 degraded, fake bank/name) whose payee is correct.
+- **AC8 (real slips — Layer C)** — Given the 3 real slips from FB-011, When the user re-tests on their own device with the Sprint 2 build, Then payee is correct for **3/3 (target)**; **≥ 2/3 is the acceptance minimum**; a shortfall is decided by the PO (UAT exit #3) and does not auto-block merge. Only counts are reported — no images/text leave the device.
+- **AC9 (privacy)** — Given the PR, When reviewed, Then `git diff --stat` contains no real slip image (no `.png/.jpg/.heic` outside generated `tests/fixtures/slips/images`), fixtures are redacted text only (QA checklist) and gitleaks passes.
+
+#### OMX-050a — Category precedence: merchant/biller outranks transaction-type phrase + Thai food keywords (BUG-010 part a) *(split v5)*
+**Priority:** Must · **Severity:** High · **Pts:** **3** · **Status:** New — DoR ✗ (fixtures UQ1) · **Sprint:** S2 candidate · **Source:** FB-011 / BUG-010
+**Depends on:** OMX-049 (joint — สลิปไก่ย่างต้องการทั้งคู่; `payeeExtra`) · fixtures (UQ1) · changes OMX-010 AC2 and §4 rule *(v5 confirmed)*
+**Story:** As a user who pays restaurants through bill-payment flows, I want the category to follow the shop or biller rather than the words "จ่ายบิล/ชำระเงิน", so that my food spending is not counted as Bills.
+
+**Acceptance Criteria**
+- **AC1 (merchant over phrase)** — Given a redacted "จ่ายบิลสำเร็จ" fixture whose merchant name contains "ไก่ย่าง" and biller line ends with "FOOD", When categorised, Then category = `food` (not `bills`) both with payee from OMX-049 **and** with payee empty (match from text).
+- **AC2 (weak tier)** — Given the rules file, When transaction-type phrases ("จ่ายบิล", "ชำระบิล", "ชำระเงิน", "โอนเงิน", "Bill Payment", "Payment") are matched, Then they live in a separate weak tier (`TX_PHRASES`) in `categories.rules.ts` and are used only when **no** strong merchant/biller/brand keyword matches anywhere; precedence = payee → payeeExtra → memo → person → text (strong) → weak tier → `other`. "จ่ายบิล" is removed from `bills.keywords`.
+- **AC3 (real bills unchanged)** — Given "จ่ายบิล" + a utility biller (การไฟฟ้า/MEA/PEA/การประปา/AIS/TrueMove …), Then `bills` with High confidence; Given "จ่ายบิล" alone, Then `bills` with **Medium** confidence (R5). Existing tests that asserted High for "จ่ายบิล"-only are updated as an **expected change** (agreed by QA).
+- **AC4 (Thai food keywords)** — Given new `food` keywords agreed in grooming (`ไก่ย่าง`, `ไก่ทอด`, `หมูปิ้ง`, `ข้าวมันไก่`, `ข้าวขาหมู`, `ก๋วยจั๊บ`, `ราดหน้า`, `ผัดไทย`, `ร้านข้าว`, `ShopeeFood`; **not** "ครัว"), When categorised, Then each maps to `food` with a table-driven test, and the BUG-006 guards ("นาขวัญ ฟาร์มสุข", "สวนนายเฒ่า") still pass.
+- **AC5 (type unchanged)** — Given `type.ts`, When the rules change, Then type detection (OMX-006) results are identical on Layer A/B.
+- **AC6 (category Medium highlight + a11y — Designer D2)** *(v5)* — Given a category with `confidence === 'medium'` and `field === 'text'`, When Review renders, Then the category field shows the existing §6.3 highlight (border + icon + `review.checkField`) and the card counts as "needs review" for auto-expand; `CategoryPicker` accepts `warning` and links it with `aria-describedby` (like AmountInput/DateInput) for both Low and Medium, so screen readers read it on focus (WCAG 1.3.1/3.3.1); no new copy.
+- **AC7 (no regression)** — Given Layer A, Then category 100% (all existing + new fixtures); Given the original 27 Layer B slips, Then category 100% and type/amount/date unchanged (100% / ≥ 96.3% / 100%), incl. b05, b06, b16 (bills), b09 (housing), b17 (shopping), b18 (entertainment); Layer B gains 1 restaurant bill template (biller "…FOOD", fake names).
+- **AC8 (real slips)** — Together with 049/050b: the 3 FB-011 slips re-tested by the user → category **3/3 target, ≥ 2/3 minimum** (counts only).
+- **AC9 (privacy)** — Same as OMX-049 AC9.
+
+#### OMX-050b — Fuzzy keywords for Lazada / Shopee tolerant to Thai OCR noise (BUG-010 part b) *(split v5)*
+**Priority:** Must · **Severity:** High · **Pts:** **2** · **Status:** New — DoR ✗ (variant + negative list, QA Day 1) · **Sprint:** S2 candidate · **Source:** FB-011 / BUG-010
+**Depends on:** OMX-050a (same rules file, merge after) · reusable later by OMX-039 (`fold()`)
+**Story:** As a user who pays through Lazada/Shopee wallets, I want those payments recognised as Shopping even when OCR garbles the Thai name, so that they don't fall into Other.
+
+**Approach agreed:** confusable-char **folding** (Dev option A) inside the keyword matcher only — **not** in `normalizeText()` (stored payee/memo/rawText stay as OCR'd). Fold table round 1: drop tone marks `่ ้ ๊ ๋`, `์`, `็`, `ๆ`; `ซ↔ช`, `บ↔ป`, `ผ↔พ`, `ฝ↔ฟ`, `ง↔จ`; Latin `0↔O`, `1↔l↔I`, `rn↔m`; **no `ด↔ต`** in round 1. Edit distance = not in Sprint 2.
+
+**Acceptance Criteria**
+- **AC1 (fuzzy Lazada)** — Given OCR text containing "Lazada", "LAZADA", "ลาซาด้า", "ลาซาดา", "ลาชาดา", "LazPay", "ลาซาด้าเพย์", "บลูเพย์-ลาซาด้าเพย์" or the noisy **"บลูเพย-ลาชาดาเพย"**, When categorised, Then category = `shopping`.
+- **AC2 (fuzzy Shopee)** — Given "Shopee", "SHOPEE", "ช้อปปี้", "ShopeePay", "Shopee Pay", "ช้อปปี้เพย์" and their fold variants, When categorised, Then `shopping`; Given "ShopeeFood"/"GrabFood"/"LINE MAN", Then `food` still wins (longest match, §4).
+- **AC3 (bounded)** — Given fuzzy applies only to keywords flagged `fuzzy: true` in `categories.rules.ts` (R6) whose folded length ≥ 5, When run on ≥ 20 negative fixtures (8 fake person names, 8 other merchants, 4 Thai words close to "ลาซาดา/ช้อปปี้" after folding) plus the text of the 27 Layer B slips, Then **0 false positives**.
+- **AC4 (type confidence)** — Given "ชําระเจินสำเร็จ", When type is detected, Then fuzzy matching of `TRANSFER_STRONG` restores type = expense with **High** confidence.
+- **AC5 (OCR noise invariance)** — Given fixtures with "พ.ุย.", "ชําระเจิน" and cartoon/QR garbage, When parsed, Then type/amount/date/category equal the clean-text version.
+- **AC6 (no regression, perf)** — Layer A 100% · original 27 Layer B unchanged (as 050a AC7) · Layer B gains 1 marketplace e-wallet template (fake names) · parse time not measurably changed.
+- **AC7 (real slips / privacy)** — As 050a AC8 / OMX-049 AC9.
+
 #### Won't (this release)
 
 | ID | Title | Story (summary) | Notes |
@@ -661,12 +749,12 @@
 | OMX-032 | Cloud sync & login | As a user, I want to log in and sync across devices so that I don't lose data. | ต้องมี backend/auth → เปลี่ยน architecture constraint |
 | OMX-033 | Budgets & overspend alerts | As a user, I want monthly budgets per category with alerts so that I control spending. | ต่อยอดจาก E5 |
 | OMX-034 | PDF payslip import | As a salaried user, I want to import PDF payslips so that I don't need screenshots. | pdf.js render → OCR / text layer |
-| OMX-035 | Learn custom category rules | As a user, I want the app to remember my category corrections per payee. | ต่อยอด OMX-039 |
+| OMX-035 | Learn custom category rules | As a user, I want the app to remember my category corrections per payee. | ต่อยอด OMX-039 · *(v5)* = Designer D4 — คง Won't ใน Sprint 2; พิจารณา revive เป็น Sprint 3 candidate หลังผล OMX-049/042 |
 | OMX-036 | Recurring transactions | As a user, I want recurring items (rent, subscriptions) added automatically. | |
 | OMX-037 | Installable PWA / offline mode | As a mobile user, I want to install the app and use it offline. | ได้ประโยชน์จาก self-hosted Tesseract assets |
 | OMX-038 | HEIC/HEIF image support | As an iPhone user, I want to upload HEIC photos directly. | ต้องมี decoder ใน browser (ขนาดใหญ่) |
 
-**Parked ideas (from grooming, not yet stories):** amount alternative chips on Review (Designer), "บันทึกและเพิ่มอีก / Save & add another" (Designer), backup nudge after 20 new transactions (Designer), dark mode, staging path separate from production (QA Q10), multi-currency, multiple wallets, receipt line-item parsing, LLM/ML classification, shared household ledger.
+**Parked ideas (from grooming, not yet stories):** *(v5)* **D3 quick chip หมวดอันดับ 2 บน Review** (Designer, Sprint 2 grooming — ประเมินใหม่หลังผล OMX-042; ทำคู่กับ amount chips), *(v5)* hint "จัดหมวดจาก…" (explainability — ทำคู่กับ OMX-035 ถ้า revive), *(v5)* search ที่ค้นชื่อหมวดด้วย (Designer Q3), *(v5)* tech debt: อัปเกรด GitHub Actions ที่รันบน Node 20 → major ที่รองรับ Node 24 (Dev, PR แยกหลัง deploy แรกเขียว), amount alternative chips on Review (Designer), "บันทึกและเพิ่มอีก / Save & add another" (Designer), backup nudge after 20 new transactions (Designer), dark mode, staging path separate from production (QA Q10), multi-currency, multiple wallets, receipt line-item parsing, LLM/ML classification, shared household ledger.
 
 ---
 
@@ -682,27 +770,35 @@
 
 ---
 
-## 9. Sprint 2 Candidate List (proposed, to be confirmed at Sprint 2 Grooming/Planning)
+## 9. Sprint 2 Candidate List (groomed 2026-11-23 — to be confirmed at Sprint 2 Planning)
 
-**Proposed Sprint 2 Goal:** get MVP_0001 live on GitHub Pages, verify it on real devices and real slips, connect Google Photos for real, and complete UAT with the customer, so that `v0.1.0` can be released.
+**Proposed Sprint 2 Goal (v5, unchanged from v4):** ทำให้ MVP_0001 **ใช้งานได้จริงบน GitHub Pages** (ปิด DoD ของงาน 92 pts จาก Sprint 1) และ **อ่านสลิปจริงของ KBank/K PLUS ได้ถูกต้อง** — ผู้รับและหมวดหมู่ถูก 3/3 (ขั้นต่ำ 2/3) บนสลิปของผู้ใช้ (BUG-009/010) พร้อมวัดความแม่นยำบนสลิปจริงและเริ่ม UAT เพื่อปล่อย `v0.1.0`
+*(v3 goal เดิม: get MVP_0001 live on GitHub Pages, verify it on real devices and real slips, connect Google Photos for real, and complete UAT with the customer, so that `v0.1.0` can be released.)*
 
-Planning basis (retro AI-3): commit at **measured velocity (~40 pts) minus a UAT/hotfix buffer (~10 pts)**. AI-assisted throughput is tracked separately and not used as the baseline.
+Planning basis (retro AI-3): commit at **measured velocity (~40 pts) minus a UAT/hotfix buffer (~10 pts)** → **commit ≈ 30 pts**. AI-assisted throughput is tracked separately and not used as the baseline.
+Status ณ grooming: QA re-run Pass 120 / Fail 2 / Blocked 9 / Not run 1 · **NOT READY for UAT** (B3, BUG-009/010 High open, B2) — `docs/qa/test-summary-report.md` §7
 
-| Rank | ID | Title | Priority | Pts (remaining) | Depends on | Note |
-|---|---|---|---|---|---|---|
-| 1 | OMX-028 | Deploy via GitHub Actions *(carry-over)* | Must | 3 (≈1 remaining) | **B1** | First run + fixes |
-| 2 | OMX-048 | Post-deploy verification on Pages (DoD closure) | Must | 2 | 028 | Moves 29 "Accepted (pending deploy)" items to Done |
-| 3 | OMX-043 | Real-device & assistive-tech verification | Must | 3 | 028 | QA condition C5 |
-| 4 | OMX-003a / 003b | Google Photos sign-in, Picker, download *(carry-over)* | Must | 8 (≈2 remaining) | **B2** | Real OAuth verification |
-| 5 | OMX-041 | Google Photos per-item Retry (K1) | Must | 2 | 003b | Closes 003b AC5 |
-| 6 | OMX-042 | Real-slip accuracy measurement | Must | 3 | A5/A10 slips | UAT exit #3 |
-| 7 | OMX-029 | Performance budget *(carry-over: AC1, AC3, AC5)* | Should | 3 (≈2 remaining) | 028 | LCP + device OCR timing |
-| 8 | OMX-044 | List virtualization | Should | 3 | — | Only if OMX-029 AC5 fails, otherwise defer |
-| 9 | OMX-040 | Thai-digit amounts (BUG-007) | Could | 2 | — | |
-| 10 | OMX-045 | Salary slip date rule (O2) | Could | 1 | PO decision | |
-| 11 | OMX-039 | Received transfers via owner name | Could | 3 | 009 ✔ | |
-| 12 | OMX-046 | Search placeholder at 320px | Could | 1 | — | |
-| 13 | OMX-047 | Manual theme switch | Could | 2 | — | |
-| — | *UAT execution, feedback triage, hotfixes* | — | Buffer | ~10 | R5 freeze | Not a story. Capacity is reserved |
+| Rank | ID | Title | Priority | Pts (final, remaining) | Depends on | DoR | Note |
+|---|---|---|---|---|---|---|---|
+| 1 | OMX-028 | Deploy via GitHub Actions *(carry-over)* | Must | 1 | **B3** (UQ2) | ✗ B3 | Workflow ไม่ต้องแก้; error-message step เป็น task |
+| 2 | OMX-048 | Post-deploy verification on Pages (DoD closure) | Must | 2 | 028 | ✗ (028) | 92 pts → Done, tag `v0.1.0-uat` |
+| 3 | **OMX-051** *(v5)* | Payee measurement in fixtures & benchmark (enabler) | Must | 2 | — | ✓ | QA owner, เริ่ม Day 1 ขนานได้ |
+| 4 | **OMX-049** | Recipient under ↓ on KBank/K PLUS + payee empty state D1 (BUG-009) | Must (High) | 3 | 051, UQ1 | ✗ fixtures | Joint bundle กับ 050a/050b |
+| 5 | **OMX-050a** *(v5 split)* | Precedence merchant/biller > phrase + Thai food keywords + D2 (BUG-010a) | Must (High) | 3 | 049 (joint), UQ1 | ✗ fixtures | |
+| 6 | **OMX-050b** *(v5 split)* | Fuzzy Lazada/Shopee (BUG-010b) | Must (High) | 2 | 050a | ✗ lists (QA Day 1) | |
+| 7 | OMX-042 | Real-slip accuracy measurement | Must | 3 | UQ4 slips | ✗ slips | 3 สลิป FB-011 = Layer C ชุดแรก |
+| 8 | OMX-043 | Real-device & assistive-tech verification | Must | 3 | 028 | ✗ B3 | |
+| 9 | OMX-003a / 003b | Google Photos real OAuth *(carry-over)* | Must | 2 | **B2** (UQ3) | ✗ B2 | ทดสอบบน localhost:4173 ได้ไม่ต้องรอ B3 |
+| 10 | OMX-041 | Google Photos per-item Retry (K1) | Must | 2 | 003b (acceptance) | ✓ | Dev ทำกับ stub ได้ก่อน B2; Designer spec Day 1 |
+| 11 | OMX-029 | Performance budget *(carry-over AC1, AC3, AC5)* | Should | 2 | 028 | ✗ B3 | local LCP 755 ms (interim) |
+| 12 | OMX-040 | Thai-digit amounts (BUG-007) | Could | 2 | — | ✓ | |
+| 13 | OMX-045 | Salary slip date rule (O2) — option A | Could | 1 | — | ✓ | |
+| 14 | OMX-046 | Search placeholder at 320px | Could | 1 | — | ✓ | copy พร้อม (Designer) |
+| — | OMX-044 | List virtualization | Should | 3 | 029 AC5 fail | conditional | ไม่นับใน commit |
+| — | OMX-039 | Received transfers via owner name | Could | 3 | 049, 050b, Designer spec | ✗ | **Deferred → Sprint 3** |
+| — | OMX-047 | Manual theme switch | Could | 2 | — | — | **Deferred → Sprint 3** |
+| — | *UAT execution, feedback triage, hotfixes* | — | Buffer | ~10 | R5 freeze | — | Not a story. Capacity is reserved |
 
-Candidate total ≈ 27 pts remaining effort + ~10 pts buffer. **Must core ≈ 13 pts remaining** (ranks 1–6).
+**Proposed commit (for Planning) = 29 pts:** Must 23 (ranks 1–10) + Should 2 (029) + Could 4 (040, 045, 046) · buffer ~10 · total ≈ 39 ≤ velocity ~40
+**B3 risk:** ranks 1, 2, 8, 11 (= 8 pts) ทำไม่ได้จนกว่า Pages เปิด — ถ้า B3 ยังไม่ปิดภายใน Day 2 ให้ทำ 051/049/050a/050b/041/040 ก่อน และ PO ทบทวน Sprint Goal ร่วมกับทีม (charter §8)
+**Cut order (if needed, last-in first-out):** 046 → 045 → 040 → 029 → 041. **ห้ามตัด** 049/050a/050b แยกกัน (joint dependency)

@@ -41,8 +41,8 @@
 | Env | URL / Command | ใช้ทำอะไร | สถานะ |
 |---|---|---|---|
 | Local preview | `npm run build && npm run preview` → `http://localhost:4173/omnitrix-project/` | e2e, benchmark, exploratory | ใช้งาน |
-| CI (GitHub Actions) | `ci.yml` | gate ทุก PR | Blocked (B1) |
-| Production / UAT | `https://jaijimjim.github.io/omnitrix-project/` | QA sign-off, UAT | Blocked (B1) |
+| CI (GitHub Actions) | `ci.yml` | gate ทุก PR | ใช้งาน (2026-11-23: run `43827185503` ทุก job ✓ — B1 ปิด) |
+| Production / UAT | `https://jaijimjim.github.io/omnitrix-project/` | QA sign-off, UAT | Blocked (**B3** — Pages ยังไม่เปิด, repo private; URL 404 ณ 2026-11-23) |
 
 Browser ใน sandbox: Chromium 1243 (`PW_CHROMIUM_PATH=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`), timezone `Asia/Bangkok` (+ 1 test ใน `America/Los_Angeles`), locale th-TH/en-US. Firefox/WebKit/iOS Safari/Android จริง = ยังไม่ได้ทดสอบ (risk ใน summary)
 

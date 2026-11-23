@@ -3,6 +3,8 @@
 > Owner: QA · 2026-11-13 (Sprint 1 Day 4) · **Final — re-test after Dev fixes `a1249eb..8c779d0`** · Build: local `main` (ไม่ได้ push — B1) served by `vite preview`, Chromium 1243, TZ Asia/Bangkok
 > อ้างอิง: [`test-plan.md`](test-plan.md) · [`test-cases.md`](test-cases.md) · [`bug-report.md`](bug-report.md) · UAT criteria: [`grooming/sprint-1-qa.md` §5](../agile/grooming/sprint-1-qa.md)
 
+> **อัปเดต 2026-11-23 (Sprint 2 Day 0):** re-run 12 TC ที่ Blocked → ดู [§7](#7-sprint-2-day-0--blocked-re-run-2026-11-23) — ตัวเลขล่าสุด **Pass 120 / Fail 2 / Blocked 9 / Not run 1**; recommendation เปลี่ยนเป็น **NOT READY for UAT** (BUG-009/010 High + B3). §1–§6 ด้านล่างคงไว้เป็นผล Sprint 1 (2026-11-13)
+
 ## 1. Recommendation
 
 ### ✅ GO for UAT — **conditional**
@@ -118,3 +120,99 @@ Edge cases จาก QA grooming ที่ครอบคลุมแล้ว: 
 | R4 ไม่ได้ทดสอบ iOS Safari / Android / Firefox | กลาง | C5 smoke บนอุปกรณ์จริงก่อน UAT |
 | R5 Performance บนมือถือระดับกลาง (LCP, OCR time, 1,000 rows — K4) | กลาง | วัดบน Pages + reference devices; virtualization เป็น follow-up |
 | R6 Received slip ที่ไม่มี keyword ยังเป็น Expense (K6) | ต่ำ | Known limitation → OMX-039; user สลับ type บน Review |
+
+---
+
+## 7. Sprint 2 Day 0 — Blocked re-run (2026-11-23)
+
+> Owner: QA · หลักฐาน: GitHub Actions run **`43827185503`** (commit `e17c62e`, workflow "Deploy to GitHub Pages" → `workflow_call` `ci.yml`) · URL live `https://jaijimjim.github.io/omnitrix-project/` (ตรวจ 2026-11-23) · Lighthouse **local interim** · ผลสลิปจริง 3 ใบของผู้ใช้ (FB-011, 2026-11-14)
+
+### 7.1 Evidence
+
+| Source | ผล |
+|---|---|
+| CI `ci.yml` บน GitHub (run `43827185503`) | ✅ Secret scan (gitleaks) · ✅ Lint·typecheck·unit · ✅ Build without-google · ✅ Build with-google · ✅ E2E (Playwright) → **B1 ปิด** (push + CI บน GitHub ทำงานแล้ว) |
+| `deploy.yml` job "Build for Pages" | ❌ `actions/configure-pages@v5`: "Get Pages site failed … Not Found" → job Deploy ถูก skip |
+| URL live | ❌ HTTP 404 "There isn't a GitHub Pages site here" |
+| สาเหตุ | repo เป็น **private** และยังไม่เปิด Pages (Source = GitHub Actions) — config ฝั่ง repo owner, **ไม่ใช่ bug ในโค้ด** → บันทึกเป็น impediment **B3** (FB-012) แจ้งผู้ใช้แล้ว |
+| Lighthouse local interim | `npx vite preview --port 4173` → `http://localhost:4173/omnitrix-project/` (production build ปัจจุบัน) · Lighthouse 13.6.0, HeadlessChrome 153, form factor mobile (412px), simulated throttling (RTT 150 ms, 1.6 Mbps, CPU ×4) · raw JSON เก็บนอก repo (`/tmp/lh-run{1,2,3}.json`) |
+| สลิปจริง (Layer C) | ผู้ใช้รันบนเครื่องตัวเอง 3 ใบ (KBank "make by KBank" / K PLUS) — รูปไม่ได้เข้า repo/sandbox |
+
+### 7.2 Lighthouse — local interim (ไม่ใช่ผลบน Pages จริง)
+
+| Run | Performance | **LCP** | FCP | TBT | CLS | **Accessibility** | Best Practices | SEO |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 93 | 752 ms | 752 ms | 309 ms | 0.001 | 100 | 96 | 100 |
+| 2 | 99 | 774 ms | 774 ms | 110 ms | 0.001 | 100 | 96 | 100 |
+| 3 | 99 | 755 ms | 755 ms | 108 ms | 0.001 | 100 | 96 | 100 |
+| **Median** | **99** | **755 ms** (gate ≤ 2.5 s ✅) | 755 ms | 110 ms | 0.001 | **100** (gate ≥ 90 ✅) | 96 | 100 |
+
+- ข้อจำกัด: localhost ไม่มี DNS/TLS/CDN latency ของ GitHub Pages และ Lighthouse simulate จาก trace ที่ได้บนเครื่อง → ตัวเลขนี้เป็น **upper bound เชิงบวก** ใช้ยืนยันว่า bundle/render ไม่ใช่คอขวด แต่ **ไม่ปิด TC-139/135** — ต้องวัดซ้ำบน Pages URL หลัง B3
+- Best Practices 96: audit `inspector-issues` = CSP บล็อก `eval` จาก zod v4 JIT probe (`new Function("")` ใน try/catch, fallback อัตโนมัติ) → ไม่กระทบการทำงาน บันทึกเป็น **O6** (ไม่ใช่ bug) ใน [`bug-report.md`](bug-report.md)
+- TBT run 1 = 309 ms (cold run) แล้วลดเหลือ ~110 ms — ไม่มีผลต่อ gate
+
+### 7.3 ผลใหม่ของ 12 TC ที่เคย Blocked
+
+| TC | เดิม | ใหม่ (2026-11-23) | เหตุผล / blocker ปัจจุบัน |
+|---|---|---|---|
+| TC-138 CI เขียว | Blocked (B1) | **Pass** (on push) | ทุก job ของ `ci.yml` ✓ ใน run `43827185503`; trigger เป็น push `main` (ผ่าน `workflow_call`) ไม่ใช่ PR — `ci.yml` มี `on: pull_request` และ job เดียวกัน จึงยอมรับ; ยืนยัน trigger PR ใน PR แรกของ Sprint 2 |
+| TC-149 gitleaks + storage | Partial (gitleaks B1) | **Pass** | job "Secret scan (gitleaks)" ✓ + storage Pass (2026-11-13) |
+| TC-163 Real-world (Layer C) | Blocked (A5) | **Fail (interim, n = 3)** → BUG-010 / BUG-009 | ดู §7.4 — category 33% < 60% (MVP metric) |
+| TC-137 Deploy Pages | Blocked (B1) | **Blocked (B3)** | build ผ่าน แต่ `configure-pages` ล้มเพราะ Pages ยังไม่เปิด (config ไม่ใช่ product defect — convention: Fail ใช้กับ product defect ที่ต้องเปิด BUG เท่านั้น) |
+| TC-139 LCP | Blocked (B1) | **Blocked (B3)** + local interim median **755 ms** | ต้องวัดบน Pages URL |
+| TC-135 SR / Lighthouse a11y / 200% zoom | Blocked (DEV, B1) | **Blocked (DEV, B3)** + local interim a11y **100** | screen reader จริง + zoom บนอุปกรณ์ + Lighthouse บน Pages ยังไม่ทำ |
+| TC-118 CSV ใน Excel | Blocked (DEV) | **Partial** (นับ Blocked): BOM **Pass** | `src/domain/csv.ts` prepend U+FEFF, Blob `text/csv;charset=utf-8`; unit `writes BOM…` + e2e อ่านไฟล์ download จริงได้ byte แรก 0xFEFF (ผ่านใน CI) → Excel ควรแสดงไทยถูก แต่ยังไม่ได้เปิดใน Excel/Sheets จริง |
+| TC-008 native picker มือถือ | Blocked (DEV, B1) | **Blocked (DEV + B3)** | ต้องมี Android Chrome / iOS Safari จริง + URL Pages |
+| TC-141 OCR ≤ 15 s บนอุปกรณ์ | Blocked (DEV) | **Blocked (DEV)** | ยังไม่มี reference device / ผลจากผู้ใช้ |
+| TC-015 / 016 / 017 Google จริง | Blocked (B2) | **Blocked (B2)** | OAuth Client สร้างแล้วแต่ยังไม่ยืนยัน repo variable `VITE_GOOGLE_CLIENT_ID`, Photos Picker API, test users · ทดสอบบน `localhost:4173` (origin ที่อนุญาตแล้ว) ได้ทันทีเมื่อได้ Client ID ไม่ต้องรอ B3 · TC-016 คาดว่าจะ Fail จนกว่า OMX-041 (per-item Retry) เสร็จ |
+
+### 7.4 Layer C — สลิปจริง (interim, n = 3)
+
+| Field | ผล | MVP metric | Status |
+|---|---|---|---|
+| Type | 3/3 (100%) | ≥ 90% | ✅ |
+| Amount | 3/3 (100%) | ≥ 80% | ✅ |
+| Date / Time | 3/3 / 3/3 | report only | ✅ |
+| Category | **1/3 (33%)** | ≥ 60% | ❌ → BUG-010 (High) |
+| Payee | **0/3 (0%)** | report only (OMX-009 AC6) | ❌ → BUG-009 (High) |
+
+⚠️ **Sample เล็กมาก (3 ใบ, ธนาคารเดียว = KBank/K PLUS)** — 1 ใบ = 33 percentage points จึงไม่มีนัยทางสถิติ ใช้เป็น *signal* ว่า synthetic set (Layer B 100%) ยังไม่สะท้อน layout จริง (ลูกศร ↓, biller name, OCR variant ของชื่อแบรนด์) — ยืนยันความเสี่ยง R1. OMX-042 ยังต้องการ ≥ 11 สลิป (≥ 2 ต่อธนาคาร + salary 3 แบบ). ตาม grooming §5.2 #3 ค่าที่ต่ำกว่าเป้าไม่ block อัตโนมัติ แต่ bug ที่พบเป็น **High** จึงกระทบ UAT entry #4
+
+### 7.5 Execution totals (132 TC)
+
+| Result | 2026-11-13 | **2026-11-23** | Δ |
+|---|---|---|---|
+| Pass | 118 (89.4%) | **120 (90.9%)** | +2 (TC-138, 149) |
+| Fail | 1 (0.8%) | **2 (1.5%)** | +1 (TC-163) |
+| Blocked | 12 (9.1%) | **9 (6.8%)** | −3 |
+| Not run | 1 (0.8%) | **1 (0.8%)** | 0 |
+| **Total** | 132 | **132** | |
+
+Defects: 10 (Critical 0 · High 3 · Medium 5 · Low 2) · **Open 3** — BUG-009 High, BUG-010 High (→ OMX-049/050), BUG-007 Low · ไม่มี bug ใหม่จาก build (BUG-011 ยังไม่ใช้) · Impediment: **B3** (Pages) · Observation ใหม่: **O6** (zod eval probe vs CSP)
+
+### 7.6 UAT entry check (อัปเดตเฉพาะข้อที่เปลี่ยน)
+
+| # | Criterion | 2026-11-23 |
+|---|---|---|
+| 1 | Must Done (QA pass บน deployed build) | ⛔ Blocked (**B3**) |
+| 3 | CI เขียว + e2e smoke บน Pages | ◐ CI เขียวบน GitHub ✅ · smoke บน Pages ⛔ B3 |
+| 4 | ไม่มี Critical/High ค้าง | ❌ **BUG-009, BUG-010 (High) Open** |
+| 7 | axe + Lighthouse a11y ≥ 90 | ◐ axe ✅ · Lighthouse a11y 100 (local interim) — บน Pages ⛔ B3 |
+| 8 | Google Photos configured / PO decision | ⛔ Blocked (B2) |
+
+### 7.7 Recommendation (Sprint 2 Day 0)
+
+### ⛔ NOT READY for UAT — เปลี่ยนจาก "conditional GO" (2026-11-13)
+
+เหตุผล: (1) **BUG-009/010 High** จากสลิปจริงขัด UAT entry #4 และแสดงว่า real-world category/payee ต่ำกว่าเป้าบน layout ของธนาคารเป้าหมายหลัก (2) **B3** ยังไม่มี deployed build ให้ทดสอบ. คุณภาพ build บน synthetic/automated ยังดี (CI เขียวครบบน GitHub, Layer A/B 100%, LCP/a11y local interim ผ่าน gate ด้วย margin กว้าง)
+
+| # | Action | Owner | ปลด |
+|---|---|---|---|
+| 1 | เปิด Pages (Source = GitHub Actions) — ถ้า plan ไม่รองรับ Pages บน private repo ต้องเปลี่ยน repo เป็น public (ตรวจว่าไม่มีข้อมูลจริงใน history ก่อน) แล้ว re-run `deploy.yml` | Repo owner → PO | B3 → TC-137 |
+| 2 | ทันทีหลัง deploy: post-deploy smoke + e2e ด้วย `E2E_BASE_URL` + Lighthouse mobile ×3 บน Pages | QA | TC-137, 139, 135 (บางส่วน), OMX-048 |
+| 3 | ยืนยัน `VITE_GOOGLE_CLIENT_ID` + Picker API + test users แล้ว QA รันบน `localhost:4173` ได้ก่อน B3 | PO / ผู้ใช้ | TC-015, 017 (016 รอ OMX-041) |
+| 4 | Sprint 2: แก้ OMX-049 (BUG-009) + OMX-050 (BUG-010) ด้วย redacted fixtures ตาม [`grooming/sprint-2-qa.md`](../agile/grooming/sprint-2-qa.md); regression gate Layer A 100% / Layer B 27/27 ไม่ลด | Dev + QA | BUG-009/010, TC-163 re-run |
+| 5 | ขยาย Layer C ให้ถึง ≥ 11 สลิป (OMX-042) โดยผู้ใช้/ทีมรันบนเครื่องตัวเองและส่งเฉพาะผลตัวเลข + OCR text ที่ปิดข้อมูล | PO | TC-163 (final) |
+| 6 | Smoke บนมือถือจริง Android Chrome + iOS Safari (picker, OCR time, SR) | QA + ผู้ใช้ | TC-008, 141, 135 |
+
+UAT readiness จะประเมินใหม่เมื่อ #1, #2, #4 เสร็จ (และ #3 หรือ PO decision "Not configured")
